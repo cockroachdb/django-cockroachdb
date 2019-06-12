@@ -4,7 +4,7 @@ This is an initial attempt at a backend for Django 2.2. You can install it with 
 
 `pip install .`
 
-You then can use this by putting the following in your `settings..py` for your site: 
+You then can use this by putting the following in your `settings.py` for your site: 
 
 ```
 DATABASES = {
