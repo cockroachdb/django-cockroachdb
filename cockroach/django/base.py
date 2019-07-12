@@ -3,6 +3,7 @@ from .features import DatabaseFeatures
 from .introspection import DatabaseIntrospection
 from .operations import DatabaseOperations
 from .schema import DatabaseSchemaEditor
+from django.utils.functional import cached_property
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
@@ -11,7 +12,12 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     # Override some types from the postgresql adapter.
     data_types = dict(PostgresDatabaseWrapper.data_types,
                       AutoField='integer',
-                      DateTimeField='timestamptz')
+                      DateTimeField='timestamptz',
+                     )
+    # No TimeField data type in CRDB
+    del data_types['TimeField']
+
+                      
     data_types_suffix = dict(PostgresDatabaseWrapper.data_types_suffix,
                              AutoField='DEFAULT unique_rowid()')
     # Disable checks for positive values on some fields.
@@ -24,6 +30,7 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
         self.features = DatabaseFeatures(self)
         self.introspection = DatabaseIntrospection(self)
         self.ops = DatabaseOperations(self)
+        self._in_atomic_block = False
 
     def check_constraints(self, table_names=None):
         # Cribbed from django.db.backends.mysql.operations 
@@ -65,3 +72,11 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
                                 bad_row[1], referenced_table_name, referenced_column_name,
                             )
                         )
+    
+    def set_autocommit(self, autocommit, force_begin_transaction_with_broken_autocommit=False):
+        print("set_autocommit")
+        super().set_autocommit(autocommit, force_begin_transaction_with_broken_autocommit)
+       
+    def get_autocommit(self):
+        print("get autocommit")
+        return super().get_autocommit()

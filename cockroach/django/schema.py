@@ -1,5 +1,6 @@
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db.backends.postgresql.schema import DatabaseSchemaEditor as PostgresDatabaseSchemaEditor
+from django.db.transaction import  atomic
 
 
 class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
