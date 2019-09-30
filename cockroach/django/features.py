@@ -13,7 +13,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     Not currently supported: https://github.com/cockroachdb/cockroach/issues/31632
     """
     can_defer_constraint_checks = False
-    can_release_savepoints = False
 
     """
     Not currently supported: https://github.com/cockroachdb/cockroach/issues/9683
@@ -38,3 +37,15 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     supports_callproc_kwargs = False
     create_test_procedure_without_params_sql = None
     create_test_procedure_with_int_param_sql = None
+
+    """
+    Currently not supported: https://github.com/cockroachdb/cockroach/issues/10735
+    """
+    atomic_transactions = False
+
+    """
+    Currently today in order to say we support transactions we have to be able
+    to support nested transaction with savepoints: 
+        https://github.com/cockroachdb/cockroach/issues/10735
+    """
+    supports_transactions = False

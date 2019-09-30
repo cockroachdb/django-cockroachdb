@@ -21,3 +21,9 @@ class DatabaseOperations(PostgresDatabaseOperations):
             connection_timezone = timezone(self.connection.timezone_name)
             return connection_timezone.localize(value)
         return value
+
+    def sequence_reset_by_name_sql(self, style, sequences):
+        return []
+
+    def sequence_reset_sql(self, style, model_list):
+        return []
