@@ -3,6 +3,10 @@ from .features import DatabaseFeatures
 from .introspection import DatabaseIntrospection
 from .operations import DatabaseOperations
 from .schema import DatabaseSchemaEditor
+from .creation import DatabaseCreation
+from .client import DatabaseClient
+from django.utils.functional import cached_property
+import traceback
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
@@ -11,19 +15,23 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     # Override some types from the postgresql adapter.
     data_types = dict(PostgresDatabaseWrapper.data_types,
                       AutoField='integer',
-                      DateTimeField='timestamptz')
+                      DateTimeField='timestamptz',
+                     )
+    # No TimeField data type in CRDB
+    del data_types['TimeField']
+
+                      
     data_types_suffix = dict(PostgresDatabaseWrapper.data_types_suffix,
                              AutoField='DEFAULT unique_rowid()')
     # Disable checks for positive values on some fields.
     data_type_check_constraints = {}
 
     SchemaEditorClass = DatabaseSchemaEditor
-
-    def __init__(self, *args, **kwargs):
-        super(DatabaseWrapper, self).__init__(*args, **kwargs)
-        self.features = DatabaseFeatures(self)
-        self.introspection = DatabaseIntrospection(self)
-        self.ops = DatabaseOperations(self)
+    creation_class = DatabaseCreation
+    features_class = DatabaseFeatures
+    introspection_class = DatabaseIntrospection
+    ops_class = DatabaseOperations
+    client_class = DatabaseClient
 
     def check_constraints(self, table_names=None):
         # Cribbed from django.db.backends.mysql.operations 
@@ -65,3 +73,24 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
                                 bad_row[1], referenced_table_name, referenced_column_name,
                             )
                         )
+    """    
+    def set_autocommit(self, autocommit, force_begin_transaction_with_broken_autocommit=False):
+        if not autocommit:
+            traceback.print_stack()
+        print("set_autocommit: %s" % (autocommit))
+        super().set_autocommit(autocommit, force_begin_transaction_with_broken_autocommit)
+       
+    def get_autocommit(self):
+        autocommit = super().get_autocommit()
+        print("get autocommit: %s" % (autocommit))
+        #return super().get_autocommit()
+        return autocommit
+    """
+ 
+    def chunked_cursor(self):
+        return self.cursor()
+
+    def _set_autocommit(self, autocommit):
+        with self.wrap_database_errors:
+            self.connection.autocommit = autocommit
+
