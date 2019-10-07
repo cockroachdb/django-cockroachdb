@@ -1,11 +1,9 @@
-import subprocess
 import os.path
+import subprocess
 
 from django.db.backends.base.client import BaseDatabaseClient
 
-"""
-This is mostly taken from MySQL's client class. 
-"""
+
 class DatabaseClient(BaseDatabaseClient):
 
     @classmethod
@@ -17,11 +15,9 @@ class DatabaseClient(BaseDatabaseClient):
         host = settings_dict['OPTIONS'].get('host', settings_dict['HOST'])
         port = settings_dict['OPTIONS'].get('port', settings_dict['PORT'])
         server_ca = settings_dict['OPTIONS'].get('ssl', {}).get('ca')
-        client_cert = settings_dict['OPTIONS'].get('ssl', {}).get('cert')
-        client_key = settings_dict['OPTIONS'].get('ssl', {}).get('key')
         # Seems to be no good way to set sql_mode with CLI.
-      
-        # Default to insecure if no ca exists. 
+
+        # Default to insecure if no ca exists.
         insecure = True
 
         if db:

@@ -1,6 +1,7 @@
-from django.db.backends.postgresql.operations import DatabaseOperations as PostgresDatabaseOperations
+from django.db.backends.postgresql.operations import (
+    DatabaseOperations as PostgresDatabaseOperations,
+)
 from pytz import timezone
-import pytz
 
 
 class DatabaseOperations(PostgresDatabaseOperations):
