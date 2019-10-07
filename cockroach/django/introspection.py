@@ -9,10 +9,6 @@ class DatabaseIntrospection(PostgresDatabaseIntrospection):
 
     data_types_reverse[1184] = 'DateTimeField'
     
-    # No TimeField data type in CRDB
-    del data_types_reverse[1266]
-    del data_types_reverse[1083]
-
     def get_table_list(self, cursor):
         cursor.execute("SHOW TABLES")
         # The second TableInfo field is 't' for table or 'v' for view.

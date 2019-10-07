@@ -17,9 +17,6 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
                       AutoField='integer',
                       DateTimeField='timestamptz',
                      )
-    # No TimeField data type in CRDB
-    del data_types['TimeField']
-
                       
     data_types_suffix = dict(PostgresDatabaseWrapper.data_types_suffix,
                              AutoField='DEFAULT unique_rowid()')
