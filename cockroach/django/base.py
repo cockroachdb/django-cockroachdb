@@ -12,7 +12,7 @@ from .schema import DatabaseSchemaEditor
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
-    vendor = 'cockroachdb'
+    vendor = 'postgresql'
 
     # Override some types from the postgresql adapter.
     data_types = dict(
