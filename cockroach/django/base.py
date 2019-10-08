@@ -1,25 +1,29 @@
-from django.db.backends.postgresql.base import DatabaseWrapper as PostgresDatabaseWrapper
+from django.db.backends.postgresql.base import (
+    DatabaseWrapper as PostgresDatabaseWrapper,
+)
+from django.db.utils import IntegrityError
+
+from .client import DatabaseClient
+from .creation import DatabaseCreation
 from .features import DatabaseFeatures
 from .introspection import DatabaseIntrospection
 from .operations import DatabaseOperations
 from .schema import DatabaseSchemaEditor
-from .creation import DatabaseCreation
-from .client import DatabaseClient
-from django.utils.functional import cached_property
-import traceback
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
     vendor = 'cockroachdb'
 
     # Override some types from the postgresql adapter.
-    data_types = dict(PostgresDatabaseWrapper.data_types,
-                      AutoField='integer',
-                      DateTimeField='timestamptz',
-                     )
-                      
-    data_types_suffix = dict(PostgresDatabaseWrapper.data_types_suffix,
-                             AutoField='DEFAULT unique_rowid()')
+    data_types = dict(
+        PostgresDatabaseWrapper.data_types,
+        AutoField='integer',
+        DateTimeField='timestamptz',
+    )
+    data_types_suffix = dict(
+        PostgresDatabaseWrapper.data_types_suffix,
+        AutoField='DEFAULT unique_rowid()',
+    )
     # Disable checks for positive values on some fields.
     data_type_check_constraints = {}
 
@@ -31,7 +35,7 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     client_class = DatabaseClient
 
     def check_constraints(self, table_names=None):
-        # Cribbed from django.db.backends.mysql.operations 
+        # Cribbed from django.db.backends.mysql.operations
         """
         Check each table name in `table_names` for rows with invalid foreign
         key references. This method is intended to be used in conjunction with
@@ -61,7 +65,7 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
                         )
                     )
                     for bad_row in cursor.fetchall():
-                        raise utils.IntegrityError(
+                        raise IntegrityError(
                             "The row in table '%s' with primary key '%s' has an invalid "
                             "foreign key: %s.%s contains a value '%s' that does not "
                             "have a corresponding value in %s.%s."
@@ -70,24 +74,10 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
                                 bad_row[1], referenced_table_name, referenced_column_name,
                             )
                         )
-    """    
-    def set_autocommit(self, autocommit, force_begin_transaction_with_broken_autocommit=False):
-        if not autocommit:
-            traceback.print_stack()
-        print("set_autocommit: %s" % (autocommit))
-        super().set_autocommit(autocommit, force_begin_transaction_with_broken_autocommit)
-       
-    def get_autocommit(self):
-        autocommit = super().get_autocommit()
-        print("get autocommit: %s" % (autocommit))
-        #return super().get_autocommit()
-        return autocommit
-    """
- 
+
     def chunked_cursor(self):
         return self.cursor()
 
     def _set_autocommit(self, autocommit):
         with self.wrap_database_errors:
             self.connection.autocommit = autocommit
-

@@ -1,12 +1,15 @@
 import subprocess
 import sys
 
-from django.db.backends.postgresql.creation import DatabaseCreation as PostgresDatabaseCreation
+from django.db.backends.postgresql.creation import (
+    DatabaseCreation as PostgresDatabaseCreation,
+)
 
 from .client import DatabaseClient
 
+
 class DatabaseCreation(PostgresDatabaseCreation):
-    
+
     def _clone_test_db(self, suffix, verbosity, keepdb=False):
         source_database_name = self.connection.settings_dict['NAME']
         target_database_name = self.get_test_db_clone_settings(suffix)['NAME']
@@ -44,4 +47,3 @@ class DatabaseCreation(PostgresDatabaseCreation):
             with subprocess.Popen(load_cmd, stdin=dump_proc.stdout, stdout=subprocess.DEVNULL):
                 # Allow dump_proc to receive a SIGPIPE if the load process exits.
                 dump_proc.stdout.close()
-

@@ -1,6 +1,7 @@
-from django.db.backends.postgresql.operations import DatabaseOperations as PostgresDatabaseOperations
+from django.db.backends.postgresql.operations import (
+    DatabaseOperations as PostgresDatabaseOperations,
+)
 from pytz import timezone
-import pytz
 
 
 class DatabaseOperations(PostgresDatabaseOperations):
@@ -23,7 +24,19 @@ class DatabaseOperations(PostgresDatabaseOperations):
         return value
 
     def sequence_reset_by_name_sql(self, style, sequences):
+        # Not implemented by cockroachdb: https://github.com/cockroachdb/cockroach/issues/20956
         return []
 
     def sequence_reset_sql(self, style, model_list):
         return []
+
+    def date_extract_sql(self, lookup_type, field_name):
+        # Extract SQL is slightly different from PostgreSQL.
+        # https://www.cockroachlabs.com/docs/stable/functions-and-operators.html
+        if lookup_type == 'week_day':
+            # For consistency across backends, return Sunday=1, Saturday=7.
+            return 'EXTRACT(dow FROM %s) + 1' % field_name
+        elif lookup_type == 'iso_year':
+            return 'EXTRACT(isoyear FROM %s)' % field_name
+        else:
+            return 'EXTRACT(%s FROM %s)' % (lookup_type, field_name)
