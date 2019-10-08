@@ -23,6 +23,7 @@ class DatabaseOperations(PostgresDatabaseOperations):
         return value
 
     def sequence_reset_by_name_sql(self, style, sequences):
+        # Not implemented by cockroachdb: https://github.com/cockroachdb/cockroach/issues/20956
         return []
 
     def sequence_reset_sql(self, style, model_list):
