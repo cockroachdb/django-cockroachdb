@@ -1,4 +1,6 @@
-from django.db.backends.postgresql.features import DatabaseFeatures as PostgresDatabaseFeatures
+from django.db.backends.postgresql.features import (
+    DatabaseFeatures as PostgresDatabaseFeatures,
+)
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
@@ -19,7 +21,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     Not currently supported: https://github.com/cockroachdb/cockroach/issues/9683
     """
     supports_partial_indexes = False
-    
+
     """
     Not currently supported: https://github.com/cockroachdb/cockroach/issues/10735
     """
@@ -27,11 +29,11 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     can_release_savepoints = False
 
     """
-    There are some known limitations on having DDL statements in a transaction: 
+    There are some known limitations on having DDL statements in a transaction:
         https://www.cockroachlabs.com/docs/stable/known-limitations.html#schema-changes-within-transactions
     """
     can_rollback_ddl = False
-   
+
     """
     Currently not supported: https://github.com/cockroachdb/cockroach/issues/17511
     """
@@ -46,7 +48,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
 
     """
     Currently today in order to say we support transactions we have to be able
-    to support nested transaction with savepoints: 
+    to support nested transaction with savepoints:
         https://github.com/cockroachdb/cockroach/issues/10735
     """
     supports_transactions = False
