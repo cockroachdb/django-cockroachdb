@@ -49,3 +49,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         https://github.com/cockroachdb/cockroach/issues/10735
     """
     supports_transactions = False
+
+    # Not implemented by cockroachdb: https://github.com/cockroachdb/cockroach/issues/20956
+    supports_sequence_reset = False
