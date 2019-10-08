@@ -8,6 +8,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     has_select_for_update = False
     has_select_for_update_nowait = False
     has_select_for_update_of = False
+    has_select_for_update_skip_locked = False
 
     """
     Not currently supported: https://github.com/cockroachdb/cockroach/issues/31632
