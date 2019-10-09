@@ -99,6 +99,11 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
             # Nondeterministic query: https://github.com/cockroachdb/cockroach-django/issues/48
             'queries.tests.SubqueryTests.test_slice_subquery_and_query',
+            # log(b, x) not supported: https://github.com/cockroachdb/cockroach-django/issues/50
+            'db_functions.math.test_log.LogTests.test_decimal',
+            'db_functions.math.test_log.LogTests.test_float',
+            'db_functions.math.test_log.LogTests.test_integer',
+            'db_functions.math.test_log.LogTests.test_null',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')

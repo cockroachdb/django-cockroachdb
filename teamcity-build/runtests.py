@@ -37,7 +37,7 @@ enabled_test_apps = [
     # 'db_functions',
     'db_functions.comparison',
     # 'db_functions.datetime',
-    # 'db_functions.math',
+    'db_functions.math',
     'db_functions.tests',
     'db_functions.text',
     'db_functions.window',
