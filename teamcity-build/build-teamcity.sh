@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -x
 
+# Set an environment variable used by cockroach/django/creation.py.
+export RUNNING_COCKROACH_BACKEND_TESTS=1
+
 # install the cockroach-django driver.
 pip3 install psycopg2-binary
 pip3 install .

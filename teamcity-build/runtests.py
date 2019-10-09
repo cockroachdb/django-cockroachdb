@@ -5,13 +5,16 @@ import sys
 
 # edit this list to include more test apps in the CI.
 enabled_test_apps = [
-    'app_loading',
-    'apps',
-    'base',
-    'bash_completion',
+    'admin_ordering',
+    'basic',
+    'db_functions.comparison',
     'db_functions.text',
+    'delete_regress',
     'indexes',
+    'many_to_one',
     'model_fields',
+    'ordering',
+    'reserved_names',
     'update',
 ]
 
