@@ -55,3 +55,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
 
     # Not implemented by cockroachdb: https://github.com/cockroachdb/cockroach/issues/20956
     supports_sequence_reset = False
+
+    # Unlike PostgreSQL, cockroachdb doesn't support any EXPLAIN formats
+    # ('JSON', 'TEXT', 'XML', and 'YAML').
+    supported_explain_formats = set()
