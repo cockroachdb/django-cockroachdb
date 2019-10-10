@@ -5,6 +5,11 @@ from django.db.backends.postgresql.schema import (
 
 
 class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
+    # Partial indexes ('%(condition)s' in SQL string) aren't implemented in
+    # cockroachdb: https://github.com/cockroachdb/cockroach/issues/9683
+    # If implemented, this attribute can be removed.
+    sql_create_index = 'CREATE INDEX %(name)s ON %(table)s%(using)s (%(columns)s)%(extra)s'
+
     def _model_indexes_sql(self, model):
         # Postgres customizes _model_indexes_sql to add special-case
         # options for string fields. Skip to the base class version
