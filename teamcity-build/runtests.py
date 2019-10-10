@@ -10,6 +10,7 @@ enabled_test_apps = [
     'base',
     'bash_completion',
     'db_functions.text',
+    'indexes',
     'model_fields',
     'update',
 ]

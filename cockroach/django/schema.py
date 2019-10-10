@@ -10,6 +10,10 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # If implemented, this attribute can be removed.
     sql_create_index = 'CREATE INDEX %(name)s ON %(table)s%(using)s (%(columns)s)%(extra)s'
 
+    def _index_columns(self, table, columns, col_suffixes, opclasses):
+        # cockroachdb doesn't support PostgreSQL opclasses.
+        return BaseDatabaseSchemaEditor._index_columns(self, table, columns, col_suffixes, opclasses)
+
     def _model_indexes_sql(self, model):
         # Postgres customizes _model_indexes_sql to add special-case
         # options for string fields. Skip to the base class version
