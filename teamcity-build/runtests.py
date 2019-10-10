@@ -9,6 +9,7 @@ enabled_test_apps = [
     'apps',
     'base',
     'bash_completion',
+    'model_fields',
     'update',
 ]
 
