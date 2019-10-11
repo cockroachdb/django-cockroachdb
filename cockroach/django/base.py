@@ -24,8 +24,6 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
         PostgresDatabaseWrapper.data_types_suffix,
         AutoField='DEFAULT unique_rowid()',
     )
-    # Disable checks for positive values on some fields.
-    data_type_check_constraints = {}
 
     SchemaEditorClass = DatabaseSchemaEditor
     creation_class = DatabaseCreation
