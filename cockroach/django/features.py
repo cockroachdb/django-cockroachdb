@@ -59,3 +59,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # Unlike PostgreSQL, cockroachdb doesn't support any EXPLAIN formats
     # ('JSON', 'TEXT', 'XML', and 'YAML').
     supported_explain_formats = set()
+
+    # Not implemented by cockroachdb: https://github.com/cockroachdb/cockroach/issues/41645
+    supports_regex_backreferencing = False
