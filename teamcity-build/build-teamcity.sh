@@ -9,7 +9,7 @@ pip3 install psycopg2-binary
 pip3 install .
 
 # clone django into the repo.
-git clone --depth 1 --single-branch --branch stable/2.2.x https://github.com/django/django _django_repo
+git clone --depth 1 --single-branch --branch cockroach-2.2.x https://github.com/timgraham/django _django_repo
 
 # install the django requirements.
 cd _django_repo/tests/

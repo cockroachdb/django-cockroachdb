@@ -46,13 +46,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     """
     atomic_transactions = False
 
-    """
-    Currently today in order to say we support transactions we have to be able
-    to support nested transaction with savepoints:
-        https://github.com/cockroachdb/cockroach/issues/10735
-    """
-    supports_transactions = False
-
     # Not implemented by cockroachdb: https://github.com/cockroachdb/cockroach/issues/20956
     supports_sequence_reset = False
 

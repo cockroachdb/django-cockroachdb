@@ -19,23 +19,45 @@ class DatabaseCreation(PostgresDatabaseCreation):
         expected_failures = (
             # column must appear in the GROUP BY clause or be used in an aggregate function:
             # https://github.com/cockroachdb/cockroach-django/issues/13
+            'annotations.tests.NonAggregateAnnotationTestCase.test_aggregate_over_annotation',
+            'annotations.tests.NonAggregateAnnotationTestCase.test_annotate_with_aggregation',
+            'annotations.tests.NonAggregateAnnotationTestCase.test_annotation_filter_with_subquery',
+            'annotations.tests.NonAggregateAnnotationTestCase.test_filter_agg_with_double_f',
+            'custom_managers.tests.CustomManagersRegressTestCase.test_refresh_from_db_when_default_manager_filters',
+            'custom_managers.tests.CustomManagersRegressTestCase.test_save_clears_annotations_from_base_manager',
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_date_group_by',
+            'defer_regress.tests.DeferAnnotateSelectRelatedTest.test_defer_annotate_select_related',
+            'defer_regress.tests.DeferRegressionTest.test_basic',
+            'defer_regress.tests.DeferRegressionTest.test_ticket_16409',
+            'distinct_on_fields.tests.DistinctOnTests.test_distinct_not_implemented_checks',
+            'lookup.test_decimalfield.DecimalFieldLookupTests.test_gt',
+            'lookup.test_decimalfield.DecimalFieldLookupTests.test_gte',
+            'lookup.test_decimalfield.DecimalFieldLookupTests.test_lt',
+            'lookup.test_decimalfield.DecimalFieldLookupTests.test_lte',
+            'queryset_pickle.tests.PickleabilityTestCase.test_annotation_with_callable_default',
             # CAST timestamptz to time doesn't respect active time zone:
             # https://github.com/cockroachdb/cockroach-django/issues/37
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
             # DATE_TRUNC result is incorrectly localized when a timezone is set:
             # https://github.com/cockroachdb/cockroach-django/issues/32
+            'extra_regress.tests.ExtraRegressTests.test_dates_query',
             'many_to_one.tests.ManyToOneTests.test_select_related',
+            'model_inheritance_regress.tests.ModelInheritanceTest.test_issue_7105',
+            'model_regress.tests.ModelTests.test_date_filter_null',
             'multiple_database.tests.QueryTestCase.test_basic_queries',
             'reserved_names.tests.ReservedNameTests.test_dates',
             # POWER() doesn't support negative exponents:
             # https://github.com/cockroachdb/cockroach-django/issues/22
             'db_functions.math.test_power.PowerTests.test_integer',
             # Tests that assume a serial pk: https://github.com/cockroachdb/cockroach-django/issues/18
+            'defer_regress.tests.DeferRegressionTest.test_ticket_23270',
+            'distinct_on_fields.tests.DistinctOnTests.test_basic_distinct_on',
+            'generic_relations_regress.tests.GenericRelationTests.test_annotate',
+            'm2m_through_regress.tests.ThroughLoadDataTestCase.test_sequence_creation',
+            'model_formsets_regress.tests.FormfieldShouldDeleteFormTests.test_custom_delete',
             'ordering.tests.OrderingTests.test_order_by_fk_attname',
             'ordering.tests.OrderingTests.test_order_by_pk',
             # Transaction issues: https://github.com/cockroachdb/cockroach-django/issues/14
-            'basic.tests.SelectOnSaveTests.test_select_on_save_lying_update',
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
             # No support for NULLS FIRST/LAST: https://github.com/cockroachdb/cockroach-django/issues/17
             'admin_ordering.tests.TestAdminOrdering.test_specified_ordering_by_f_expression',
@@ -43,6 +65,26 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'ordering.tests.OrderingTests.test_order_by_nulls_first',
             'ordering.tests.OrderingTests.test_order_by_nulls_last',
             'ordering.tests.OrderingTests.test_orders_nulls_first_on_filtered_subquery',
+            # Tests that require savepoints:
+            'force_insert_update.tests.ForceTests.test_force_update',
+            'many_to_one.tests.ManyToOneTests.test_fk_assignment_and_related_object_cache',
+            'many_to_many.tests.ManyToManyTests.test_add',
+            'model_fields.test_booleanfield.BooleanFieldTests.test_null_default',
+            'model_fields.test_floatfield.TestFloatField.test_float_validates_object',
+            'transaction_hooks.tests.TestConnectionOnCommit.test_discards_hooks_from_rolled_back_savepoint',
+            'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_rolled_back_with_outer',
+            'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_does_not_affect_outer',
+            # database connection isn't set to UTC (to be investigated)
+            'admin_filters.tests.ListFiltersTests.test_datefieldlistfilter_with_time_zone_support',
+            'model_fields.test_datetimefield.DateTimeFieldTests.test_lookup_date_with_use_tz',
+            # unknown signature unnest(int2vector, int2vector):
+            # https://github.com/cockroachdb/cockroach-django/issues/10
+            'constraints.tests.CheckConstraintTests.test_name',
+            'constraints.tests.UniqueConstraintTests.test_name',
+            'proxy_models.tests.ProxyModelTests.test_proxy_load_from_fixture',
+            # Unsupported query: mixed type addition in SELECT:
+            # https://github.com/cockroachdb/cockroach-django/issues/19
+            'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
