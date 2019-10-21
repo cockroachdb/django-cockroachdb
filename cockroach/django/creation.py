@@ -26,6 +26,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # DATE_TRUNC result is incorrectly localized when a timezone is set:
             # https://github.com/cockroachdb/cockroach-django/issues/32
             'many_to_one.tests.ManyToOneTests.test_select_related',
+            'multiple_database.tests.QueryTestCase.test_basic_queries',
             'reserved_names.tests.ReservedNameTests.test_dates',
             # POWER() doesn't support negative exponents:
             # https://github.com/cockroachdb/cockroach-django/issues/22
