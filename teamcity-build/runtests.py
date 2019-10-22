@@ -124,7 +124,7 @@ enabled_test_apps = [
     'properties',
     'proxy_model_inheritance',
     'proxy_models',
-    # 'queries',
+    'queries',
     'queryset_pickle',
     'raw_query',
     'reserved_names',

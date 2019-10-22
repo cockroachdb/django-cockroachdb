@@ -34,6 +34,10 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'lookup.test_decimalfield.DecimalFieldLookupTests.test_gte',
             'lookup.test_decimalfield.DecimalFieldLookupTests.test_lt',
             'lookup.test_decimalfield.DecimalFieldLookupTests.test_lte',
+            'queries.tests.Queries1Tests.test_ticket_20250',
+            'queries.tests.ValuesQuerysetTests.test_named_values_list_with_fields',
+            'queries.tests.ValuesQuerysetTests.test_named_values_list_without_fields',
+            'queries.test_explain.ExplainTests.test_basic',
             'queryset_pickle.tests.PickleabilityTestCase.test_annotation_with_callable_default',
             # CAST timestamptz to time doesn't respect active time zone:
             # https://github.com/cockroachdb/cockroach-django/issues/37
@@ -45,6 +49,9 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'model_inheritance_regress.tests.ModelInheritanceTest.test_issue_7105',
             'model_regress.tests.ModelTests.test_date_filter_null',
             'multiple_database.tests.QueryTestCase.test_basic_queries',
+            'queries.tests.Queries1Tests.test_ticket7155',
+            'queries.tests.Queries1Tests.test_tickets_6180_6203',
+            'queries.tests.Queries1Tests.test_tickets_7087_12242',
             'reserved_names.tests.ReservedNameTests.test_dates',
             # POWER() doesn't support negative exponents:
             # https://github.com/cockroachdb/cockroach-django/issues/22
@@ -57,6 +64,11 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'model_formsets_regress.tests.FormfieldShouldDeleteFormTests.test_custom_delete',
             'ordering.tests.OrderingTests.test_order_by_fk_attname',
             'ordering.tests.OrderingTests.test_order_by_pk',
+            'queries.test_bulk_update.BulkUpdateNoteTests.test_multiple_fields',
+            'queries.test_bulk_update.BulkUpdateTests.test_inherited_fields',
+            'queries.tests.Queries1Tests.test_ticket9411',
+            'queries.tests.Ticket14056Tests.test_ticket_14056',
+            'queries.tests.RelatedLookupTypeTests.test_values_queryset_lookup',
             # Transaction issues: https://github.com/cockroachdb/cockroach-django/issues/14
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
             # No support for NULLS FIRST/LAST: https://github.com/cockroachdb/cockroach-django/issues/17
@@ -85,6 +97,8 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Unsupported query: mixed type addition in SELECT:
             # https://github.com/cockroachdb/cockroach-django/issues/19
             'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
+            # Nondeterministic query: https://github.com/cockroachdb/cockroach-django/issues/48
+            'queries.tests.SubqueryTests.test_slice_subquery_and_query',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
