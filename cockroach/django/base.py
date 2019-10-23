@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.backends.postgresql.base import (
     DatabaseWrapper as PostgresDatabaseWrapper,
 )
@@ -8,6 +9,7 @@ from .features import DatabaseFeatures
 from .introspection import DatabaseIntrospection
 from .operations import DatabaseOperations
 from .schema import DatabaseSchemaEditor
+from .utils import utc_tzinfo_factory
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
@@ -43,6 +45,12 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
         # (https://github.com/cockroachdb/cockroach/issues/19444) so this
         # method is a no-op.
         pass
+
+    def create_cursor(self, name=None):
+        cursor = super().create_cursor(name=name)
+        # cockroachdb needs a differnt tzinfo_factory than PostgreSQL.
+        cursor.tzinfo_factory = utc_tzinfo_factory if settings.USE_TZ else None
+        return cursor
 
     def chunked_cursor(self):
         return self.cursor()

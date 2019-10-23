@@ -109,9 +109,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'transaction_hooks.tests.TestConnectionOnCommit.test_discards_hooks_from_rolled_back_savepoint',
             'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_rolled_back_with_outer',
             'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_does_not_affect_outer',
-            # database connection isn't set to UTC (to be investigated)
-            'admin_filters.tests.ListFiltersTests.test_datefieldlistfilter_with_time_zone_support',
-            'model_fields.test_datetimefield.DateTimeFieldTests.test_lookup_date_with_use_tz',
             # Unsupported query: mixed type addition in SELECT:
             # https://github.com/cockroachdb/cockroach-django/issues/19
             'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
