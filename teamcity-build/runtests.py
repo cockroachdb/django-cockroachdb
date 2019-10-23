@@ -51,7 +51,7 @@ enabled_test_apps = [
     'empty',
     # 'expressions',
     # 'expressions_case',
-    # 'expressions_window',
+    'expressions_window',
     'extra_regress',
     'field_defaults',
     'field_subclassing',

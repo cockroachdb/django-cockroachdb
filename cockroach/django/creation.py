@@ -104,6 +104,9 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.math.test_log.LogTests.test_float',
             'db_functions.math.test_log.LogTests.test_integer',
             'db_functions.math.test_log.LogTests.test_null',
+            # Skipped for PostgreSQL but should be skipped for cockroachdb also:
+            # https://github.com/cockroachdb/cockroach-django/issues/57
+            'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
