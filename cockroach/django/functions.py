@@ -1,6 +1,9 @@
+import datetime
+
 from django.db.models import (
     DateTimeField, DecimalField, FloatField, IntegerField,
 )
+from django.db.models.expressions import When
 from django.db.models.functions import (
     ACos, ASin, ATan, ATan2, Cast, Ceil, Coalesce, Cos, Cot, Degrees, Exp,
     Floor, Ln, Log, Radians, Round, Sin, Sqrt, StrIndex, Tan,
@@ -43,6 +46,13 @@ def float_cast(self, compiler, connection, **extra_context):
     return clone.as_sql(compiler, connection, **extra_context)
 
 
+def when(self, compiler, connection, **extra_context):
+    # As for coalesce(), cast datetimes to timestamptz.
+    if isinstance(getattr(self.result, 'value', None), datetime.datetime):
+        self.result = Cast(self.result, DateTimeField())
+    return self.as_sql(compiler, connection, **extra_context)
+
+
 def register_functions():
     math_funcs_needing_float_cast = (
         ACos, ASin, ATan, ATan2, Ceil, Cos, Cot, Degrees, Exp, Floor, Ln, Log,
@@ -53,3 +63,4 @@ def register_functions():
     ATan2.as_cockroachdb = atan2
     Coalesce.as_cockroachdb = coalesce
     StrIndex.as_cockroachdb = StrIndex.as_postgresql
+    When.as_cockroachdb = when
