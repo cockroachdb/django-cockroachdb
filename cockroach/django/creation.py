@@ -1,7 +1,7 @@
 import os
 import subprocess
 import sys
-from unittest import expectedFailure
+from unittest import expectedFailure, skip
 
 from django.conf import settings
 from django.db.backends.postgresql.creation import (
@@ -30,6 +30,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'defer_regress.tests.DeferRegressionTest.test_basic',
             'defer_regress.tests.DeferRegressionTest.test_ticket_16409',
             'distinct_on_fields.tests.DistinctOnTests.test_distinct_not_implemented_checks',
+            'expressions.test_queryset_values.ValuesExpressionsTests.test_values_expression_group_by',
             'expressions_case.tests.CaseExpressionTests.test_annotate_with_aggregation_in_condition',
             'expressions_case.tests.CaseExpressionTests.test_annotate_with_aggregation_in_predicate',
             'expressions_case.tests.CaseExpressionTests.test_annotate_with_aggregation_in_value',
@@ -142,6 +143,18 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # CharField max_length is ignored on cockroachdb. CharField is
             # introspected as TextField.
             'introspection.tests.IntrospectionTests.test_get_table_description_col_lengths',
+            # Unsupported query: unsupported binary operator: <int> / <int>:
+            # https://github.com/cockroachdb/cockroach-django/issues/21
+            'expressions.tests.ExpressionOperatorTests.test_lefthand_division',
+            'expressions.tests.ExpressionOperatorTests.test_right_hand_division',
+            # Incorrect interval math on date columns when a time zone is set:
+            # https://github.com/cockroachdb/cockroach-django/issues/53
+            'expressions.tests.FTimeDeltaTests.test_date_comparison',
+            'expressions.tests.FTimeDeltaTests.test_mixed_comparisons1',
+            # Interval math across dst works differently from other databases.
+            # https://github.com/cockroachdb/cockroach-django/issues/54
+            'expressions.tests.FTimeDeltaTests.test_delta_update',
+            'expressions.tests.FTimeDeltaTests.test_duration_with_datetime_microseconds',
             # Skipped for PostgreSQL but should be skipped for cockroachdb also:
             # https://github.com/cockroachdb/cockroach-django/issues/57
             'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
@@ -160,6 +173,20 @@ class DatabaseCreation(PostgresDatabaseCreation):
                 test_case = import_string(test_case_name)
                 method = getattr(test_case, method_name)
                 setattr(test_case, method_name, expectedFailure(method))
+
+        skip_classes = (
+            # Unsupported query: UPDATE float column with integer column:
+            # Number.objects.update(float=F('integer')) in setUpTestData(c)
+            # https://github.com/cockroachdb/cockroach-django/issues/20
+            'expressions.tests.ExpressionsNumericTests',
+        )
+        for test_class in skip_classes:
+            test_module_name, _, test_class_name = test_class.rpartition('.')
+            test_app = test_module_name.split('.')[0]
+            if test_app in settings.INSTALLED_APPS:
+                test_module = import_string(test_module_name)
+                klass = getattr(test_module, test_class_name)
+                setattr(test_module, test_class_name, skip('unsupported by cockroachdb')(klass))
 
     def create_test_db(self, *args, **kwargs):
         # This environment variable is set by teamcity-build/runtests.py or

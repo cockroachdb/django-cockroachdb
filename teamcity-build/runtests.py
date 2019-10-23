@@ -49,7 +49,7 @@ enabled_test_apps = [
     'delete_regress',
     'distinct_on_fields',
     'empty',
-    # 'expressions',
+    'expressions',
     'expressions_case',
     'expressions_window',
     'extra_regress',
