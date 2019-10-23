@@ -49,12 +49,38 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'queries.tests.ValuesQuerysetTests.test_named_values_list_without_fields',
             'queries.test_explain.ExplainTests.test_basic',
             'queryset_pickle.tests.PickleabilityTestCase.test_annotation_with_callable_default',
+            'timezones.tests.LegacyDatabaseTests.test_query_annotation',
+            'timezones.tests.NewDatabaseTests.test_query_annotation',
             # CAST timestamptz to time doesn't respect active time zone:
             # https://github.com/cockroachdb/cockroach-django/issues/37
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
             # DATE_TRUNC result is incorrectly localized when a timezone is set:
             # https://github.com/cockroachdb/cockroach-django/issues/32
             'backends.tests.DateQuotingTest.test_django_date_trunc',
+            'dates.tests.DatesTests.test_dates_trunc_datetime_fields',
+            'dates.tests.DatesTests.test_related_model_traverse',
+            'datetimes.tests.DateTimesTests.test_21432',
+            'datetimes.tests.DateTimesTests.test_datetimes_has_lazy_iterator',
+            'datetimes.tests.DateTimesTests.test_datetimes_returns_available_dates_for_given_scope_and_given_field',
+            'datetimes.tests.DateTimesTests.test_related_model_traverse',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_day_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_subquery_with_parameters',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_month_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_quarter_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_time_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_week_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_year_func',
+            # Because DateFunctionWithTimeZoneTests inherits DateFunctionTests,
+            # these tests give "unexpected successes when they pass in the
+            # superclass.
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_func_with_timezone',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_week_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_hour_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_minute_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_second_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_timezone_applied_before_truncation',  # noqa
             'extra_regress.tests.ExtraRegressTests.test_dates_query',
             'many_to_one.tests.ManyToOneTests.test_select_related',
             'model_inheritance_regress.tests.ModelInheritanceTest.test_issue_7105',
@@ -64,9 +90,28 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'queries.tests.Queries1Tests.test_tickets_6180_6203',
             'queries.tests.Queries1Tests.test_tickets_7087_12242',
             'reserved_names.tests.ReservedNameTests.test_dates',
+            'timezones.tests.LegacyDatabaseTests.test_query_datetime_lookups',
+            'timezones.tests.LegacyDatabaseTests.test_query_datetimes',
+            'timezones.tests.NewDatabaseTests.test_query_datetimes',
+            'timezones.tests.NewDatabaseTests.test_query_datetimes_in_other_timezone',
             # POWER() doesn't support negative exponents:
             # https://github.com/cockroachdb/cockroach-django/issues/22
             'db_functions.math.test_power.PowerTests.test_integer',
+            # Unsupported query: unknown signature: extract(string, interval)
+            # https://github.com/cockroachdb/cockroach-django/issues/29
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_duration',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_duration',
+            # extract(): unsupported timespan: isoyear:
+            # https://github.com/cockroachdb/cockroach-django/issues/28
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_iso_year_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_iso_year_func_boundaries',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_func_with_timezone',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_iso_year_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_iso_year_func_boundaries',  # noqa
+            # extract() doesn't respect active time zone:
+            # https://github.com/cockroachdb/cockroach-django/issues/47
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_func',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_hour_func',
             # Tests that assume a serial pk: https://github.com/cockroachdb/cockroach-django/issues/18
             'defer_regress.tests.DeferRegressionTest.test_ticket_23270',
             'distinct_on_fields.tests.DistinctOnTests.test_basic_distinct_on',
@@ -161,6 +206,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'backends.tests.FkConstraintsTests.test_check_constraints',
             'backends.tests.FkConstraintsTests.test_disable_constraint_checks_context_manager',
             'backends.tests.FkConstraintsTests.test_disable_constraint_checks_manually',
+            # Passing a naive datetime to cursor.execute() probably can't work
+            # on cockroachdb. The value needs a timezone so psycopg2 will cast
+            # it to timestamptz rather than timestamp to avoid "value type
+            # timestamp doesn't match type timestamptz of column "dt"" but
+            # there aren't any hooks to do that.
+            'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime'
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
