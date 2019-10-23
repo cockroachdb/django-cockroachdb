@@ -18,7 +18,8 @@ class DatabaseOperations(PostgresDatabaseOperations):
     we specify a tzinfo then psycopg2 will cast it to a TIMESTAMPTZ
     """
     def adapt_datetimefield_value(self, value):
-        if value is not None and value.tzinfo is None and self.connection.timezone_name is not None:
+        # getattr() guards against F() objects which don't have tzinfo.
+        if value and getattr(value, 'tzinfo', '') is None and self.connection.timezone_name is not None:
             connection_timezone = timezone(self.connection.timezone_name)
             return connection_timezone.localize(value)
         return value
