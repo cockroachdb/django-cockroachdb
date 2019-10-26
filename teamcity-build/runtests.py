@@ -16,7 +16,7 @@ enabled_test_apps = [
     # 'aggregation_regress',
     'annotations',
     # 'auth_tests',
-    # 'backends',
+    'backends',
     'basic',
     'bulk_create',
     # 'cache',

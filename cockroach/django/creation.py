@@ -53,6 +53,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
             # DATE_TRUNC result is incorrectly localized when a timezone is set:
             # https://github.com/cockroachdb/cockroach-django/issues/32
+            'backends.tests.DateQuotingTest.test_django_date_trunc',
             'extra_regress.tests.ExtraRegressTests.test_dates_query',
             'many_to_one.tests.ManyToOneTests.test_select_related',
             'model_inheritance_regress.tests.ModelInheritanceTest.test_issue_7105',
@@ -124,6 +125,11 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Skipped for PostgreSQL but should be skipped for cockroachdb also:
             # https://github.com/cockroachdb/cockroach-django/issues/57
             'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
+            # cockroachdb doesn't support disabling constraints:
+            # https://github.com/cockroachdb/cockroach/issues/19444
+            'backends.tests.FkConstraintsTests.test_check_constraints',
+            'backends.tests.FkConstraintsTests.test_disable_constraint_checks_context_manager',
+            'backends.tests.FkConstraintsTests.test_disable_constraint_checks_manually',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
