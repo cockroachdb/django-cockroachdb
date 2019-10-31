@@ -307,6 +307,33 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # tablespace SQL because cockroachdb automatically indexes foreign
             # keys.
             'model_options.test_tablespaces.TablespacesTests.test_tablespace_for_many_to_many_field',
+            # Unsupported type conversion: https://github.com/cockroachdb/cockroach/issues/9851
+            'schema.tests.SchemaTests.test_alter_auto_field_to_char_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
+            'schema.tests.SchemaTests.test_alter_textual_field_keep_null_status',
+            'schema.tests.SchemaTests.test_char_field_with_db_index_to_fk',
+            'schema.tests.SchemaTests.test_m2m_rename_field_in_target_model',
+            'schema.tests.SchemaTests.test_rename',
+            'schema.tests.SchemaTests.test_text_field_with_db_index_to_fk',
+            # cannot drop UNIQUE constraint "xxx" using
+            # ALTER TABLE DROP CONSTRAINT, use DROP INDEX CASCADE instead
+            'schema.tests.SchemaTests.test_alter_field_o2o_to_fk',
+            'schema.tests.SchemaTests.test_alter_o2o_to_fk',
+            'schema.tests.SchemaTests.test_indexes',
+            'schema.tests.SchemaTests.test_remove_field_unique_does_not_remove_meta_constraints',
+            'schema.tests.SchemaTests.test_remove_unique_together_does_not_remove_meta_constraints',
+            'schema.tests.SchemaTests.test_unique',
+            'schema.tests.SchemaTests.test_unique_together',
+            'schema.tests.SchemaTests.test_unique_together_with_fk',
+            'schema.tests.SchemaTests.test_unique_together_with_fk_with_existing_index',
+            'schema.tests.SchemaTests.test_remove_constraints_capital_letters',
+            # cockroachdb doesn't support dropping the primary key.
+            'schema.tests.SchemaTests.test_alter_int_pk_to_int_unique',
+            # cockroachdb doesn't support changing the primary key of table.
+            'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
+            'schema.tests.SchemaTests.test_primary_key',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')

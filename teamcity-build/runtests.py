@@ -124,7 +124,7 @@ enabled_test_apps = [
     'reserved_names',
     'reverse_lookup',
     'save_delete_hooks',
-    # 'schema',
+    'schema',
     'select_for_update',
     'select_related',
     'select_related_onetoone',
