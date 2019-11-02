@@ -86,6 +86,9 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'ordering.tests.OrderingTests.test_order_by_nulls_last',
             'ordering.tests.OrderingTests.test_orders_nulls_first_on_filtered_subquery',
             # Tests that require savepoints:
+            'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
+            'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
+            'fixtures_model_package.tests.FixtureTestCase.test_loaddata',
             'force_insert_update.tests.ForceTests.test_force_update',
             'many_to_one.tests.ManyToOneTests.test_fk_assignment_and_related_object_cache',
             'many_to_many.tests.ManyToManyTests.test_add',
@@ -107,6 +110,17 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.math.test_log.LogTests.test_float',
             'db_functions.math.test_log.LogTests.test_integer',
             'db_functions.math.test_log.LogTests.test_null',
+            # Forward references in fixtures won't work until cockroachdb can
+            # disable constraints: https://github.com/cockroachdb/cockroach/issues/19444
+            'fixtures_regress.tests.TestFixtures.test_loaddata_forward_refs_split_fixtures',
+            'fixtures_regress.tests.TestFixtures.test_loaddata_works_when_fixture_has_forward_refs',
+            'serializers.test_json.JsonSerializerTransactionTestCase.test_forward_refs',
+            'serializers.test_data.SerializerDataTests.test_json_serializer',
+            'serializers.test_data.SerializerDataTests.test_python_serializer',
+            'serializers.test_data.SerializerDataTests.test_xml_serializer',
+            'serializers.test_data.SerializerDataTests.test_yaml_serializer',
+            'serializers.test_xml.XmlSerializerTransactionTestCase.test_forward_refs',
+            'serializers.test_yaml.YamlSerializerTransactionTestCase.test_forward_refs',
             # Skipped for PostgreSQL but should be skipped for cockroachdb also:
             # https://github.com/cockroachdb/cockroach-django/issues/57
             'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
