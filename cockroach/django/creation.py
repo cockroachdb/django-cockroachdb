@@ -60,7 +60,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'defer_regress.tests.DeferRegressionTest.test_ticket_23270',
             'distinct_on_fields.tests.DistinctOnTests.test_basic_distinct_on',
             'generic_relations_regress.tests.GenericRelationTests.test_annotate',
-            'm2m_through_regress.tests.ThroughLoadDataTestCase.test_sequence_creation',
             'model_formsets_regress.tests.FormfieldShouldDeleteFormTests.test_custom_delete',
             'ordering.tests.OrderingTests.test_order_by_fk_attname',
             'ordering.tests.OrderingTests.test_order_by_pk',
