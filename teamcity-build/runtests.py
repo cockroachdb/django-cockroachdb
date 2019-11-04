@@ -50,7 +50,7 @@ enabled_test_apps = [
     'distinct_on_fields',
     'empty',
     # 'expressions',
-    # 'expressions_case',
+    'expressions_case',
     'expressions_window',
     'extra_regress',
     'field_defaults',
