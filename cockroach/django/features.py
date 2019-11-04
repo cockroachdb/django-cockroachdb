@@ -59,3 +59,9 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # Introspection may work but 'CREATE MATERIALIZED VIEW' (required for the
     # test) isn't implemented: https://github.com/cockroachdb/cockroach/issues/41649
     can_introspect_materialized_views = False
+
+    introspected_big_auto_field_type = 'BigIntegerField'
+
+    # Column ordering is supported but cockroachdb doesn't report column
+    # ordering: https://github.com/cockroachdb/cockroach/issues/42175
+    supports_index_column_ordering = False

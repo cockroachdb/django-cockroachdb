@@ -121,6 +121,16 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'serializers.test_data.SerializerDataTests.test_yaml_serializer',
             'serializers.test_xml.XmlSerializerTransactionTestCase.test_forward_refs',
             'serializers.test_yaml.YamlSerializerTransactionTestCase.test_forward_refs',
+            # cockroachdb doesn't distinguish between tables and views. Both
+            # are included regardless of whether inspectdb's --include-views
+            # option is set.
+            'inspectdb.tests.InspectDBTransactionalTests.test_include_views',
+            'introspection.tests.IntrospectionTests.test_table_names_with_views',
+            # No sequence for AutoField in cockroachdb.
+            'introspection.tests.IntrospectionTests.test_sequence_list',
+            # CharField max_length is ignored on cockroachdb. CharField is
+            # introspected as TextField.
+            'introspection.tests.IntrospectionTests.test_get_table_description_col_lengths',
             # Skipped for PostgreSQL but should be skipped for cockroachdb also:
             # https://github.com/cockroachdb/cockroach-django/issues/57
             'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
