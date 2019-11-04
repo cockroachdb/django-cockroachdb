@@ -88,11 +88,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # database connection isn't set to UTC (to be investigated)
             'admin_filters.tests.ListFiltersTests.test_datefieldlistfilter_with_time_zone_support',
             'model_fields.test_datetimefield.DateTimeFieldTests.test_lookup_date_with_use_tz',
-            # unknown signature unnest(int2vector, int2vector):
-            # https://github.com/cockroachdb/cockroach-django/issues/10
-            'constraints.tests.CheckConstraintTests.test_name',
-            'constraints.tests.UniqueConstraintTests.test_name',
-            'proxy_models.tests.ProxyModelTests.test_proxy_load_from_fixture',
             # Unsupported query: mixed type addition in SELECT:
             # https://github.com/cockroachdb/cockroach-django/issues/19
             'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
