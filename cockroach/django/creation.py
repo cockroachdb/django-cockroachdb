@@ -87,6 +87,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'ordering.tests.OrderingTests.test_order_by_nulls_last',
             'ordering.tests.OrderingTests.test_orders_nulls_first_on_filtered_subquery',
             # Tests that require savepoints:
+            'auth_tests.test_migrations.ProxyModelWithSameAppLabelTests.test_migrate_with_existing_target_permission',
             'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
             'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
             'fixtures_model_package.tests.FixtureTestCase.test_loaddata',
@@ -127,6 +128,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
             # cockroachdb doesn't support disabling constraints:
             # https://github.com/cockroachdb/cockroach/issues/19444
+            'auth_tests.test_views.UUIDUserTests.test_admin_password_change',
             'backends.tests.FkConstraintsTests.test_check_constraints',
             'backends.tests.FkConstraintsTests.test_disable_constraint_checks_context_manager',
             'backends.tests.FkConstraintsTests.test_disable_constraint_checks_manually',
