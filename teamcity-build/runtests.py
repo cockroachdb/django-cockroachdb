@@ -71,7 +71,7 @@ enabled_test_apps = [
     # 'generic_views',
     'get_earliest_or_latest',
     'get_object_or_404',
-    # 'get_or_create',
+    'get_or_create',
     # 'i18n',
     'indexes',
     'inline_formsets',
