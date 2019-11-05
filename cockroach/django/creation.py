@@ -56,6 +56,13 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
             # DATE_TRUNC result is incorrectly localized when a timezone is set:
             # https://github.com/cockroachdb/cockroach-django/issues/32
+            'admin_views.test_templatetags.DateHierarchyTests.test_choice_links',
+            'admin_views.tests.DateHierarchyTests.test_multiple_years',
+            'admin_views.tests.DateHierarchyTests.test_related_field',
+            'admin_views.tests.DateHierarchyTests.test_single',
+            'admin_views.tests.DateHierarchyTests.test_within_month',
+            'admin_views.tests.DateHierarchyTests.test_within_year',
+            'admin_views.tests.AdminViewBasicTest.test_date_hierarchy_timezone_dst',
             'backends.tests.DateQuotingTest.test_django_date_trunc',
             'dates.tests.DatesTests.test_dates_trunc_datetime_fields',
             'dates.tests.DatesTests.test_related_model_traverse',
@@ -71,6 +78,14 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_time_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_week_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_year_func',
+            'generic_views.test_dates.MonthArchiveViewTests.test_month_view',
+            'generic_views.test_dates.MonthArchiveViewTests.test_month_view_allow_future',
+            'generic_views.test_dates.MonthArchiveViewTests.test_month_view_get_month_from_request',
+            'generic_views.test_dates.YearArchiveViewTests.test_year_view',
+            'generic_views.test_dates.YearArchiveViewTests.test_year_view_allow_future',
+            'generic_views.test_dates.YearArchiveViewTests.test_year_view_custom_sort_order',
+            'generic_views.test_dates.YearArchiveViewTests.test_year_view_make_object_list',
+            'generic_views.test_dates.YearArchiveViewTests.test_year_view_two_custom_sort_orders',
             # Because DateFunctionWithTimeZoneTests inherits DateFunctionTests,
             # these tests give "unexpected successes when they pass in the
             # superclass.
@@ -113,6 +128,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_hour_func',
             # Tests that assume a serial pk: https://github.com/cockroachdb/cockroach-django/issues/18
+            'admin_views.tests.AdminViewPermissionsTest.test_history_view',
             'defer_regress.tests.DeferRegressionTest.test_ticket_23270',
             'distinct_on_fields.tests.DistinctOnTests.test_basic_distinct_on',
             'generic_relations_regress.tests.GenericRelationTests.test_annotate',
@@ -132,6 +148,13 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Transaction issues: https://github.com/cockroachdb/cockroach-django/issues/14
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
             # Tests that require savepoints:
+            'admin_views.tests.AdminViewBasicTest.test_disallowed_to_field',
+            'admin_views.tests.AdminViewPermissionsTest.test_add_view',
+            'admin_views.tests.AdminViewPermissionsTest.test_change_view',
+            'admin_views.tests.AdminViewPermissionsTest.test_change_view_save_as_new',
+            'admin_views.tests.AdminViewPermissionsTest.test_delete_view',
+            'admin_views.tests.GroupAdminTest.test_group_permission_performance',
+            'admin_views.tests.UserAdminTest.test_user_permission_performance',
             'auth_tests.test_migrations.ProxyModelWithSameAppLabelTests.test_migrate_with_existing_target_permission',
             'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
             'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
