@@ -53,6 +53,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
             # DATE_TRUNC result is incorrectly localized when a timezone is set:
             # https://github.com/cockroachdb/cockroach-django/issues/32
+            'backends.tests.DateQuotingTest.test_django_date_trunc',
             'extra_regress.tests.ExtraRegressTests.test_dates_query',
             'many_to_one.tests.ManyToOneTests.test_select_related',
             'model_inheritance_regress.tests.ModelInheritanceTest.test_issue_7105',
@@ -86,10 +87,19 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'ordering.tests.OrderingTests.test_order_by_nulls_last',
             'ordering.tests.OrderingTests.test_orders_nulls_first_on_filtered_subquery',
             # Tests that require savepoints:
+            'auth_tests.test_migrations.ProxyModelWithSameAppLabelTests.test_migrate_with_existing_target_permission',
             'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
             'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
             'fixtures_model_package.tests.FixtureTestCase.test_loaddata',
             'force_insert_update.tests.ForceTests.test_force_update',
+            'get_or_create.tests.GetOrCreateTests.test_get_or_create_invalid_params',
+            'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_create_with_duplicate_primary_key',
+            'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_get_or_create_raises_IntegrityError_plus_traceback', # noqa
+            'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_savepoint_rollback',
+            'get_or_create.tests.GetOrCreateThroughManyToMany.test_something',
+            'get_or_create.tests.UpdateOrCreateTests.test_integrity',
+            'get_or_create.tests.UpdateOrCreateTests.test_manual_primary_key_test',
+            'get_or_create.tests.UpdateOrCreateTestsWithManualPKs.test_create_with_duplicate_primary_key',
             'many_to_one.tests.ManyToOneTests.test_fk_assignment_and_related_object_cache',
             'many_to_many.tests.ManyToManyTests.test_add',
             'model_fields.test_booleanfield.BooleanFieldTests.test_null_default',
@@ -124,6 +134,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Skipped for PostgreSQL but should be skipped for cockroachdb also:
             # https://github.com/cockroachdb/cockroach-django/issues/57
             'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
+            # cockroachdb doesn't support disabling constraints:
+            # https://github.com/cockroachdb/cockroach/issues/19444
+            'auth_tests.test_views.UUIDUserTests.test_admin_password_change',
+            'backends.tests.FkConstraintsTests.test_check_constraints',
+            'backends.tests.FkConstraintsTests.test_disable_constraint_checks_context_manager',
+            'backends.tests.FkConstraintsTests.test_disable_constraint_checks_manually',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
