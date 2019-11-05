@@ -71,6 +71,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'distinct_on_fields.tests.DistinctOnTests.test_basic_distinct_on',
             'generic_relations_regress.tests.GenericRelationTests.test_annotate',
             'model_formsets_regress.tests.FormfieldShouldDeleteFormTests.test_custom_delete',
+            'multiple_database.tests.RouterTestCase.test_generic_key_cross_database_protection',
             'ordering.tests.OrderingTests.test_order_by_fk_attname',
             'ordering.tests.OrderingTests.test_order_by_pk',
             'queries.test_bulk_update.BulkUpdateNoteTests.test_multiple_fields',
@@ -78,6 +79,10 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'queries.tests.Queries1Tests.test_ticket9411',
             'queries.tests.Ticket14056Tests.test_ticket_14056',
             'queries.tests.RelatedLookupTypeTests.test_values_queryset_lookup',
+            'syndication_tests.tests.SyndicationFeedTest.test_rss2_feed',
+            'syndication_tests.tests.SyndicationFeedTest.test_latest_post_date',
+            'syndication_tests.tests.SyndicationFeedTest.test_rss091_feed',
+            'syndication_tests.tests.SyndicationFeedTest.test_template_feed',
             # Transaction issues: https://github.com/cockroachdb/cockroach-django/issues/14
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
             # No support for NULLS FIRST/LAST: https://github.com/cockroachdb/cockroach-django/issues/17
@@ -104,6 +109,8 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'many_to_many.tests.ManyToManyTests.test_add',
             'model_fields.test_booleanfield.BooleanFieldTests.test_null_default',
             'model_fields.test_floatfield.TestFloatField.test_float_validates_object',
+            'multiple_database.tests.QueryTestCase.test_generic_key_cross_database_protection',
+            'multiple_database.tests.QueryTestCase.test_m2m_cross_database_protection',
             'transaction_hooks.tests.TestConnectionOnCommit.test_discards_hooks_from_rolled_back_savepoint',
             'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_rolled_back_with_outer',
             'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_does_not_affect_outer',

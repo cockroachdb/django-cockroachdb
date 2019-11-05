@@ -109,7 +109,7 @@ enabled_test_apps = [
     'model_options',
     'model_package',
     'model_regress',
-    # 'multiple_database',
+    'multiple_database',
     'mutually_referential',
     'nested_foreign_keys',
     'null_fk',
@@ -143,7 +143,7 @@ enabled_test_apps = [
     'sites_tests',
     'string_lookup',
     'swappable_models',
-    # 'syndication_tests',
+    'syndication_tests',
     'test_client',
     'test_client_regress',
     # 'test_utils',
@@ -154,7 +154,7 @@ enabled_test_apps = [
     'update',
     'update_only_fields',
     'validation',
-    # 'view_tests',
+    'view_tests',
 ]
 
 run_tests_cmd = "python3 runtests.py %s --settings cockroach_settings --parallel 1 -v 2"
