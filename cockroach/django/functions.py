@@ -3,7 +3,7 @@ import datetime
 from django.db.models import (
     DateTimeField, DecimalField, FloatField, IntegerField,
 )
-from django.db.models.expressions import When
+from django.db.models.expressions import OrderBy, When
 from django.db.models.functions import (
     ACos, ASin, ATan, ATan2, Cast, Ceil, Coalesce, Cos, Cot, Degrees, Exp,
     Floor, Ln, Log, Radians, Round, Sin, Sqrt, StrIndex, Tan,
@@ -46,6 +46,19 @@ def float_cast(self, compiler, connection, **extra_context):
     return clone.as_sql(compiler, connection, **extra_context)
 
 
+def order_by(self, compiler, connection, **extra_context):
+    # This can be removed when cockroachdb add support for NULL FIRST/LAST:
+    # https://github.com/cockroachdb/cockroach/issues/6224
+    # (or replaced with DatabaseFeatures.supports_order_by_nulls_modifier = False
+    # in Django 3.1).
+    template = None
+    if self.nulls_last:
+        template = '%(expression)s IS NULL, %(expression)s %(ordering)s'
+    elif self.nulls_first:
+        template = '%(expression)s IS NOT NULL, %(expression)s %(ordering)s'
+    return self.as_sql(compiler, connection, template=template, **extra_context)
+
+
 def when(self, compiler, connection, **extra_context):
     # As for coalesce(), cast datetimes to timestamptz.
     if isinstance(getattr(self.result, 'value', None), datetime.datetime):
@@ -62,5 +75,6 @@ def register_functions():
         func.as_cockroachdb = float_cast
     ATan2.as_cockroachdb = atan2
     Coalesce.as_cockroachdb = coalesce
+    OrderBy.as_cockroachdb = order_by
     StrIndex.as_cockroachdb = StrIndex.as_postgresql
     When.as_cockroachdb = when

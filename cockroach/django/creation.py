@@ -85,12 +85,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'syndication_tests.tests.SyndicationFeedTest.test_template_feed',
             # Transaction issues: https://github.com/cockroachdb/cockroach-django/issues/14
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
-            # No support for NULLS FIRST/LAST: https://github.com/cockroachdb/cockroach-django/issues/17
-            'admin_ordering.tests.TestAdminOrdering.test_specified_ordering_by_f_expression',
-            'ordering.tests.OrderingTests.test_default_ordering_by_f_expression',
-            'ordering.tests.OrderingTests.test_order_by_nulls_first',
-            'ordering.tests.OrderingTests.test_order_by_nulls_last',
-            'ordering.tests.OrderingTests.test_orders_nulls_first_on_filtered_subquery',
             # Tests that require savepoints:
             'auth_tests.test_migrations.ProxyModelWithSameAppLabelTests.test_migrate_with_existing_target_permission',
             'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
