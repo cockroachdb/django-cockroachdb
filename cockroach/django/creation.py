@@ -200,6 +200,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'defer_regress.tests.DeferRegressionTest.test_ticket_23270',
             'distinct_on_fields.tests.DistinctOnTests.test_basic_distinct_on',
             'generic_relations_regress.tests.GenericRelationTests.test_annotate',
+            'migrations.test_operations.OperationTests.test_alter_order_with_respect_to',
             'model_formsets_regress.tests.FormfieldShouldDeleteFormTests.test_custom_delete',
             'multiple_database.tests.RouterTestCase.test_generic_key_cross_database_protection',
             'ordering.tests.OrderingTests.test_order_by_fk_attname',
@@ -308,6 +309,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # keys.
             'model_options.test_tablespaces.TablespacesTests.test_tablespace_for_many_to_many_field',
             # Unsupported type conversion: https://github.com/cockroachdb/cockroach/issues/9851
+            'migrations.test_executor.ExecutorTests.test_alter_id_type_with_fk',
+            'migrations.test_operations.OperationTests.test_alter_field_pk_fk',
+            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
+            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
+            'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
+            'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
             'schema.tests.SchemaTests.test_alter_auto_field_to_char_field',
             'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
             'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',

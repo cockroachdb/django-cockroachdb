@@ -89,7 +89,7 @@ enabled_test_apps = [
     'many_to_one_null',
     'max_lengths',
     'migrate_signals',
-    # 'migrations',
+    'migrations',
     'migration_test_data_persistence',
     'modeladmin',
     'model_fields',
