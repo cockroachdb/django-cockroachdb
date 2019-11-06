@@ -10,6 +10,11 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # If implemented, this attribute can be removed.
     sql_create_index = 'CREATE INDEX %(name)s ON %(table)s%(using)s (%(columns)s)%(extra)s'
 
+    # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE" before
+    # "ALTER TABLE..." to run any any deferred checks to allow dropping the
+    # foreign key in the same transaction. This doesn't apply to cockroachdb.
+    sql_delete_fk = "ALTER TABLE %(table)s DROP CONSTRAINT %(name)s"
+
     def _index_columns(self, table, columns, col_suffixes, opclasses):
         # cockroachdb doesn't support PostgreSQL opclasses.
         return BaseDatabaseSchemaEditor._index_columns(self, table, columns, col_suffixes, opclasses)
