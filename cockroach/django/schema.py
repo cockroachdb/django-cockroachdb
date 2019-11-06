@@ -16,6 +16,10 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # foreign key in the same transaction. This doesn't apply to cockroachdb.
     sql_delete_fk = "ALTER TABLE %(table)s DROP CONSTRAINT %(name)s"
 
+    # "ALTER TABLE ... DROP CONSTRAINT ..." not supported for dropping UNIQUE
+    # constraints; must use this instead.
+    sql_delete_unique = "DROP INDEX %(name)s CASCADE"
+
     def _index_columns(self, table, columns, col_suffixes, opclasses):
         # cockroachdb doesn't support PostgreSQL opclasses.
         return BaseDatabaseSchemaEditor._index_columns(self, table, columns, col_suffixes, opclasses)

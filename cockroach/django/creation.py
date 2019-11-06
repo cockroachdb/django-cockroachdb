@@ -317,18 +317,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'schema.tests.SchemaTests.test_m2m_rename_field_in_target_model',
             'schema.tests.SchemaTests.test_rename',
             'schema.tests.SchemaTests.test_text_field_with_db_index_to_fk',
-            # cannot drop UNIQUE constraint "xxx" using
-            # ALTER TABLE DROP CONSTRAINT, use DROP INDEX CASCADE instead
-            'schema.tests.SchemaTests.test_alter_field_o2o_to_fk',
-            'schema.tests.SchemaTests.test_alter_o2o_to_fk',
-            'schema.tests.SchemaTests.test_indexes',
-            'schema.tests.SchemaTests.test_remove_field_unique_does_not_remove_meta_constraints',
-            'schema.tests.SchemaTests.test_remove_unique_together_does_not_remove_meta_constraints',
-            'schema.tests.SchemaTests.test_unique',
-            'schema.tests.SchemaTests.test_unique_together',
-            'schema.tests.SchemaTests.test_unique_together_with_fk',
-            'schema.tests.SchemaTests.test_unique_together_with_fk_with_existing_index',
-            'schema.tests.SchemaTests.test_remove_constraints_capital_letters',
             # cockroachdb doesn't support dropping the primary key.
             'schema.tests.SchemaTests.test_alter_int_pk_to_int_unique',
             # cockroachdb doesn't support changing the primary key of table.
