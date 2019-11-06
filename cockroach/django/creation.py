@@ -301,7 +301,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # it to timestamptz rather than timestamp to avoid "value type
             # timestamp doesn't match type timestamptz of column "dt"" but
             # there aren't any hooks to do that.
-            'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime'
+            'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
