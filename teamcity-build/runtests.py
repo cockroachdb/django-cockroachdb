@@ -146,7 +146,7 @@ enabled_test_apps = [
     'syndication_tests',
     'test_client',
     'test_client_regress',
-    # 'test_utils',
+    'test_utils',
     # 'timezones',
     'transaction_hooks',
     'transactions',

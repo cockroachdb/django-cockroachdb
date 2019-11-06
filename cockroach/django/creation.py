@@ -179,6 +179,8 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Number.objects.update(float=F('integer')) in setUpTestData(c)
             # https://github.com/cockroachdb/cockroach-django/issues/20
             'expressions.tests.ExpressionsNumericTests',
+            # Requires savepoints: https://github.com/cockroachdb/cockroach/issues/10735
+            'test_utils.tests.TestBadSetUpTestData',
         )
         for test_class in skip_classes:
             test_module_name, _, test_class_name = test_class.rpartition('.')
