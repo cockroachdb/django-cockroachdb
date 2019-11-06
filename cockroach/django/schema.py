@@ -19,25 +19,14 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
         # cockroachdb doesn't support PostgreSQL opclasses.
         return BaseDatabaseSchemaEditor._index_columns(self, table, columns, col_suffixes, opclasses)
 
-    def _model_indexes_sql(self, model):
-        # Postgres customizes _model_indexes_sql to add special-case
-        # options for string fields. Skip to the base class version
-        # to avoid this.
-        return BaseDatabaseSchemaEditor._model_indexes_sql(self, model)
-
-    def _field_indexes_sql(self, model, field):
-        # Postgres needs an operator defined for like queries to work
-        # properly text and varchars. Skip to the base class version
-        # to avoid this.
-        return BaseDatabaseSchemaEditor._field_indexes_sql(self, model, field)
+    def _create_like_index_sql(self, model, field):
+        # cockroachdb doesn't support LIKE indexes.
+        return None
 
     def _alter_field(self, model, old_field, new_field, old_type, new_type,
                      old_db_params, new_db_params, strict=False):
-
-        if old_field.db_index or old_field.unique:
-            index_name = self._create_index_name(model._meta.db_table, [old_field.column])
-            self.execute(self._delete_index_sql(model, index_name))
-
+        # Skip to the base class to avoid trying to add or drop
+        # PostgreSQL-specific LIKE indexes.
         BaseDatabaseSchemaEditor._alter_field(
             self, model, old_field, new_field, old_type, new_type, old_db_params,
             new_db_params, strict,
