@@ -71,14 +71,13 @@ class DatabaseIntrospection(PostgresDatabaseIntrospection):
                 array_agg(ordering ORDER BY rnum), amname, exprdef, s2.attoptions
             FROM (
                 SELECT
-                    row_number() OVER () as rnum, c2.relname as indexname,
-                    idx.*, attr.attname, am.amname,
+                    c2.relname as indexname, idx.*, attr.attname, am.amname,
                     CASE
                         WHEN idx.indexprs IS NOT NULL THEN
                             pg_get_indexdef(idx.indexrelid)
                     END AS exprdef,
                     CASE am.amname
-                        WHEN 'btree' THEN
+                        WHEN 'prefix' THEN
                             CASE (option & 1)
                                 WHEN 1 THEN 'DESC' ELSE 'ASC'
                             END
@@ -86,7 +85,8 @@ class DatabaseIntrospection(PostgresDatabaseIntrospection):
                     c2.reloptions as attoptions
                 FROM (
                     SELECT
-                        *, unnest(i.indkey) as key, unnest(i.indoption) as option
+                        row_number() OVER () as rnum, *,
+                        unnest(i.indkey) as key, unnest(i.indoption) as option
                     FROM pg_index i
                 ) idx
                 LEFT JOIN pg_class c ON idx.indrelid = c.oid
@@ -107,7 +107,9 @@ class DatabaseIntrospection(PostgresDatabaseIntrospection):
                     "foreign_key": None,
                     "check": False,
                     "index": True,
-                    "type": Index.suffix if type_ == 'btree' else type_,
+                    # indexes are named 'prefix' in cockroachdb (as opposed
+                    # to 'btree' in PostgreSQL).
+                    "type": Index.suffix if type_ == 'prefix' else type_,
                     "definition": definition,
                     "options": options,
                 }
