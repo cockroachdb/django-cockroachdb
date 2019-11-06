@@ -19,6 +19,57 @@ class DatabaseCreation(PostgresDatabaseCreation):
         expected_failures = (
             # column must appear in the GROUP BY clause or be used in an aggregate function:
             # https://github.com/cockroachdb/cockroach-django/issues/13
+            'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_aggregate_on_annotate',
+            'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_reused_subquery',
+            'aggregation.test_filter_argument.FilteredAggregateTests.test_plain_annotate',
+            'aggregation.tests.AggregateTestCase.test_annotate_basic',
+            'aggregation.tests.AggregateTestCase.test_annotate_defer',
+            'aggregation.tests.AggregateTestCase.test_annotate_defer_select_related',
+            'aggregation.tests.AggregateTestCase.test_annotate_m2m',
+            'aggregation.tests.AggregateTestCase.test_annotate_over_annotate',
+            'aggregation.tests.AggregateTestCase.test_annotate_values',
+            'aggregation.tests.AggregateTestCase.test_annotate_values_list',
+            'aggregation.tests.AggregateTestCase.test_annotation',
+            'aggregation.tests.AggregateTestCase.test_annotation_expressions',
+            'aggregation.tests.AggregateTestCase.test_backwards_m2m_annotate',
+            'aggregation.tests.AggregateTestCase.test_even_more_aggregate',
+            'aggregation.tests.AggregateTestCase.test_filtering',
+            'aggregation.tests.AggregateTestCase.test_fkey_aggregate',
+            'aggregation.tests.AggregateTestCase.test_more_aggregation',
+            'aggregation.tests.AggregateTestCase.test_nonfield_annotation',
+            'aggregation.tests.AggregateTestCase.test_reverse_fkey_annotate',
+            'aggregation.tests.AggregateTestCase.test_ticket17424',
+            'aggregation_regress.tests.AggregationTests.test_aggregate_annotation',
+            'aggregation_regress.tests.AggregationTests.test_aggregate_duplicate_columns',
+            'aggregation_regress.tests.AggregationTests.test_aggregate_duplicate_columns_only',
+            'aggregation_regress.tests.AggregationTests.test_aggregate_duplicate_columns_select_related',
+            'aggregation_regress.tests.AggregationTests.test_aggregate_fexpr',
+            'aggregation_regress.tests.AggregationTests.test_aggregate_ummanaged_model_columns',
+            'aggregation_regress.tests.AggregationTests.test_aggregation_with_generic_reverse_relation',
+            'aggregation_regress.tests.AggregationTests.test_annotate_joins',
+            'aggregation_regress.tests.AggregationTests.test_annotate_on_relation',
+            'aggregation_regress.tests.AggregationTests.test_annotate_with_extra',
+            'aggregation_regress.tests.AggregationTests.test_annotated_conditional_aggregate',
+            'aggregation_regress.tests.AggregationTests.test_annotation',
+            'aggregation_regress.tests.AggregationTests.test_annotation_disjunction',
+            'aggregation_regress.tests.AggregationTests.test_boolean_conversion',
+            'aggregation_regress.tests.AggregationTests.test_db_col_table',
+            'aggregation_regress.tests.AggregationTests.test_decimal_aggregate_annotation_filter',
+            'aggregation_regress.tests.AggregationTests.test_empty',
+            'aggregation_regress.tests.AggregationTests.test_f_expression_annotation',
+            'aggregation_regress.tests.AggregationTests.test_filtering_by_annotation_name',
+            'aggregation_regress.tests.AggregationTests.test_fobj_group_by',
+            'aggregation_regress.tests.AggregationTests.test_more',
+            'aggregation_regress.tests.AggregationTests.test_more_more',
+            'aggregation_regress.tests.AggregationTests.test_name_expressions',
+            'aggregation_regress.tests.AggregationTests.test_name_filters',
+            'aggregation_regress.tests.AggregationTests.test_negated_aggregation',
+            'aggregation_regress.tests.AggregationTests.test_pickle',
+            'aggregation_regress.tests.AggregationTests.test_quoting_aggregate_order_by',
+            'aggregation_regress.tests.AggregationTests.test_ticket_11293',
+            'aggregation_regress.tests.AggregationTests.test_values_annotate_values',
+            'aggregation_regress.tests.JoinPromotionTests.test_ticket_21150',
+            'aggregation_regress.tests.SelfReferentialFKTests.test_ticket_24748',
             'annotations.tests.NonAggregateAnnotationTestCase.test_aggregate_over_annotation',
             'annotations.tests.NonAggregateAnnotationTestCase.test_annotate_with_aggregation',
             'annotations.tests.NonAggregateAnnotationTestCase.test_annotation_filter_with_subquery',
@@ -54,6 +105,16 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # CAST timestamptz to time doesn't respect active time zone:
             # https://github.com/cockroachdb/cockroach-django/issues/37
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
+            # unknown signature: avg(interval):
+            # https://github.com/cockroachdb/cockroach-django/issues/72
+            'aggregation.tests.AggregateTestCase.test_avg_duration_field',
+            # sum(): unsupported binary operator: <float> + <int>:
+            # https://github.com/cockroachdb/cockroach-django/issues/73
+            'aggregation.tests.AggregateTestCase.test_add_implementation',
+            'aggregation.tests.AggregateTestCase.test_combine_different_types',
+            # greatest(): expected avg(price) to be of type float, found type
+            # decimal: https://github.com/cockroachdb/cockroach-django/issues/74
+            'aggregation.tests.AggregateTestCase.test_expression_on_aggregation',
             # DATE_TRUNC result is incorrectly localized when a timezone is set:
             # https://github.com/cockroachdb/cockroach-django/issues/32
             'admin_views.test_templatetags.DateHierarchyTests.test_choice_links',
@@ -63,6 +124,8 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'admin_views.tests.DateHierarchyTests.test_within_month',
             'admin_views.tests.DateHierarchyTests.test_within_year',
             'admin_views.tests.AdminViewBasicTest.test_date_hierarchy_timezone_dst',
+            'aggregation.tests.AggregateTestCase.test_dates_with_aggregation',
+            'aggregation_regress.tests.AggregationTests.test_more_more_more',
             'backends.tests.DateQuotingTest.test_django_date_trunc',
             'dates.tests.DatesTests.test_dates_trunc_datetime_fields',
             'dates.tests.DatesTests.test_related_model_traverse',
@@ -109,6 +172,10 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'timezones.tests.LegacyDatabaseTests.test_query_datetimes',
             'timezones.tests.NewDatabaseTests.test_query_datetimes',
             'timezones.tests.NewDatabaseTests.test_query_datetimes_in_other_timezone',
+            # stddev/variance functions not supported:
+            # https://github.com/cockroachdb/cockroach-django/issues/25
+            'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_numerical_aggregates',
+            'aggregation_regress.tests.AggregationTests.test_stddev',
             # POWER() doesn't support negative exponents:
             # https://github.com/cockroachdb/cockroach-django/issues/22
             'db_functions.math.test_power.PowerTests.test_integer',
