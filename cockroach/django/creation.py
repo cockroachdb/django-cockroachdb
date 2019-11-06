@@ -303,6 +303,10 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # timestamp doesn't match type timestamptz of column "dt"" but
             # there aren't any hooks to do that.
             'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime',
+            # SchemaEditor._model_indexes_sql() doesn't output some expected
+            # tablespace SQL because cockroachdb automatically indexes foreign
+            # keys.
+            'model_options.test_tablespaces.TablespacesTests.test_tablespace_for_many_to_many_field',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')

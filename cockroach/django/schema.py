@@ -2,6 +2,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db.backends.postgresql.schema import (
     DatabaseSchemaEditor as PostgresDatabaseSchemaEditor,
 )
+from django.db.models import ForeignKey
 
 
 class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
@@ -31,3 +32,7 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
             self, model, old_field, new_field, old_type, new_type, old_db_params,
             new_db_params, strict,
         )
+
+    def _field_should_be_indexed(self, model, field):
+        # Foreign keys are automatically indexed by cockroachdb.
+        return not isinstance(field, ForeignKey) and super()._field_should_be_indexed(model, field)
