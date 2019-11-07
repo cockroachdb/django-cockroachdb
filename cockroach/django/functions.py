@@ -10,17 +10,6 @@ from django.db.models.functions import (
 )
 
 
-def atan2(self, compiler, connection, **extra_context):
-    # This function is usually ATan2(y, x), returning the inverse tangent
-    # of y / x, but it's ATan2(x, y) on cockroachdb (hence reversed()).
-    clone = self.copy()
-    clone.set_source_expressions([
-        Cast(expression, FloatField()) if isinstance(expression.output_field, (DecimalField, IntegerField))
-        else expression for expression in reversed(self.get_source_expressions()[::-1])
-    ])
-    return clone.as_sql(compiler, connection, **extra_context)
-
-
 def coalesce(self, compiler, connection, **extra_context):
     # When coalescing a timestamptz column and a Python datetime, the datetime
     # must be cast to timestamptz (DateTimeField) to avoid "incompatible
@@ -41,7 +30,7 @@ def float_cast(self, compiler, connection, **extra_context):
     clone = self.copy()
     clone.set_source_expressions([
         Cast(expression, FloatField()) if isinstance(expression.output_field, (DecimalField, IntegerField))
-        else expression for expression in self.get_source_expressions()[::-1]
+        else expression for expression in self.get_source_expressions()
     ])
     return clone.as_sql(compiler, connection, **extra_context)
 
@@ -73,7 +62,6 @@ def register_functions():
     )
     for func in math_funcs_needing_float_cast:
         func.as_cockroachdb = float_cast
-    ATan2.as_cockroachdb = atan2
     Coalesce.as_cockroachdb = coalesce
     OrderBy.as_cockroachdb = order_by
     StrIndex.as_cockroachdb = StrIndex.as_postgresql
