@@ -14,6 +14,7 @@ from .utils import utc_tzinfo_factory
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
     vendor = 'cockroachdb'
+    display_name = 'CockroachDB'
 
     # Override some types from the postgresql adapter.
     data_types = dict(
