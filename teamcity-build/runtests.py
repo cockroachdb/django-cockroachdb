@@ -19,7 +19,7 @@ enabled_test_apps = [
     'backends',
     'basic',
     'bulk_create',
-    # 'cache',
+    'cache',
     'check_framework',
     'choices',
     'conditional_processing',
