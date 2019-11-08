@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db.backends.postgresql.operations import (
     DatabaseOperations as PostgresDatabaseOperations,
 )
@@ -21,7 +23,14 @@ class DatabaseOperations(PostgresDatabaseOperations):
         # getattr() guards against F() objects which don't have tzinfo.
         if value and getattr(value, 'tzinfo', '') is None and self.connection.timezone_name is not None:
             connection_timezone = timezone(self.connection.timezone_name)
-            return connection_timezone.localize(value)
+            try:
+                value = connection_timezone.localize(value)
+            except OverflowError:
+                # Localizing datetime.datetime.max (used to cache a value
+                # forever, for example) may overflow. Subtract a day to prevent
+                # that.
+                value -= timedelta(days=1)
+                value = connection_timezone.localize(value)
         return value
 
     def sequence_reset_by_name_sql(self, style, sequences):
