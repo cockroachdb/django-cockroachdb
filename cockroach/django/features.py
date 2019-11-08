@@ -28,6 +28,12 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     uses_savepoints = False
     can_release_savepoints = False
 
+    # cockroachdb does support transactions, however, a bug in Django
+    # (https://code.djangoproject.com/ticket/28263) breaks TestCase if
+    # transactions are enabled but not savepoints. Disabling this only affects
+    # tests: transactions won't be used to speed them up.
+    supports_transactions = False
+
     """
     There are some known limitations on having DDL statements in a transaction:
         https://www.cockroachlabs.com/docs/stable/known-limitations.html#schema-changes-within-transactions

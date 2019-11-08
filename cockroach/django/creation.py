@@ -4,6 +4,7 @@ import sys
 from unittest import expectedFailure, skip
 
 from django.conf import settings
+from django.db import connections
 from django.db.backends.postgresql.creation import (
     DatabaseCreation as PostgresDatabaseCreation,
 )
@@ -332,6 +333,11 @@ class DatabaseCreation(PostgresDatabaseCreation):
         # This environment variable is set by teamcity-build/runtests.py or
         # by a developer running the tests locally.
         if os.environ.get('RUNNING_COCKROACH_BACKEND_TESTS'):
+            # The cockroach tests are run with a fork of Django that fixes
+            # a bug where TestCase doesn't work without savepoints
+            # (https://code.djangoproject.com/ticket/28263).
+            for alias in connections:
+                connections[alias].features.supports_transactions = True
             self.mark_expected_failures()
         super().create_test_db(*args, **kwargs)
 
