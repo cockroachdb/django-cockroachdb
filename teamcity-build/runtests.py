@@ -21,7 +21,6 @@ enabled_test_apps = [
     'bulk_create',
     'cache',
     'check_framework',
-    'choices',
     'conditional_processing',
     'constraints',
     'contenttypes_tests',

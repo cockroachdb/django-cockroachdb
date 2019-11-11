@@ -5,7 +5,7 @@ set -x
 export RUNNING_COCKROACH_BACKEND_TESTS=1
 
 # clone django into the repo.
-git clone --depth 1 --single-branch --branch cockroach-2.2.x https://github.com/timgraham/django _django_repo
+git clone --depth 1 --single-branch --branch cockroach-3.0.x https://github.com/timgraham/django _django_repo
 
 # install the django requirements.
 cd _django_repo/tests/

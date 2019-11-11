@@ -2,6 +2,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db.backends.postgresql.schema import (
     DatabaseSchemaEditor as PostgresDatabaseSchemaEditor,
 )
+from django.db.backends.utils import strip_quotes
 from django.db.models import ForeignKey
 
 
@@ -19,6 +20,10 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # "ALTER TABLE ... DROP CONSTRAINT ..." not supported for dropping UNIQUE
     # constraints; must use this instead.
     sql_delete_unique = "DROP INDEX %(name)s CASCADE"
+
+    # adding a REFERENCES constraint while also adding a column via ALTER not
+    # supported: https://github.com/cockroachdb/cockroach/issues/32917
+    sql_create_column_inline_fk = None
 
     def _index_columns(self, table, columns, col_suffixes, opclasses):
         # cockroachdb doesn't support PostgreSQL opclasses.
@@ -38,14 +43,20 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
         )
 
     def _alter_column_type_sql(self, model, old_field, new_field, new_type):
-        if new_type.lower() in ("serial", "bigserial"):
-            column = new_field.column
-            col_type = "integer" if new_type.lower() == "serial" else "bigint"
+        self.sql_alter_column_type = 'ALTER COLUMN %(column)s TYPE %(type)s'
+        # Cast when data type changed.
+        if self._field_data_type(old_field) != self._field_data_type(new_field):
+            self.sql_alter_column_type += ' USING %(column)s::%(type)s'
+        # Make ALTER TYPE with SERIAL make sense.
+        # table = strip_quotes(model._meta.db_table)
+        serial_fields_map = {'bigserial': 'bigint', 'serial': 'integer', 'smallserial': 'smallint'}
+        if new_type.lower() in serial_fields_map:
+            column = strip_quotes(new_field.column)
             return (
                 (
                     self.sql_alter_column_type % {
                         "column": self.quote_name(column),
-                        "type": col_type,
+                        "type": serial_fields_map[new_type.lower()],
                     },
                     [],
                 ),

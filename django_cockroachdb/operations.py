@@ -7,6 +7,17 @@ from pytz import timezone
 
 
 class DatabaseOperations(PostgresDatabaseOperations):
+    integer_field_ranges = {
+        'SmallIntegerField': (-32768, 32767),
+        'IntegerField': (-9223372036854775808, 9223372036854775807),
+        'BigIntegerField': (-9223372036854775808, 9223372036854775807),
+        'PositiveSmallIntegerField': (0, 32767),
+        'PositiveIntegerField': (0, 9223372036854775807),
+        'SmallAutoField': (-32768, 32767),
+        'AutoField': (-9223372036854775808, 9223372036854775807),
+        'BigAutoField': (-9223372036854775808, 9223372036854775807),
+    }
+
     def deferrable_sql(self):
         # Deferrable constraints aren't supported:
         # https://github.com/cockroachdb/cockroach/issues/31632

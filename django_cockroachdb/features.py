@@ -51,7 +51,12 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     can_introspect_materialized_views = False
 
     introspected_big_auto_field_type = 'BigIntegerField'
+    introspected_small_auto_field_type = 'BigIntegerField'
 
     # Column ordering is supported but cockroachdb doesn't report column
     # ordering: https://github.com/cockroachdb/cockroach/issues/42175
     supports_index_column_ordering = False
+
+    # adding a REFERENCES constraint while also adding a column via ALTER not
+    # supported: https://github.com/cockroachdb/cockroach/issues/32917
+    can_create_inline_fk = False

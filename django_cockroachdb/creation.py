@@ -23,6 +23,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_aggregate_on_annotate',
             'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_reused_subquery',
             'aggregation.test_filter_argument.FilteredAggregateTests.test_plain_annotate',
+            'aggregation.tests.AggregateTestCase.test_aggregation_subquery_annotation',
             'aggregation.tests.AggregateTestCase.test_annotate_basic',
             'aggregation.tests.AggregateTestCase.test_annotate_defer',
             'aggregation.tests.AggregateTestCase.test_annotate_defer_select_related',
@@ -45,12 +46,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'aggregation_regress.tests.AggregationTests.test_aggregate_duplicate_columns_only',
             'aggregation_regress.tests.AggregationTests.test_aggregate_duplicate_columns_select_related',
             'aggregation_regress.tests.AggregationTests.test_aggregate_fexpr',
-            'aggregation_regress.tests.AggregationTests.test_aggregate_ummanaged_model_columns',
+            'aggregation_regress.tests.AggregationTests.test_aggregate_unmanaged_model_columns',
+            'aggregation_regress.tests.AggregationTests.test_aggregate_unmanaged_model_as_tables',
             'aggregation_regress.tests.AggregationTests.test_aggregation_with_generic_reverse_relation',
             'aggregation_regress.tests.AggregationTests.test_annotate_joins',
             'aggregation_regress.tests.AggregationTests.test_annotate_on_relation',
             'aggregation_regress.tests.AggregationTests.test_annotate_with_extra',
-            'aggregation_regress.tests.AggregationTests.test_annotated_conditional_aggregate',
             'aggregation_regress.tests.AggregationTests.test_annotation',
             'aggregation_regress.tests.AggregationTests.test_annotation_disjunction',
             'aggregation_regress.tests.AggregationTests.test_boolean_conversion',
@@ -71,7 +72,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'aggregation_regress.tests.AggregationTests.test_values_annotate_values',
             'aggregation_regress.tests.JoinPromotionTests.test_ticket_21150',
             'aggregation_regress.tests.SelfReferentialFKTests.test_ticket_24748',
-            'annotations.tests.NonAggregateAnnotationTestCase.test_aggregate_over_annotation',
             'annotations.tests.NonAggregateAnnotationTestCase.test_annotate_with_aggregation',
             'annotations.tests.NonAggregateAnnotationTestCase.test_annotation_filter_with_subquery',
             'annotations.tests.NonAggregateAnnotationTestCase.test_filter_agg_with_double_f',
@@ -103,6 +103,11 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'queryset_pickle.tests.PickleabilityTestCase.test_annotation_with_callable_default',
             'timezones.tests.LegacyDatabaseTests.test_query_annotation',
             'timezones.tests.NewDatabaseTests.test_query_annotation',
+            # unsupported queries: aliasing EXISTS() or subquery fails with
+            # "column does not exist":
+            # https://github.com/cockroachdb/django-cockroachdb/issues/82
+            'aggregation.tests.AggregateTestCase.test_group_by_exists_annotation',
+            'aggregation.tests.AggregateTestCase.test_group_by_subquery_annotation',
             # CAST timestamptz to time doesn't respect active time zone:
             # https://github.com/cockroachdb/django-cockroachdb/issues/37
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
@@ -160,6 +165,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_minute_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_second_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_timezone_applied_before_truncation',  # noqa
+            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_ambiguous_and_invalid_times',  # noqa
             'extra_regress.tests.ExtraRegressTests.test_dates_query',
             'many_to_one.tests.ManyToOneTests.test_select_related',
             'model_inheritance_regress.tests.ModelInheritanceTest.test_issue_7105',
@@ -191,6 +197,8 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_func_with_timezone',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_iso_year_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_iso_year_func_boundaries',  # noqa
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_year_greaterthan_lookup',
+            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_year_lessthan_lookup',
             # extract() doesn't respect active time zone:
             # https://github.com/cockroachdb/django-cockroachdb/issues/47
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_func',
@@ -216,6 +224,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'syndication_tests.tests.SyndicationFeedTest.test_template_feed',
             # Transaction issues: https://github.com/cockroachdb/django-cockroachdb/issues/14
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
+            # unknown function: sha224() and sha384():
+            # https://github.com/cockroachdb/django-cockroachdb/issues/81
+            'db_functions.text.test_sha224.SHA224Tests.test_basic',
+            'db_functions.text.test_sha224.SHA224Tests.test_transform',
+            'db_functions.text.test_sha384.SHA384Tests.test_basic',
+            'db_functions.text.test_sha384.SHA384Tests.test_transform',
             # Tests that require savepoints:
             'admin_inlines.tests.TestReadOnlyChangeViewInlinePermissions.test_add_url_not_allowed',
             'admin_views.tests.AdminViewBasicTest.test_disallowed_to_field',
@@ -312,10 +326,13 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'migrations.test_executor.ExecutorTests.test_alter_id_type_with_fk',
             'migrations.test_operations.OperationTests.test_alter_field_pk_fk',
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
+            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_related_name_target_type_change',  # noqa
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
+            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_type_change',  # noqa
             'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
             'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
             'schema.tests.SchemaTests.test_alter_auto_field_to_char_field',
+            'schema.tests.SchemaTests.test_alter_autofield_pk_to_smallautofield_pk_sequence_owner',
             'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
             'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
             'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
@@ -329,6 +346,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # cockroachdb doesn't support changing the primary key of table.
             'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
             'schema.tests.SchemaTests.test_primary_key',
+            # SmallAutoField doesn't work:
+            # https://github.com/cockroachdb/cockroach-django/issues/84
+            'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
+            'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
+            'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
+
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
