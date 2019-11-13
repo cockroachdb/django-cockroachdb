@@ -1,6 +1,7 @@
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
+from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
@@ -59,3 +60,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # Column ordering is supported but cockroachdb doesn't report column
     # ordering: https://github.com/cockroachdb/cockroach/issues/42175
     supports_index_column_ordering = False
+
+    @cached_property
+    def is_cockroachdb_20_1(self):
+        return self.connection.cockroachdb_version >= (20, 1)
