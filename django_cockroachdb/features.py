@@ -1,6 +1,7 @@
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
+from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
@@ -64,3 +65,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # adding a REFERENCES constraint while also adding a column via ALTER not
     # supported: https://github.com/cockroachdb/cockroach/issues/32917
     can_create_inline_fk = False
+
+    @cached_property
+    def is_cockroachdb_20_1(self):
+        return self.connection.cockroachdb_version >= (20, 1)
