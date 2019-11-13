@@ -5,10 +5,11 @@ from django.db.backends.base.client import BaseDatabaseClient
 
 
 class DatabaseClient(BaseDatabaseClient):
+    executable_name = 'cockroach'
 
     @classmethod
     def settings_to_cmd_args(cls, settings_dict):
-        args = []
+        args = [cls.executable_name, 'sql']
         db = settings_dict['OPTIONS'].get('db', settings_dict['NAME'])
         user = settings_dict['OPTIONS'].get('user', settings_dict['USER'])
         passwd = settings_dict['OPTIONS'].get('passwd', settings_dict['PASSWORD'])
