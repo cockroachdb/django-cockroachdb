@@ -284,7 +284,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Incorrect interval math on date columns when a time zone is set:
             # https://github.com/cockroachdb/django-cockroachdb/issues/53
             'expressions.tests.FTimeDeltaTests.test_date_comparison',
-            'expressions.tests.FTimeDeltaTests.test_mixed_comparisons1',
             # Interval math across dst works differently from other databases.
             # https://github.com/cockroachdb/django-cockroachdb/issues/54
             'expressions.tests.FTimeDeltaTests.test_delta_update',
