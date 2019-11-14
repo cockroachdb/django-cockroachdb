@@ -1,6 +1,6 @@
 DATABASES = {
     'default': {
-        'ENGINE': 'cockroach.django',
+        'ENGINE': 'django_cockroachdb',
         'NAME': 'django_tests',
         'USER': 'root',
         'PASSWORD': '',
@@ -8,7 +8,7 @@ DATABASES = {
         'PORT': 26257,
     },
     'other': {
-        'ENGINE': 'cockroach.django',
+        'ENGINE': 'django_cockroachdb',
         'NAME': 'django_tests2',
         'USER': 'root',
         'PASSWORD': '',
