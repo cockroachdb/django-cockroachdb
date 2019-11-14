@@ -19,7 +19,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
         """Mark tests that don't work on cockroachdb as expected failures."""
         expected_failures = (
             # column must appear in the GROUP BY clause or be used in an aggregate function:
-            # https://github.com/cockroachdb/cockroach-django/issues/13
+            # https://github.com/cockroachdb/django-cockroachdb/issues/13
             'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_aggregate_on_annotate',
             'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_reused_subquery',
             'aggregation.test_filter_argument.FilteredAggregateTests.test_plain_annotate',
@@ -104,20 +104,20 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'timezones.tests.LegacyDatabaseTests.test_query_annotation',
             'timezones.tests.NewDatabaseTests.test_query_annotation',
             # CAST timestamptz to time doesn't respect active time zone:
-            # https://github.com/cockroachdb/cockroach-django/issues/37
+            # https://github.com/cockroachdb/django-cockroachdb/issues/37
             'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
             # unknown signature: avg(interval):
-            # https://github.com/cockroachdb/cockroach-django/issues/72
+            # https://github.com/cockroachdb/django-cockroachdb/issues/72
             'aggregation.tests.AggregateTestCase.test_avg_duration_field',
             # sum(): unsupported binary operator: <float> + <int>:
-            # https://github.com/cockroachdb/cockroach-django/issues/73
+            # https://github.com/cockroachdb/django-cockroachdb/issues/73
             'aggregation.tests.AggregateTestCase.test_add_implementation',
             'aggregation.tests.AggregateTestCase.test_combine_different_types',
             # greatest(): expected avg(price) to be of type float, found type
-            # decimal: https://github.com/cockroachdb/cockroach-django/issues/74
+            # decimal: https://github.com/cockroachdb/django-cockroachdb/issues/74
             'aggregation.tests.AggregateTestCase.test_expression_on_aggregation',
             # DATE_TRUNC result is incorrectly localized when a timezone is set:
-            # https://github.com/cockroachdb/cockroach-django/issues/32
+            # https://github.com/cockroachdb/django-cockroachdb/issues/32
             'admin_views.test_templatetags.DateHierarchyTests.test_choice_links',
             'admin_views.tests.DateHierarchyTests.test_multiple_years',
             'admin_views.tests.DateHierarchyTests.test_related_field',
@@ -174,28 +174,28 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'timezones.tests.NewDatabaseTests.test_query_datetimes',
             'timezones.tests.NewDatabaseTests.test_query_datetimes_in_other_timezone',
             # stddev/variance functions not supported:
-            # https://github.com/cockroachdb/cockroach-django/issues/25
+            # https://github.com/cockroachdb/django-cockroachdb/issues/25
             'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_numerical_aggregates',
             'aggregation_regress.tests.AggregationTests.test_stddev',
             # POWER() doesn't support negative exponents:
-            # https://github.com/cockroachdb/cockroach-django/issues/22
+            # https://github.com/cockroachdb/django-cockroachdb/issues/22
             'db_functions.math.test_power.PowerTests.test_integer',
             # Unsupported query: unknown signature: extract(string, interval)
-            # https://github.com/cockroachdb/cockroach-django/issues/29
+            # https://github.com/cockroachdb/django-cockroachdb/issues/29
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_duration',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_duration',
             # extract(): unsupported timespan: isoyear:
-            # https://github.com/cockroachdb/cockroach-django/issues/28
+            # https://github.com/cockroachdb/django-cockroachdb/issues/28
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_iso_year_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_iso_year_func_boundaries',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_func_with_timezone',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_iso_year_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_iso_year_func_boundaries',  # noqa
             # extract() doesn't respect active time zone:
-            # https://github.com/cockroachdb/cockroach-django/issues/47
+            # https://github.com/cockroachdb/django-cockroachdb/issues/47
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_func',
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_hour_func',
-            # Tests that assume a serial pk: https://github.com/cockroachdb/cockroach-django/issues/18
+            # Tests that assume a serial pk: https://github.com/cockroachdb/django-cockroachdb/issues/18
             'admin_views.tests.AdminViewPermissionsTest.test_history_view',
             'defer_regress.tests.DeferRegressionTest.test_ticket_23270',
             'distinct_on_fields.tests.DistinctOnTests.test_basic_distinct_on',
@@ -214,7 +214,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'syndication_tests.tests.SyndicationFeedTest.test_latest_post_date',
             'syndication_tests.tests.SyndicationFeedTest.test_rss091_feed',
             'syndication_tests.tests.SyndicationFeedTest.test_template_feed',
-            # Transaction issues: https://github.com/cockroachdb/cockroach-django/issues/14
+            # Transaction issues: https://github.com/cockroachdb/django-cockroachdb/issues/14
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
             # Tests that require savepoints:
             'admin_views.tests.AdminViewBasicTest.test_disallowed_to_field',
@@ -247,11 +247,11 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_rolled_back_with_outer',
             'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_does_not_affect_outer',
             # Unsupported query: mixed type addition in SELECT:
-            # https://github.com/cockroachdb/cockroach-django/issues/19
+            # https://github.com/cockroachdb/django-cockroachdb/issues/19
             'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
-            # Nondeterministic query: https://github.com/cockroachdb/cockroach-django/issues/48
+            # Nondeterministic query: https://github.com/cockroachdb/django-cockroachdb/issues/48
             'queries.tests.SubqueryTests.test_slice_subquery_and_query',
-            # log(b, x) not supported: https://github.com/cockroachdb/cockroach-django/issues/50
+            # log(b, x) not supported: https://github.com/cockroachdb/django-cockroachdb/issues/50
             'db_functions.math.test_log.LogTests.test_decimal',
             'db_functions.math.test_log.LogTests.test_float',
             'db_functions.math.test_log.LogTests.test_integer',
@@ -278,19 +278,19 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # introspected as TextField.
             'introspection.tests.IntrospectionTests.test_get_table_description_col_lengths',
             # Unsupported query: unsupported binary operator: <int> / <int>:
-            # https://github.com/cockroachdb/cockroach-django/issues/21
+            # https://github.com/cockroachdb/django-cockroachdb/issues/21
             'expressions.tests.ExpressionOperatorTests.test_lefthand_division',
             'expressions.tests.ExpressionOperatorTests.test_right_hand_division',
             # Incorrect interval math on date columns when a time zone is set:
-            # https://github.com/cockroachdb/cockroach-django/issues/53
+            # https://github.com/cockroachdb/django-cockroachdb/issues/53
             'expressions.tests.FTimeDeltaTests.test_date_comparison',
             'expressions.tests.FTimeDeltaTests.test_mixed_comparisons1',
             # Interval math across dst works differently from other databases.
-            # https://github.com/cockroachdb/cockroach-django/issues/54
+            # https://github.com/cockroachdb/django-cockroachdb/issues/54
             'expressions.tests.FTimeDeltaTests.test_delta_update',
             'expressions.tests.FTimeDeltaTests.test_duration_with_datetime_microseconds',
             # Skipped for PostgreSQL but should be skipped for cockroachdb also:
-            # https://github.com/cockroachdb/cockroach-django/issues/57
+            # https://github.com/cockroachdb/django-cockroachdb/issues/57
             'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
             # cockroachdb doesn't support disabling constraints:
             # https://github.com/cockroachdb/cockroach/issues/19444
@@ -342,7 +342,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
         skip_classes = (
             # Unsupported query: UPDATE float column with integer column:
             # Number.objects.update(float=F('integer')) in setUpTestData(c)
-            # https://github.com/cockroachdb/cockroach-django/issues/20
+            # https://github.com/cockroachdb/django-cockroachdb/issues/20
             'expressions.tests.ExpressionsNumericTests',
             # Requires savepoints: https://github.com/cockroachdb/cockroach/issues/10735
             'test_utils.tests.TestBadSetUpTestData',
