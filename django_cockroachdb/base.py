@@ -1,6 +1,5 @@
 import re
 
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import cached_property
 
@@ -24,7 +23,6 @@ from .features import DatabaseFeatures              # isort:skip
 from .introspection import DatabaseIntrospection    # isort:skip
 from .operations import DatabaseOperations          # isort:skip
 from .schema import DatabaseSchemaEditor            # isort:skip
-from .utils import utc_tzinfo_factory               # isort:skip
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
@@ -63,12 +61,6 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
         # (https://github.com/cockroachdb/cockroach/issues/19444) so this
         # method is a no-op.
         pass
-
-    def create_cursor(self, name=None):
-        cursor = super().create_cursor(name=name)
-        # cockroachdb needs a differnt tzinfo_factory than PostgreSQL.
-        cursor.tzinfo_factory = utc_tzinfo_factory if settings.USE_TZ else None
-        return cursor
 
     def chunked_cursor(self):
         return self.cursor()

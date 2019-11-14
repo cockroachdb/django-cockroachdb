@@ -15,6 +15,7 @@ class DatabaseOperations(PostgresDatabaseOperations):
         'IntegerField': (-9223372036854775808, 9223372036854775807),
         'BigIntegerField': (-9223372036854775808, 9223372036854775807),
         'PositiveSmallIntegerField': (0, 32767),
+        'PositiveBigIntegerField': (0, 9223372036854775807),
         'PositiveIntegerField': (0, 9223372036854775807),
         'SmallAutoField': (-32768, 32767),
         'AutoField': (-9223372036854775808, 9223372036854775807),
@@ -60,7 +61,7 @@ class DatabaseOperations(PostgresDatabaseOperations):
             prefix += ' (%s)' % ', '.join(extra)
         return prefix
 
-    def execute_sql_flush(self, using, sql_list):
+    def execute_sql_flush(self, sql_list):
         # Retry TRUNCATE if it fails with a serialization error.
         num_retries = 10
         initial_retry_delay = 0.5  # The initial retry delay, in seconds.
@@ -68,10 +69,14 @@ class DatabaseOperations(PostgresDatabaseOperations):
         next_retry_delay = initial_retry_delay
         for retry in range(1, num_retries + 1):
             try:
-                return super().execute_sql_flush(using, sql_list)
+                return super().execute_sql_flush(sql_list)
             except OperationalError as exc:
                 if (getattr(exc.__cause__, 'pgcode', '') != errorcodes.SERIALIZATION_FAILURE or
                         retry >= num_retries):
                     raise
                 time.sleep(next_retry_delay)
                 next_retry_delay *= backoff_
+
+    def sql_flush(self, style, tables, *, reset_sequences=False, allow_cascade=False):
+        # CockroachDB doesn't support resetting sequences.
+        return super().sql_flush(style, tables, reset_sequences=False, allow_cascade=allow_cascade)

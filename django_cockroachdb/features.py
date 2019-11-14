@@ -11,6 +11,9 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # Not supported: https://github.com/cockroachdb/cockroach/issues/31632
     can_defer_constraint_checks = False
 
+    # Not supported: https://github.com/cockroachdb/cockroach/issues/48307
+    supports_deferrable_unique_constraints = False
+
     # Not supported: https://github.com/cockroachdb/cockroach/issues/9683
     supports_partial_indexes = False
 

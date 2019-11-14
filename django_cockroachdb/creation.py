@@ -68,6 +68,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'queries.tests.SubqueryTests.test_slice_subquery_and_query',
             # Forward references in fixtures won't work until cockroachdb can
             # disable constraints: https://github.com/cockroachdb/cockroach/issues/19444
+            'backends.base.test_creation.TestDeserializeDbFromString.test_circular_reference',
+            'backends.base.test_creation.TestDeserializeDbFromString.test_circular_reference_with_natural_key',
+            'backends.base.test_creation.TestDeserializeDbFromString.test_self_reference',
+            'fixtures.tests.CircularReferenceTests.test_circular_reference',
+            'fixtures.tests.ForwardReferenceTests.test_forward_reference_fk',
+            'fixtures.tests.ForwardReferenceTests.test_forward_reference_m2m',
             'serializers.test_data.SerializerDataTests.test_json_serializer',
             'serializers.test_data.SerializerDataTests.test_python_serializer',
             'serializers.test_data.SerializerDataTests.test_xml_serializer',
@@ -117,6 +123,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
             'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
             'schema.tests.SchemaTests.test_alter_textual_field_keep_null_status',
+            'schema.tests.SchemaTests.test_char_field_pk_to_auto_field',
             'schema.tests.SchemaTests.test_char_field_with_db_index_to_fk',
             'schema.tests.SchemaTests.test_m2m_rename_field_in_target_model',
             'schema.tests.SchemaTests.test_rename',
@@ -128,6 +135,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'schema.tests.SchemaTests.test_primary_key',
             # SmallAutoField doesn't work:
             # https://github.com/cockroachdb/cockroach-django/issues/84
+            'bulk_create.tests.BulkCreateTests.test_bulk_insert_nullable_fields',
             'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
@@ -189,7 +197,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'dbname': self.connection.ops.quote_name(target_database_name),
             'suffix': self.sql_table_creation_suffix(),
         }
-        with self._nodb_connection.cursor() as cursor:
+        with self._nodb_cursor() as cursor:
             try:
                 self._execute_create_test_db(cursor, test_db_params, keepdb)
             except Exception:

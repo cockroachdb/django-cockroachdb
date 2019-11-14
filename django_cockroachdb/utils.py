@@ -1,13 +1,6 @@
 import django
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.timezone import get_fixed_timezone, utc
 from django.utils.version import get_version_tuple
-
-
-def utc_tzinfo_factory(offset):
-    if offset != 0:
-        return get_fixed_timezone(offset)
-    return utc
 
 
 def check_django_compatability():
