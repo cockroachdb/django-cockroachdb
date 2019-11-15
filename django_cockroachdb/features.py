@@ -49,3 +49,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # adding a REFERENCES constraint while also adding a column via ALTER not
     # supported: https://github.com/cockroachdb/cockroach/issues/32917
     can_create_inline_fk = False
+
+    # This can be removed when CockroachDB adds support for NULL FIRST/LAST:
+    # https://github.com/cockroachdb/cockroach/issues/6224
+    supports_order_by_nulls_modifier = False
