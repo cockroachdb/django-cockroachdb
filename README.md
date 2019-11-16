@@ -1,10 +1,16 @@
-# Cockroach DB backend for Django 2.2
+# CockroachDB backend for Django
 
-This is an initial attempt at a backend for Django 2.2. You can install it with the following command:
+## Install and usage
 
-`pip install .`
+Use the version of django-cockroachdb that corresponds to your version of
+Django. For example, to get the latest compatible release for Django 2.2.x:
 
-You then can use this by putting the following in your `settings.py` for your site:
+`pip install django-cockroachdb==2.2.*`
+
+The minor release number of Django doesn't correspond to the minor release
+number of django-cockroachdb. Use the latest minor release of each.
+
+Configure the Django `DATABASES` setting similar to this:
 
 ```
 DATABASES = {
@@ -17,5 +23,71 @@ DATABASES = {
         'PORT': '26257',
     }
 }
-
 ```
+
+## Notes on Django fields
+
+1. `CharField`'s `max_length` is ignored. It uses the same storage as
+   `TextField` so `CharField` is introspected by `inspectdb` as `TextField`.
+
+2. `IntegerField` uses the same storage as `BigIntegerField` so `IntegerField`
+   is introspected by `inspectdb` as `BigIntegerField`.
+
+3. `AutoField` and `BigAutoField` are both stored as
+   [integer](https://www.cockroachlabs.com/docs/stable/int.html) (64-bit) with
+   [`DEFAULT unique_rowid()`](https://www.cockroachlabs.com/docs/stable/functions-and-operators.html#id-generation-functions).
+
+## Known issues and limitations (as of cockroachdb 19.2.1)
+
+1. CockroachDB [doesn't support savepoints](https://github.com/cockroachdb/cockroach/issues/10735).
+   This means a few things:
+
+   1. Django's [transaction.atomic()](https://docs.djangoproject.com/en/stable/topics/db/transactions/#django.db.transaction.atomic)
+      can't be nested.
+   2. Django's `TestCase` works like `TransactionTestCase`. That is,
+      transactions aren't used to speed up the former.
+
+2. CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
+   which means certain things in Django like forward references in fixtures
+   aren't supported.
+
+4. Migrations have some limitations. CockroachDB doesn't support:
+
+   1. [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
+   2. dropping or changing a table's primary key
+
+5. Incorrect queries:
+   1. [The extract() function doesn't respect the time zone.](https://github.com/cockroachdb/django-cockroachdb/issues/47)
+   2. [Interval math across daylight saving time is incorrect.](https://github.com/cockroachdb/django-cockroachdb/issues/54)
+   3. [`date_trunc('week', <value>)` truncates to midnight Sunday rather than Monday](https://github.com/cockroachdb/django-cockroachdb/issues/92)
+   4. [date_trunc() results are incorrectly localized.](https://github.com/cockroachdb/django-cockroachdb/issues/32)
+   5. [cast() timestamptz to time doesn't respect the time zone.](https://github.com/cockroachdb/django-cockroachdb/issues/37)
+   6. [Interval math may be incorrect on date columns.](https://github.com/cockroachdb/django-cockroachdb/issues/53)
+
+6. Unsupported queries:
+   1. [Mixed type addition in SELECT](https://github.com/cockroachdb/django-cockroachdb/issues/19):
+      `unsupported binary operator: <int> + <float>`
+   2. [UPDATE float column with integer column](https://github.com/cockroachdb/django-cockroachdb/issues/20):
+      `value type int doesn't match type FLOAT8 of column <name>`
+   3. [Division that yields a different type](https://github.com/cockroachdb/django-cockroachdb/issues/21):
+      `unsupported binary operator: <int> / <int> (desired <int>)`
+   4. [The power() database function doesn't accept negative exponents](https://github.com/cockroachdb/django-cockroachdb/issues/22):
+      `power(): integer out of range`
+   5. The `StdDev` and `Variance` aggregates
+      [aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/25).
+   6. [extract() doesn't support interval columns (DurationField)](https://github.com/cockroachdb/django-cockroachdb/issues/29):
+      `unknown signature: extract(string, interval)`
+   7. [The log() function doesn't support custom bases](https://github.com/cockroachdb/django-cockroachdb/issues/50):
+      `unknown signature: extract(string, interval)`
+   8. [sum() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/73):
+      `sum(): unsupported binary operator: <float> + <int>`
+   9. [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
+      `greatest(): expected <arg> to be of type <type>, found type <other type>`
+   10. [Common aggregation queries fail](https://github.com/cockroachdb/django-cockroachdb/issues/13):
+      `column must appear in the GROUP BY clause or be used in an aggregate function`
+   11. The [isoyear lookup](https://github.com/cockroachdb/django-cockroachdb/issues/28) isn't supported:
+       `extract(): unsupported timespan: isoyear`
+   12. [Using the avg() database function on an interval column (DurationField) isn't supported](https://github.com/cockroachdb/django-cockroachdb/issues/72):
+       `unknown signature: avg(interval)`
+   13. [timezone() doesn't support UTC offsets](https://github.com/cockroachdb/django-cockroachdb/issues/97):
+       `timezone(): unknown time zone UTC...`
