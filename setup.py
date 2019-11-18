@@ -1,12 +1,31 @@
-import setuptools
+from setuptools import find_packages, setup
 
-install_requires = [
-    'psycopg2',
-]
-
-setuptools.setup(
-    name='cockroach',
-    version='0.1',
-    packages=setuptools.find_packages(),
-    install_requires=install_requires,
+setup(
+    name='django-cockroachdb',
+    version=__import__('django_cockroachdb').__version__,
+    python_requires='>=3.5',
+    url='https://github.com/cockroachdb/django-cockroachdb',
+    maintainer='Cockroach Labs',
+    maintainer_email='python@cockroachlabs.com',
+    description='Django backend for CockroachDB',
+    long_description=open('README.md').read(),
+    packages=find_packages(),
+    install_requires=['psycopg2'],
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Framework :: Django',
+        'Framework :: Django :: 2.2',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+    ],
+    project_urls={
+        'Source': 'https://github.com/cockroachdb/django-cockroachdb',
+        'Tracker': 'https://github.com/cockroachdb/django-cockroachdb/issues',
+    },
 )
