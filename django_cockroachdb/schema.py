@@ -37,6 +37,26 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
             new_db_params, strict,
         )
 
+    def _alter_column_type_sql(self, model, old_field, new_field, new_type):
+        if new_type.lower() in ("serial", "bigserial"):
+            column = new_field.column
+            col_type = "integer" if new_type.lower() == "serial" else "bigint"
+            return (
+                (
+                    self.sql_alter_column_type % {
+                        "column": self.quote_name(column),
+                        "type": col_type,
+                    },
+                    [],
+                ),
+                # The PostgreSQL backend manages the column sequence here but
+                # this isn't applicable on CockroachDB because unique_rowid()
+                # is used instead of sequences.
+                [],
+            )
+        else:
+            return BaseDatabaseSchemaEditor._alter_column_type_sql(self, model, old_field, new_field, new_type)
+
     def _field_should_be_indexed(self, model, field):
         # Foreign keys are automatically indexed by cockroachdb.
         return not isinstance(field, ForeignKey) and super()._field_should_be_indexed(model, field)
