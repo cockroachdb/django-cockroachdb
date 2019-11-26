@@ -19,11 +19,13 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     # Override some types from the postgresql adapter.
     data_types = dict(
         PostgresDatabaseWrapper.data_types,
+        BigAutoField='integer',
         AutoField='integer',
         DateTimeField='timestamptz',
     )
     data_types_suffix = dict(
         PostgresDatabaseWrapper.data_types_suffix,
+        BigAutoField='DEFAULT unique_rowid()',
         AutoField='DEFAULT unique_rowid()',
     )
 
