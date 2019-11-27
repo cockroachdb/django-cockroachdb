@@ -9,6 +9,7 @@ setup(
     maintainer_email='python@cockroachlabs.com',
     description='Django backend for CockroachDB',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     install_requires=['psycopg2'],
     classifiers=[
