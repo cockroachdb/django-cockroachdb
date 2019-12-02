@@ -56,7 +56,7 @@ DATABASES = {
    1. [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
    2. dropping or changing a table's primary key
 
-5. Incorrect queries:
+5. Known Bugs:
    1. [The extract() function doesn't respect the time zone.](https://github.com/cockroachdb/django-cockroachdb/issues/47)
    2. [Interval math across daylight saving time is incorrect.](https://github.com/cockroachdb/django-cockroachdb/issues/54)
    3. [`date_trunc('week', <value>)` truncates to midnight Sunday rather than Monday](https://github.com/cockroachdb/django-cockroachdb/issues/92)
