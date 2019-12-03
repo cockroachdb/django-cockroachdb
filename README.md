@@ -52,6 +52,13 @@ DATABASES = {
    [integer](https://www.cockroachlabs.com/docs/stable/int.html) (64-bit) with
    [`DEFAULT unique_rowid()`](https://www.cockroachlabs.com/docs/stable/functions-and-operators.html#id-generation-functions).
 
+## FAQ
+
+### Why do I get the error ``psycopg2.errors.InvalidName: no database specified``?
+
+You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
+You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
+
 ## Known issues and limitations (as of cockroachdb 19.2.1)
 
 1. CockroachDB [doesn't support savepoints](https://github.com/cockroachdb/cockroach/issues/10735).
