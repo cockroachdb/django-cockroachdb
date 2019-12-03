@@ -10,6 +10,21 @@ Django. For example, to get the latest compatible release for Django 2.2.x:
 The minor release number of Django doesn't correspond to the minor release
 number of django-cockroachdb. Use the latest minor release of each.
 
+If a release series of django-cockroachdb only has pre-releases (alphas or
+betas), you'll see an error with a list of the available versions. In that
+case, specify the exact version that you want. For example, if
+django-cockroachdb 2.2 alpha 1 is available:
+
+```
+$ pip install --pre django-cockroachdb==2.2*`
+ERROR: Could not find a version that satisfies the requirement
+django-cockroachdb==2.2* (from versions: 2.2a1)
+
+$ pip install django-cockroachdb==2.2a1
+...
+Successfully installed django-cockroachdb-2.2a1 psycopg2-2.8.4
+```
+
 Configure the Django `DATABASES` setting similar to this:
 
 ```
