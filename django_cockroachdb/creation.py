@@ -226,7 +226,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'admin_views.tests.GroupAdminTest.test_group_permission_performance',
             'admin_views.tests.UserAdminTest.test_user_permission_performance',
             'auth_tests.test_views.ChangelistTests.test_view_user_password_is_readonly',
-            'auth_tests.test_migrations.ProxyModelWithSameAppLabelTests.test_migrate_with_existing_target_permission',
             'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
             'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
             'fixtures_model_package.tests.FixtureTestCase.test_loaddata',
