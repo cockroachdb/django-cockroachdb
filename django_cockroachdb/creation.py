@@ -217,6 +217,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Transaction issues: https://github.com/cockroachdb/django-cockroachdb/issues/14
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
             # Tests that require savepoints:
+            'admin_inlines.tests.TestReadOnlyChangeViewInlinePermissions.test_add_url_not_allowed',
             'admin_views.tests.AdminViewBasicTest.test_disallowed_to_field',
             'admin_views.tests.AdminViewPermissionsTest.test_add_view',
             'admin_views.tests.AdminViewPermissionsTest.test_change_view',
@@ -224,6 +225,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'admin_views.tests.AdminViewPermissionsTest.test_delete_view',
             'admin_views.tests.GroupAdminTest.test_group_permission_performance',
             'admin_views.tests.UserAdminTest.test_user_permission_performance',
+            'auth_tests.test_views.ChangelistTests.test_view_user_password_is_readonly',
             'auth_tests.test_migrations.ProxyModelWithSameAppLabelTests.test_migrate_with_existing_target_permission',
             'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
             'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
