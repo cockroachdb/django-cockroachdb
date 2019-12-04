@@ -16,9 +16,9 @@ case, specify the exact version that you want. For example, if
 django-cockroachdb 2.2 alpha 1 is available:
 
 ```
-$ pip install --pre django-cockroachdb==2.2*`
+$ pip install django-cockroachdb==2.2.*`
 ERROR: Could not find a version that satisfies the requirement
-django-cockroachdb==2.2* (from versions: 2.2a1)
+django-cockroachdb==2.2.* (from versions: 2.2a1)
 
 $ pip install django-cockroachdb==2.2a1
 ...
