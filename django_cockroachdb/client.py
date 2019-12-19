@@ -15,15 +15,13 @@ class DatabaseClient(BaseDatabaseClient):
         passwd = settings_dict['OPTIONS'].get('passwd', settings_dict['PASSWORD'])
         host = settings_dict['OPTIONS'].get('host', settings_dict['HOST'])
         port = settings_dict['OPTIONS'].get('port', settings_dict['PORT'])
-        server_ca = settings_dict['OPTIONS'].get('ssl', {}).get('ca')
+        sslrootcert = settings_dict['OPTIONS'].get('sslrootcert')
 
         if db:
             args += ["--database=%s" % db]
-        # The cockroach command needs the directory in which all the certs are
-        # stored in. Use the directory where the server_ca is located in as the
-        # base directoery for the command.
-        if server_ca:
-            args += ["--certs-dir=%s" % os.path.dirname(server_ca)]
+        # Assume all certs are in the directory that has the sslrootcert.
+        if sslrootcert:
+            args += ["--certs-dir=%s" % os.path.dirname(sslrootcert)]
             insecure = False
         else:
             # Default to insecure if no ca exists.
