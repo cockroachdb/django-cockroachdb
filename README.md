@@ -27,7 +27,7 @@ Successfully installed django-cockroachdb-2.2a1 psycopg2-2.8.4
 
 Configure the Django `DATABASES` setting similar to this:
 
-```
+```python
 DATABASES = {
     'default': {
         'ENGINE': 'django_cockroachdb',
@@ -36,7 +36,15 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '26257',
-    }
+        # If connecting with SSL, remove the PASSWORD entry above and include
+        # the section below, replacing the file paths as appropriate.
+        'OPTIONS': {
+            'sslmode': 'require',
+            'sslrootcert': '/certs/ca.crt',
+            'sslcert': '/certs/client.myprojectuser.crt',
+            'sslkey': '/certs/client.myprojectuser.key',
+        },
+    },
 }
 ```
 
