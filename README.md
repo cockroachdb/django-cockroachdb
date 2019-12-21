@@ -59,7 +59,7 @@ DATABASES = {
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
-## Known issues and limitations (as of cockroachdb 19.2.1)
+## Known issues and limitations (as of cockroachdb 19.2.2)
 
 1. CockroachDB [doesn't support savepoints](https://github.com/cockroachdb/cockroach/issues/10735).
    This means a few things:
@@ -105,11 +105,7 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
       `sum(): unsupported binary operator: <float> + <int>`
    9. [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
       `greatest(): expected <arg> to be of type <type>, found type <other type>`
-   10. [Common aggregation queries fail](https://github.com/cockroachdb/django-cockroachdb/issues/13):
-      `column must appear in the GROUP BY clause or be used in an aggregate function`
-   11. The [isoyear lookup](https://github.com/cockroachdb/django-cockroachdb/issues/28) isn't supported:
+   10. The [isoyear lookup](https://github.com/cockroachdb/django-cockroachdb/issues/28) isn't supported:
        `extract(): unsupported timespan: isoyear`
-   12. [Using the avg() database function on an interval column (DurationField) isn't supported](https://github.com/cockroachdb/django-cockroachdb/issues/72):
-       `unknown signature: avg(interval)`
-   13. [timezone() doesn't support UTC offsets](https://github.com/cockroachdb/django-cockroachdb/issues/97):
+   11. [timezone() doesn't support UTC offsets](https://github.com/cockroachdb/django-cockroachdb/issues/97):
        `timezone(): unknown time zone UTC...`
