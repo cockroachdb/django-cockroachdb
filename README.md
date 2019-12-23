@@ -3,7 +3,9 @@
 ## Install and usage
 
 Use the version of django-cockroachdb that corresponds to your version of
-Django. For example, to get the latest compatible release for Django 3.0.x:
+Django. For Django 2.2.x, use `django-cockroachdb>=2.2a1` and for Django 3.x,
+use `django-cockroachdb>=3.0a1`. For example, to get the latest compatible
+release for Django 3.0.x:
 
 `pip install django-cockroachdb==3.0.*`
 
