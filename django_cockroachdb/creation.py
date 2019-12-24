@@ -183,15 +183,10 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'db_functions.math.test_log.LogTests.test_null',
             # Forward references in fixtures won't work until cockroachdb can
             # disable constraints: https://github.com/cockroachdb/cockroach/issues/19444
-            'fixtures_regress.tests.TestFixtures.test_loaddata_forward_refs_split_fixtures',
-            'fixtures_regress.tests.TestFixtures.test_loaddata_works_when_fixture_has_forward_refs',
-            'serializers.test_json.JsonSerializerTransactionTestCase.test_forward_refs',
             'serializers.test_data.SerializerDataTests.test_json_serializer',
             'serializers.test_data.SerializerDataTests.test_python_serializer',
             'serializers.test_data.SerializerDataTests.test_xml_serializer',
             'serializers.test_data.SerializerDataTests.test_yaml_serializer',
-            'serializers.test_xml.XmlSerializerTransactionTestCase.test_forward_refs',
-            'serializers.test_yaml.YamlSerializerTransactionTestCase.test_forward_refs',
             # cockroachdb doesn't distinguish between tables and views. Both
             # are included regardless of whether inspectdb's --include-views
             # option is set.
