@@ -13,7 +13,7 @@ setup(
     packages=find_packages(),
     install_requires=['psycopg2'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Framework :: Django',
         'Framework :: Django :: 3.0',
         'License :: OSI Approved :: Apache Software License',
