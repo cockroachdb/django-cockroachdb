@@ -60,6 +60,18 @@ DATABASES = {
    [integer](https://www.cockroachlabs.com/docs/stable/int.html) (64-bit) with
    [`DEFAULT unique_rowid()`](https://www.cockroachlabs.com/docs/stable/functions-and-operators.html#id-generation-functions).
 
+## Notes on Django QuerySets
+
+1. [`QuerySet.explain()`](https://docs.djangoproject.com/en/stable/ref/models/querysets/#explain)
+   accepts `verbose`, `types`, `opt`, `vec`, and `distsql` options which
+   correspond to [CockroachDB's parameters](https://www.cockroachlabs.com/docs/stable/explain.html#parameters).
+   For example:
+
+    ```python
+    >>> Choice.objects.explain(opt=True, verbose=True)
+    'scan polls_choice\n ├── columns: id:1 question_id:4 choice_text:2 votes:3\n ├── stats: [rows=1]\n ├── cost: 1.1\n ├── key: (1)\n ├── fd: (1)-->(2-4)\n └── prune: (1-4)'
+    ```
+
 ## FAQ
 
 ### Why do I get the error ``psycopg2.errors.InvalidName: no database specified``?

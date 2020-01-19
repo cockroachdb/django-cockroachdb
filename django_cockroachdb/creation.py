@@ -239,6 +239,9 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # cockroachdb doesn't support changing the primary key of table.
             'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
             'schema.tests.SchemaTests.test_primary_key',
+            # This backend raises "ValueError: CockroachDB's EXPLAIN doesn't
+            # support any formats." instead of an "unknown format" error.
+            'queries.test_explain.ExplainTests.test_unknown_format',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
