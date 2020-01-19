@@ -256,7 +256,9 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
-
+            # This backend raises "ValueError: CockroachDB's EXPLAIN doesn't
+            # support any formats." instead of an "unknown format" error.
+            'queries.test_explain.ExplainTests.test_unknown_format',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')

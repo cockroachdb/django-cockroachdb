@@ -58,3 +58,12 @@ class DatabaseOperations(PostgresDatabaseOperations):
             return 'EXTRACT(isoyear FROM %s)' % field_name
         else:
             return 'EXTRACT(%s FROM %s)' % (lookup_type, field_name)
+
+    def explain_query_prefix(self, format=None, **options):
+        if format:
+            raise ValueError("CockroachDB's EXPLAIN doesn't support any formats.")
+        prefix = self.explain_prefix
+        extra = [name for name, value in options.items() if value]
+        if extra:
+            prefix += ' (%s)' % ', '.join(extra)
+        return prefix
