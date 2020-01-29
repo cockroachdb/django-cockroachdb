@@ -208,9 +208,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # https://github.com/cockroachdb/django-cockroachdb/issues/54
             'expressions.tests.FTimeDeltaTests.test_delta_update',
             'expressions.tests.FTimeDeltaTests.test_duration_with_datetime_microseconds',
-            # Skipped for PostgreSQL but should be skipped for cockroachdb also:
-            # https://github.com/cockroachdb/django-cockroachdb/issues/57
-            'expressions_window.tests.WindowFunctionTests.test_range_n_preceding_and_following',
             # cockroachdb doesn't support disabling constraints:
             # https://github.com/cockroachdb/cockroach/issues/19444
             'auth_tests.test_views.UUIDUserTests.test_admin_password_change',
