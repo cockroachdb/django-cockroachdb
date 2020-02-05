@@ -1,5 +1,8 @@
+import re
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.functional import cached_property
 
 try:
     import psycopg2  # noqa
@@ -73,3 +76,23 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     def _set_autocommit(self, autocommit):
         with self.wrap_database_errors:
             self.connection.autocommit = autocommit
+
+    @cached_property
+    def cockroachdb_server_info(self):
+        # Something like 'CockroachDB CCL v20.1.0-alpha.20191118-1842-g60d40b8
+        # (x86_64-unknown-linux-gnu, built 2020/02/03 23:09:23, go1.13.5)'.
+        with self.temporary_connection() as cursor:
+            cursor.execute('SELECT VERSION()')
+            return cursor.fetchone()[0]
+
+    @cached_property
+    def cockroachdb_version(self):
+        # Match the numerical portion of the version numbers. For example,
+        # v20.1.0-alpha.20191118-1842-g60d40b8 returns (20, 1, 0).
+        match = re.search(r'v(\d{1,2})\.(\d{1,2})\.(\d{1,2})', self.cockroachdb_server_info)
+        if not match:
+            raise Exception(
+                'Unable to determine CockroachDB version from version '
+                'string %r.' % self.cockroachdb_server_info
+            )
+        return tuple(int(x) for x in match.groups())
