@@ -1,3 +1,5 @@
+import operator
+
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
@@ -57,9 +59,9 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
 
     introspected_big_auto_field_type = 'BigIntegerField'
 
-    # Column ordering is supported but cockroachdb doesn't report column
-    # ordering: https://github.com/cockroachdb/cockroach/issues/42175
-    supports_index_column_ordering = False
+    # Column ordering is supported but older versions of CockroachDB don't
+    # report column ordering: https://github.com/cockroachdb/cockroach/issues/42175
+    supports_index_column_ordering = property(operator.attrgetter('is_cockroachdb_20_1'))
 
     @cached_property
     def is_cockroachdb_20_1(self):
