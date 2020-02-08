@@ -96,13 +96,9 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # https://github.com/cockroachdb/django-cockroachdb/issues/29
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_duration',
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_duration',
-            # extract(): unsupported timespan: isoyear:
-            # https://github.com/cockroachdb/django-cockroachdb/issues/28
-            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_iso_year_func',
-            'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_iso_year_func_boundaries',
+            # timezone() doesn't support UTC offsets:
+            # https://github.com/cockroachdb/django-cockroachdb/issues/97
             'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_func_with_timezone',
-            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_iso_year_func',
-            'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_iso_year_func_boundaries',  # noqa
             # extract() doesn't respect active time zone:
             # https://github.com/cockroachdb/django-cockroachdb/issues/47
             'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_func',
