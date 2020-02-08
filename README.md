@@ -79,7 +79,7 @@ DATABASES = {
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
-## Known issues and limitations (as of cockroachdb 19.2.2)
+## Known issues and limitations (as of cockroachdb 19.2.3)
 
 1. CockroachDB [doesn't support savepoints](https://github.com/cockroachdb/cockroach/issues/10735).
    This means a few things:
@@ -125,9 +125,7 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
       `sum(): unsupported binary operator: <float> + <int>`
    9. [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
       `greatest(): expected <arg> to be of type <type>, found type <other type>`
-   10. The [isoyear lookup](https://github.com/cockroachdb/django-cockroachdb/issues/28) isn't supported:
-       `extract(): unsupported timespan: isoyear`
-   11. [timezone() doesn't support UTC offsets](https://github.com/cockroachdb/django-cockroachdb/issues/97):
+   10. [timezone() doesn't support UTC offsets](https://github.com/cockroachdb/django-cockroachdb/issues/97):
        `timezone(): unknown time zone UTC...`
-   12. [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
-   13. [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
+   11. [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
+   12. [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
