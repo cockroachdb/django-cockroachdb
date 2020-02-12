@@ -18,7 +18,7 @@ cd ../..
 pip3 install .
 
 # download and start cockroach
-wget "https://binaries.cockroachdb.com/cockroach-v19.2.3.linux-amd64.tgz"
+wget "https://binaries.cockroachdb.com/cockroach-v19.2.4.linux-amd64.tgz"
 tar -xvf cockroach-v19.2*
 cp cockroach-v19.2*/cockroach cockroach_exec
 ./cockroach_exec start --insecure &

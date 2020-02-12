@@ -79,7 +79,7 @@ DATABASES = {
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
-## Known issues and limitations (as of cockroachdb 19.2.3)
+## Known issues and limitations (as of cockroachdb 19.2.4)
 
 1. CockroachDB [doesn't support savepoints](https://github.com/cockroachdb/cockroach/issues/10735).
    This means a few things:
