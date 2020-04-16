@@ -1,5 +1,18 @@
 # CockroachDB backend for Django
 
+## Prerequisites
+
+You must install either:
+
+* [psycopg2](https://pypi.org/project/psycopg2/), which has some
+  [prerequisites](https://www.psycopg.org/docs/install.html#prerequisites) of
+  its own.
+
+* [psycopg2-binary](https://pypi.org/project/psycopg2-binary/)
+
+The binary package is a practical choice for development and testing but in
+production it is advised to use the package built from sources.
+
 ## Install and usage
 
 Use the version of django-cockroachdb that corresponds to your version of

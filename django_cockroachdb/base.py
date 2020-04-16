@@ -1,15 +1,27 @@
 from django.conf import settings
-from django.db.backends.postgresql.base import (
+from django.core.exceptions import ImproperlyConfigured
+
+try:
+    import psycopg2  # noqa
+    import psycopg2.extensions  # noqa
+    import psycopg2.extras  # noqa
+except ImportError as err:
+    raise ImproperlyConfigured(
+        'Error loading psycopg2 module.\n'
+        'Did you install psycopg2 or psycopg2-binary?'
+    ) from err
+
+from django.db.backends.postgresql.base import (    # isort:skip
     DatabaseWrapper as PostgresDatabaseWrapper,
 )
 
-from .client import DatabaseClient
-from .creation import DatabaseCreation
-from .features import DatabaseFeatures
-from .introspection import DatabaseIntrospection
-from .operations import DatabaseOperations
-from .schema import DatabaseSchemaEditor
-from .utils import utc_tzinfo_factory
+from .client import DatabaseClient                  # isort:skip
+from .creation import DatabaseCreation              # isort:skip
+from .features import DatabaseFeatures              # isort:skip
+from .introspection import DatabaseIntrospection    # isort:skip
+from .operations import DatabaseOperations          # isort:skip
+from .schema import DatabaseSchemaEditor            # isort:skip
+from .utils import utc_tzinfo_factory               # isort:skip
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
