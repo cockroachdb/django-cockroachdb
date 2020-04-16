@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -x
 
+# this script is meant to be invoked by one of the build-teamcity-$VERSION.sh scripts
+
+VERSION="${1:-v19.2.5}"
+
 # Set an environment variable used by cockroach/django/creation.py.
 export RUNNING_COCKROACH_BACKEND_TESTS=1
 
@@ -18,9 +22,9 @@ cd ../..
 pip3 install .
 
 # download and start cockroach
-wget "https://binaries.cockroachdb.com/cockroach-v19.2.5.linux-amd64.tgz"
-tar -xvf cockroach-v19.2*
-cp cockroach-v19.2*/cockroach cockroach_exec
+wget "https://binaries.cockroachdb.com/cockroach-${VERSION}.linux-amd64.tgz"
+tar -xvf cockroach-${VERSION}*
+cp cockroach-${VERSION}*/cockroach cockroach_exec
 ./cockroach_exec start --insecure &
 
 cd _django_repo/tests/
