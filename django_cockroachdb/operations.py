@@ -1,8 +1,11 @@
+import time
 from datetime import timedelta
 
 from django.db.backends.postgresql.operations import (
     DatabaseOperations as PostgresDatabaseOperations,
 )
+from django.db.utils import OperationalError
+from psycopg2 import errorcodes
 from pytz import timezone
 
 
@@ -67,3 +70,19 @@ class DatabaseOperations(PostgresDatabaseOperations):
         if extra:
             prefix += ' (%s)' % ', '.join(extra)
         return prefix
+
+    def execute_sql_flush(self, using, sql_list):
+        # Retry TRUNCATE if it fails with a serialization error.
+        num_retries = 10
+        initial_retry_delay = 0.5  # The initial retry delay, in seconds.
+        backoff_ = 1.5  # For each retry, the last delay is multiplied by this.
+        next_retry_delay = initial_retry_delay
+        for retry in range(1, num_retries + 1):
+            try:
+                return super().execute_sql_flush(using, sql_list)
+            except OperationalError as exc:
+                if (getattr(exc.__cause__, 'pgcode', '') != errorcodes.SERIALIZATION_FAILURE or
+                        retry >= num_retries):
+                    raise
+                time.sleep(next_retry_delay)
+                next_retry_delay *= backoff_
