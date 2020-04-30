@@ -94,27 +94,19 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
 ## Known issues and limitations (as of CockroachDB 20.1)
 
-1. CockroachDB [doesn't support savepoints](https://github.com/cockroachdb/cockroach/issues/10735).
-   This means a few things:
-
-   1. Django's [transaction.atomic()](https://docs.djangoproject.com/en/stable/topics/db/transactions/#django.db.transaction.atomic)
-      can't be nested.
-   2. Django's `TestCase` works like `TransactionTestCase`. That is,
-      transactions aren't used to speed up the former.
-
-2. CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
+1. CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
    which means certain things in Django like forward references in fixtures
    aren't supported.
 
-4. Migrations have some limitations. CockroachDB doesn't support:
+2. Migrations have some limitations. CockroachDB doesn't support:
 
    1. [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
    2. dropping or changing a table's primary key
 
-5. Known Bugs:
+3. Known Bugs:
    1. [Timezones after 2038 use incorrect DST settings](https://github.com/cockroachdb/django-cockroachdb/issues/124).
 
-6. Unsupported queries:
+4. Unsupported queries:
    1. [Mixed type addition in SELECT](https://github.com/cockroachdb/django-cockroachdb/issues/19):
       `unsupported binary operator: <int> + <float>`
    2. [UPDATE float column with integer column](https://github.com/cockroachdb/django-cockroachdb/issues/20):
@@ -133,6 +125,12 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
    9. [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
 
 ## Additional issues and limitations in CockroachDB 19.2.x (as of 19.2.6)
+
+1. Savepoints aren't supported. This means a few things:
+   1. Django's [transaction.atomic()](https://docs.djangoproject.com/en/stable/topics/db/transactions/#django.db.transaction.atomic)
+      can't be nested.
+   2. Django's `TestCase` works like `TransactionTestCase`. That is,
+      transactions aren't used to speed up the former.
 
 2. Known Bugs:
    1. [The extract() function doesn't respect the time zone.](https://github.com/cockroachdb/django-cockroachdb/issues/47)
