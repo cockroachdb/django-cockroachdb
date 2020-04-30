@@ -19,16 +19,20 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # Not supported: https://github.com/cockroachdb/cockroach/issues/9683
     supports_partial_indexes = False
 
-    # Not supported: https://github.com/cockroachdb/cockroach/issues/10735
-    uses_savepoints = False
-    can_release_savepoints = False
-    atomic_transactions = False
+    uses_savepoints = property(operator.attrgetter('is_cockroachdb_20_1'))
+    can_release_savepoints = property(operator.attrgetter('is_cockroachdb_20_1'))
 
-    # cockroachdb does support transactions, however, a bug in Django
-    # (https://code.djangoproject.com/ticket/28263) breaks TestCase if
-    # transactions are enabled but not savepoints. Disabling this only affects
-    # tests: transactions won't be used to speed them up.
-    supports_transactions = False
+    # Used by DatabaseCreation.create_test_db() to enable transactions when
+    # running the Django test suite since properties can't be set directly.
+    _supports_transactions = None
+
+    @property
+    def supports_transactions(self):
+        # cockroachdb does support transactions, however, a bug in Django
+        # (https://code.djangoproject.com/ticket/28263) breaks TestCase if
+        # transactions are enabled but not savepoints. Disabling this only
+        # affects tests: transactions won't be used to speed them up.
+        return self._supports_transactions or self.is_cockroachdb_20_1
 
     # There are limitations on having DDL statements in a transaction:
     # https://www.cockroachlabs.com/docs/stable/known-limitations.html#schema-changes-within-transactions

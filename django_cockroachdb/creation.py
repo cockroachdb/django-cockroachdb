@@ -56,37 +56,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'syndication_tests.tests.SyndicationFeedTest.test_template_feed',
             # Transaction issues: https://github.com/cockroachdb/django-cockroachdb/issues/14
             'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
-            # Tests that require savepoints:
-            'admin_inlines.tests.TestReadOnlyChangeViewInlinePermissions.test_add_url_not_allowed',
-            'admin_views.tests.AdminViewBasicTest.test_disallowed_to_field',
-            'admin_views.tests.AdminViewPermissionsTest.test_add_view',
-            'admin_views.tests.AdminViewPermissionsTest.test_change_view',
-            'admin_views.tests.AdminViewPermissionsTest.test_change_view_save_as_new',
-            'admin_views.tests.AdminViewPermissionsTest.test_delete_view',
-            'admin_views.tests.GroupAdminTest.test_group_permission_performance',
-            'admin_views.tests.UserAdminTest.test_user_permission_performance',
-            'auth_tests.test_views.ChangelistTests.test_view_user_password_is_readonly',
-            'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
-            'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
-            'fixtures_model_package.tests.FixtureTestCase.test_loaddata',
-            'force_insert_update.tests.ForceTests.test_force_update',
-            'get_or_create.tests.GetOrCreateTests.test_get_or_create_invalid_params',
-            'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_create_with_duplicate_primary_key',
-            'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_get_or_create_raises_IntegrityError_plus_traceback', # noqa
-            'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_savepoint_rollback',
-            'get_or_create.tests.GetOrCreateThroughManyToMany.test_something',
-            'get_or_create.tests.UpdateOrCreateTests.test_integrity',
-            'get_or_create.tests.UpdateOrCreateTests.test_manual_primary_key_test',
-            'get_or_create.tests.UpdateOrCreateTestsWithManualPKs.test_create_with_duplicate_primary_key',
-            'many_to_one.tests.ManyToOneTests.test_fk_assignment_and_related_object_cache',
-            'many_to_many.tests.ManyToManyTests.test_add',
-            'model_fields.test_booleanfield.BooleanFieldTests.test_null_default',
-            'model_fields.test_floatfield.TestFloatField.test_float_validates_object',
-            'multiple_database.tests.QueryTestCase.test_generic_key_cross_database_protection',
-            'multiple_database.tests.QueryTestCase.test_m2m_cross_database_protection',
-            'transaction_hooks.tests.TestConnectionOnCommit.test_discards_hooks_from_rolled_back_savepoint',
-            'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_rolled_back_with_outer',
-            'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_does_not_affect_outer',
             # Unsupported query: mixed type addition in SELECT:
             # https://github.com/cockroachdb/django-cockroachdb/issues/19
             'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
@@ -252,6 +221,37 @@ class DatabaseCreation(PostgresDatabaseCreation):
                 # https://github.com/cockroachdb/django-cockroachdb/issues/54
                 'expressions.tests.FTimeDeltaTests.test_delta_update',
                 'expressions.tests.FTimeDeltaTests.test_duration_with_datetime_microseconds',
+                # Tests that require savepoints:
+                'admin_inlines.tests.TestReadOnlyChangeViewInlinePermissions.test_add_url_not_allowed',
+                'admin_views.tests.AdminViewBasicTest.test_disallowed_to_field',
+                'admin_views.tests.AdminViewPermissionsTest.test_add_view',
+                'admin_views.tests.AdminViewPermissionsTest.test_change_view',
+                'admin_views.tests.AdminViewPermissionsTest.test_change_view_save_as_new',
+                'admin_views.tests.AdminViewPermissionsTest.test_delete_view',
+                'admin_views.tests.GroupAdminTest.test_group_permission_performance',
+                'admin_views.tests.UserAdminTest.test_user_permission_performance',
+                'auth_tests.test_views.ChangelistTests.test_view_user_password_is_readonly',
+                'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
+                'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
+                'fixtures_model_package.tests.FixtureTestCase.test_loaddata',
+                'force_insert_update.tests.ForceTests.test_force_update',
+                'get_or_create.tests.GetOrCreateTests.test_get_or_create_invalid_params',
+                'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_create_with_duplicate_primary_key',
+                'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_get_or_create_raises_IntegrityError_plus_traceback', # noqa
+                'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_savepoint_rollback',
+                'get_or_create.tests.GetOrCreateThroughManyToMany.test_something',
+                'get_or_create.tests.UpdateOrCreateTests.test_integrity',
+                'get_or_create.tests.UpdateOrCreateTests.test_manual_primary_key_test',
+                'get_or_create.tests.UpdateOrCreateTestsWithManualPKs.test_create_with_duplicate_primary_key',
+                'many_to_one.tests.ManyToOneTests.test_fk_assignment_and_related_object_cache',
+                'many_to_many.tests.ManyToManyTests.test_add',
+                'model_fields.test_booleanfield.BooleanFieldTests.test_null_default',
+                'model_fields.test_floatfield.TestFloatField.test_float_validates_object',
+                'multiple_database.tests.QueryTestCase.test_generic_key_cross_database_protection',
+                'multiple_database.tests.QueryTestCase.test_m2m_cross_database_protection',
+                'transaction_hooks.tests.TestConnectionOnCommit.test_discards_hooks_from_rolled_back_savepoint',
+                'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_rolled_back_with_outer',
+                'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_does_not_affect_outer',
             )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
@@ -267,9 +267,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Number.objects.update(float=F('integer')) in setUpTestData(c)
             # https://github.com/cockroachdb/django-cockroachdb/issues/20
             'expressions.tests.ExpressionsNumericTests',
-            # Requires savepoints: https://github.com/cockroachdb/cockroach/issues/10735
-            'test_utils.tests.TestBadSetUpTestData',
         )
+        if not self.connection.features.is_cockroachdb_20_1:
+            skip_classes += (
+                # Requires savepoints:
+                'test_utils.tests.TestBadSetUpTestData',
+            )
         for test_class in skip_classes:
             test_module_name, _, test_class_name = test_class.rpartition('.')
             test_app = test_module_name.split('.')[0]
@@ -286,7 +289,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # a bug where TestCase doesn't work without savepoints
             # (https://code.djangoproject.com/ticket/28263).
             for alias in connections:
-                connections[alias].features.supports_transactions = True
+                connections[alias].features._supports_transactions = True
             self.mark_expected_failures()
         super().create_test_db(*args, **kwargs)
 
