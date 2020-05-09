@@ -145,6 +145,17 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # timezones after 2038 use incorrect DST settings:
             # https://github.com/cockroachdb/django-cockroachdb/issues/124
             'expressions.tests.FTimeDeltaTests.test_datetime_subtraction_microseconds',
+            # unsupported comparison operator: <jsonb> > <string>:
+            # https://github.com/cockroachdb/cockroach/issues/49144
+            'model_fields.test_jsonfield.TestQuerying.test_deep_lookup_transform',
+            # excluding null json keys incorrectly returns values where the
+            # key doesn't exist: https://github.com/cockroachdb/cockroach/issues/49143
+            'model_fields.test_jsonfield.TestQuerying.test_none_key_exclude',
+            # ordering by JSON isn't supported:
+            # https://github.com/cockroachdb/cockroach/issues/35706
+            'model_fields.test_jsonfield.TestQuerying.test_deep_distinct',
+            'model_fields.test_jsonfield.TestQuerying.test_ordering_by_transform',
+            'model_fields.test_jsonfield.TestQuerying.test_ordering_grouping_by_key_transform',
         )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
