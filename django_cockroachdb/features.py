@@ -1,14 +1,9 @@
-import operator
-
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
-from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
-    has_select_for_update = property(operator.attrgetter('is_cockroachdb_20_1'))
-    has_select_for_update_of = property(operator.attrgetter('is_cockroachdb_20_1'))
     # Not supported: https://github.com/cockroachdb/cockroach/issues/40476
     has_select_for_update_nowait = False
     has_select_for_update_skip_locked = False
@@ -18,21 +13,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/9683
     supports_partial_indexes = False
-
-    uses_savepoints = property(operator.attrgetter('is_cockroachdb_20_1'))
-    can_release_savepoints = property(operator.attrgetter('is_cockroachdb_20_1'))
-
-    # Used by DatabaseCreation.create_test_db() to enable transactions when
-    # running the Django test suite since properties can't be set directly.
-    _supports_transactions = None
-
-    @property
-    def supports_transactions(self):
-        # cockroachdb does support transactions, however, a bug in Django
-        # (https://code.djangoproject.com/ticket/28263) breaks TestCase if
-        # transactions are enabled but not savepoints. Disabling this only
-        # affects tests: transactions won't be used to speed them up.
-        return self._supports_transactions or self.is_cockroachdb_20_1
 
     # There are limitations on having DDL statements in a transaction:
     # https://www.cockroachlabs.com/docs/stable/known-limitations.html#schema-changes-within-transactions
@@ -63,14 +43,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     introspected_big_auto_field_type = 'BigIntegerField'
     introspected_small_auto_field_type = 'BigIntegerField'
 
-    # Column ordering is supported but older versions of CockroachDB don't
-    # report column ordering: https://github.com/cockroachdb/cockroach/issues/42175
-    supports_index_column_ordering = property(operator.attrgetter('is_cockroachdb_20_1'))
-
     # adding a REFERENCES constraint while also adding a column via ALTER not
     # supported: https://github.com/cockroachdb/cockroach/issues/32917
     can_create_inline_fk = False
-
-    @cached_property
-    def is_cockroachdb_20_1(self):
-        return self.connection.cockroachdb_version >= (20, 1)

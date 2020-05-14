@@ -51,22 +51,6 @@ class DatabaseOperations(PostgresDatabaseOperations):
     def sequence_reset_sql(self, style, model_list):
         return []
 
-    def date_extract_sql(self, lookup_type, field_name):
-        # String values in EXTRACT arguments are supported in CockroachDB 20.1.
-        # This method is obsolete when support for CockroachDB < 20.1 is
-        # dropped. https://github.com/cockroachdb/cockroach/pull/41429
-        if self.connection.features.is_cockroachdb_20_1:
-            return super().date_extract_sql(lookup_type, field_name)
-        # Extract SQL is slightly different from PostgreSQL.
-        # https://www.cockroachlabs.com/docs/stable/functions-and-operators.html
-        if lookup_type == 'week_day':
-            # For consistency across backends, return Sunday=1, Saturday=7.
-            return 'EXTRACT(dow FROM %s) + 1' % field_name
-        elif lookup_type == 'iso_year':
-            return 'EXTRACT(isoyear FROM %s)' % field_name
-        else:
-            return 'EXTRACT(%s FROM %s)' % (lookup_type, field_name)
-
     def explain_query_prefix(self, format=None, **options):
         if format:
             raise ValueError("CockroachDB's EXPLAIN doesn't support any formats.")

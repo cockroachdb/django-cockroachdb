@@ -4,7 +4,6 @@ import sys
 from unittest import expectedFailure, skip
 
 from django.conf import settings
-from django.db import connections
 from django.db.backends.postgresql.creation import (
     DatabaseCreation as PostgresDatabaseCreation,
 )
@@ -135,131 +134,10 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # This backend raises "ValueError: CockroachDB's EXPLAIN doesn't
             # support any formats." instead of an "unknown format" error.
             'queries.test_explain.ExplainTests.test_unknown_format',
+            # timezones after 2038 use incorrect DST settings:
+            # https://github.com/cockroachdb/django-cockroachdb/issues/124
+            'expressions.tests.FTimeDeltaTests.test_datetime_subtraction_microseconds',
         )
-        if self.connection.features.is_cockroachdb_20_1:
-            expected_failures += (
-                # timezones after 2038 use incorrect DST settings:
-                # https://github.com/cockroachdb/django-cockroachdb/issues/124
-                'expressions.tests.FTimeDeltaTests.test_datetime_subtraction_microseconds',
-            )
-        if not self.connection.features.is_cockroachdb_20_1:
-            expected_failures += (
-                # CAST timestamptz to time doesn't respect active time zone:
-                # https://github.com/cockroachdb/django-cockroachdb/issues/37
-                'db_functions.comparison.test_cast.CastTests.test_cast_from_db_datetime_to_time',
-                # DATE_TRUNC result is incorrectly localized when a timezone is set:
-                # https://github.com/cockroachdb/django-cockroachdb/issues/32
-                'admin_views.test_templatetags.DateHierarchyTests.test_choice_links',
-                'admin_views.tests.DateHierarchyTests.test_multiple_years',
-                'admin_views.tests.DateHierarchyTests.test_related_field',
-                'admin_views.tests.DateHierarchyTests.test_single',
-                'admin_views.tests.DateHierarchyTests.test_within_month',
-                'admin_views.tests.DateHierarchyTests.test_within_year',
-                'admin_views.tests.AdminViewBasicTest.test_date_hierarchy_timezone_dst',
-                'aggregation.tests.AggregateTestCase.test_dates_with_aggregation',
-                'aggregation_regress.tests.AggregationTests.test_more_more_more',
-                'backends.tests.DateQuotingTest.test_django_date_trunc',
-                'dates.tests.DatesTests.test_dates_trunc_datetime_fields',
-                'dates.tests.DatesTests.test_related_model_traverse',
-                'datetimes.tests.DateTimesTests.test_21432',
-                'datetimes.tests.DateTimesTests.test_datetimes_has_lazy_iterator',
-                'datetimes.tests.DateTimesTests.test_datetimes_returns_available_dates_for_given_scope_and_given_field',  # noqa
-                'datetimes.tests.DateTimesTests.test_related_model_traverse',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_day_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_subquery_with_parameters',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_month_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_quarter_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_time_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_week_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_trunc_year_func',
-                'generic_views.test_dates.MonthArchiveViewTests.test_month_view',
-                'generic_views.test_dates.MonthArchiveViewTests.test_month_view_allow_future',
-                'generic_views.test_dates.MonthArchiveViewTests.test_month_view_get_month_from_request',
-                'generic_views.test_dates.YearArchiveViewTests.test_year_view',
-                'generic_views.test_dates.YearArchiveViewTests.test_year_view_allow_future',
-                'generic_views.test_dates.YearArchiveViewTests.test_year_view_custom_sort_order',
-                'generic_views.test_dates.YearArchiveViewTests.test_year_view_make_object_list',
-                'generic_views.test_dates.YearArchiveViewTests.test_year_view_two_custom_sort_orders',
-                # Because DateFunctionWithTimeZoneTests inherits DateFunctionTests,
-                # these tests give "unexpected successes when they pass in the
-                # superclass.
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_func_with_timezone',
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_week_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_hour_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_minute_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_second_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_timezone_applied_before_truncation',  # noqa
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_trunc_ambiguous_and_invalid_times',  # noqa
-                'extra_regress.tests.ExtraRegressTests.test_dates_query',
-                'many_to_one.tests.ManyToOneTests.test_select_related',
-                'model_inheritance_regress.tests.ModelInheritanceTest.test_issue_7105',
-                'model_regress.tests.ModelTests.test_date_filter_null',
-                'multiple_database.tests.QueryTestCase.test_basic_queries',
-                'queries.tests.Queries1Tests.test_ticket7155',
-                'queries.tests.Queries1Tests.test_tickets_6180_6203',
-                'queries.tests.Queries1Tests.test_tickets_7087_12242',
-                'reserved_names.tests.ReservedNameTests.test_dates',
-                'timezones.tests.LegacyDatabaseTests.test_query_datetime_lookups',
-                'timezones.tests.LegacyDatabaseTests.test_query_datetimes',
-                'timezones.tests.NewDatabaseTests.test_query_datetimes',
-                'timezones.tests.NewDatabaseTests.test_query_datetimes_in_other_timezone',
-                # Unsupported query: unknown signature: extract(string, interval)
-                # https://github.com/cockroachdb/django-cockroachdb/issues/29
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_duration',
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_duration',
-                # timezone() doesn't support UTC offsets:
-                # https://github.com/cockroachdb/django-cockroachdb/issues/97
-                'db_functions.datetime.test_extract_trunc.DateFunctionWithTimeZoneTests.test_extract_func_with_timezone',  # noqa
-                # extract() doesn't respect active time zone:
-                # https://github.com/cockroachdb/django-cockroachdb/issues/47
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_func',
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_hour_func',
-                # log(b, x) not supported: https://github.com/cockroachdb/django-cockroachdb/issues/50
-                'db_functions.math.test_log.LogTests.test_decimal',
-                'db_functions.math.test_log.LogTests.test_float',
-                'db_functions.math.test_log.LogTests.test_integer',
-                'db_functions.math.test_log.LogTests.test_null',
-                # Incorrect interval math on date columns when a time zone is set:
-                # https://github.com/cockroachdb/django-cockroachdb/issues/53
-                'expressions.tests.FTimeDeltaTests.test_date_comparison',
-                # Interval math across dst works differently from other databases.
-                # https://github.com/cockroachdb/django-cockroachdb/issues/54
-                'expressions.tests.FTimeDeltaTests.test_delta_update',
-                'expressions.tests.FTimeDeltaTests.test_duration_with_datetime_microseconds',
-                # Tests that require savepoints:
-                'admin_inlines.tests.TestReadOnlyChangeViewInlinePermissions.test_add_url_not_allowed',
-                'admin_views.tests.AdminViewBasicTest.test_disallowed_to_field',
-                'admin_views.tests.AdminViewPermissionsTest.test_add_view',
-                'admin_views.tests.AdminViewPermissionsTest.test_change_view',
-                'admin_views.tests.AdminViewPermissionsTest.test_change_view_save_as_new',
-                'admin_views.tests.AdminViewPermissionsTest.test_delete_view',
-                'admin_views.tests.GroupAdminTest.test_group_permission_performance',
-                'admin_views.tests.UserAdminTest.test_user_permission_performance',
-                'auth_tests.test_views.ChangelistTests.test_view_user_password_is_readonly',
-                'fixtures.tests.FixtureLoadingTests.test_loaddata_app_option',
-                'fixtures.tests.FixtureLoadingTests.test_unmatched_identifier_loading',
-                'fixtures_model_package.tests.FixtureTestCase.test_loaddata',
-                'force_insert_update.tests.ForceTests.test_force_update',
-                'get_or_create.tests.GetOrCreateTests.test_get_or_create_invalid_params',
-                'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_create_with_duplicate_primary_key',
-                'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_get_or_create_raises_IntegrityError_plus_traceback', # noqa
-                'get_or_create.tests.GetOrCreateTestsWithManualPKs.test_savepoint_rollback',
-                'get_or_create.tests.GetOrCreateThroughManyToMany.test_something',
-                'get_or_create.tests.UpdateOrCreateTests.test_integrity',
-                'get_or_create.tests.UpdateOrCreateTests.test_manual_primary_key_test',
-                'get_or_create.tests.UpdateOrCreateTestsWithManualPKs.test_create_with_duplicate_primary_key',
-                'many_to_one.tests.ManyToOneTests.test_fk_assignment_and_related_object_cache',
-                'many_to_many.tests.ManyToManyTests.test_add',
-                'model_fields.test_booleanfield.BooleanFieldTests.test_null_default',
-                'model_fields.test_floatfield.TestFloatField.test_float_validates_object',
-                'multiple_database.tests.QueryTestCase.test_generic_key_cross_database_protection',
-                'multiple_database.tests.QueryTestCase.test_m2m_cross_database_protection',
-                'transaction_hooks.tests.TestConnectionOnCommit.test_discards_hooks_from_rolled_back_savepoint',
-                'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_rolled_back_with_outer',
-                'transaction_hooks.tests.TestConnectionOnCommit.test_inner_savepoint_does_not_affect_outer',
-            )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
             test_app = test_name.split('.')[0]
@@ -275,11 +153,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # https://github.com/cockroachdb/django-cockroachdb/issues/20
             'expressions.tests.ExpressionsNumericTests',
         )
-        if not self.connection.features.is_cockroachdb_20_1:
-            skip_classes += (
-                # Requires savepoints:
-                'test_utils.tests.TestBadSetUpTestData',
-            )
         for test_class in skip_classes:
             test_module_name, _, test_class_name = test_class.rpartition('.')
             test_app = test_module_name.split('.')[0]
@@ -306,11 +179,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
         # This environment variable is set by teamcity-build/runtests.py or
         # by a developer running the tests locally.
         if os.environ.get('RUNNING_COCKROACH_BACKEND_TESTS'):
-            # The cockroach tests are run with a fork of Django that fixes
-            # a bug where TestCase doesn't work without savepoints
-            # (https://code.djangoproject.com/ticket/28263).
-            for alias in connections:
-                connections[alias].features._supports_transactions = True
             self.mark_expected_failures()
         super().create_test_db(*args, **kwargs)
 

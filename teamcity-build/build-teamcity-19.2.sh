@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -x
 
-./teamcity-build/build-teamcity.sh "v19.2.9"
+echo 'CockroachDB 19.2 is not supported with Django 3.1.'
