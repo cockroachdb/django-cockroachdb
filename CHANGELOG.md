@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.1 - Unreleased
+## 3.0.1 - 2020-05-15
 
 - Add support for `QuerySet.explain()` options.
 - Remove `psycopg2` from `setup.py`'s `install_requires` so that users can
