@@ -124,7 +124,7 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
    8. [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
    9. [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
 
-## Additional issues and limitations in CockroachDB 19.2.x (as of 19.2.6)
+## Additional issues and limitations in CockroachDB 19.2.x (as of 19.2.7)
 
 1. Savepoints aren't supported. This means a few things:
    1. Django's [transaction.atomic()](https://docs.djangoproject.com/en/stable/topics/db/transactions/#django.db.transaction.atomic)
