@@ -122,7 +122,7 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
    7. [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
       `greatest(): expected <arg> to be of type <type>, found type <other type>`
 
-## Additional issues and limitations in CockroachDB 19.2.x (as of 19.2.6)
+## Additional issues and limitations in CockroachDB 19.2.x (as of 19.2.7)
 
 1. Savepoints aren't supported. This means a few things:
    1. Django's [transaction.atomic()](https://docs.djangoproject.com/en/stable/topics/db/transactions/#django.db.transaction.atomic)
