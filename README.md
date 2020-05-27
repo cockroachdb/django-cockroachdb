@@ -92,7 +92,7 @@ DATABASES = {
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
-## Known issues and limitations (as of CockroachDB 20.1)
+## Known issues and limitations (as of CockroachDB 20.1.1)
 
 1. CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
    which means certain things in Django like forward references in fixtures

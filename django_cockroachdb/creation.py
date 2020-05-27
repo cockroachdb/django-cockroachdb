@@ -130,11 +130,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
                 # timezones after 2038 use incorrect DST settings:
                 # https://github.com/cockroachdb/django-cockroachdb/issues/124
                 'expressions.tests.FTimeDeltaTests.test_datetime_subtraction_microseconds',
-                # InternalError: unexpected error: received 4 results, limit
-                # was 3 (original limit: 3, batch=1 Scan idx=0):
-                # https://github.com/cockroachdb/cockroach/issues/46652
-                'admin_filters.tests.ListFiltersTests.test_simplelistfilter_with_queryset_based_lookups',
-                'expressions_case.tests.CaseExpressionTests.test_update_fk',
             )
         if not self.connection.features.is_cockroachdb_20_1:
             expected_failures += (
