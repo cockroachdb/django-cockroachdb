@@ -10,7 +10,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     has_select_for_update = property(operator.attrgetter('is_cockroachdb_20_1'))
     has_select_for_update_of = property(operator.attrgetter('is_cockroachdb_20_1'))
     # Not supported: https://github.com/cockroachdb/cockroach/issues/40476
-    has_select_for_update_nowait = False
+    has_select_for_update_nowait = property(operator.attrgetter('is_cockroachdb_20_2'))
     has_select_for_update_skip_locked = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/31632
@@ -75,6 +75,17 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # supported: https://github.com/cockroachdb/cockroach/issues/32917
     can_create_inline_fk = False
 
+    # CockroachDB stopped creating indexes on foreign keys in 20.2.
+    indexes_foreign_keys = property(operator.attrgetter('is_not_cockroachdb_20_2'))
+
     @cached_property
     def is_cockroachdb_20_1(self):
         return self.connection.cockroachdb_version >= (20, 1)
+
+    @cached_property
+    def is_cockroachdb_20_2(self):
+        return self.connection.cockroachdb_version >= (20, 2)
+
+    @cached_property
+    def is_not_cockroachdb_20_2(self):
+        return self.connection.cockroachdb_version < (20, 2)

@@ -25,10 +25,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # greatest(): expected avg(price) to be of type float, found type
             # decimal: https://github.com/cockroachdb/django-cockroachdb/issues/74
             'aggregation.tests.AggregateTestCase.test_expression_on_aggregation',
-            # stddev/variance functions not supported:
-            # https://github.com/cockroachdb/django-cockroachdb/issues/25
-            'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_numerical_aggregates',
-            'aggregation_regress.tests.AggregationTests.test_stddev',
             # POWER() doesn't support negative exponents:
             # https://github.com/cockroachdb/django-cockroachdb/issues/22
             'db_functions.math.test_power.PowerTests.test_integer',
@@ -64,8 +60,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Unsupported query: mixed type addition in SELECT:
             # https://github.com/cockroachdb/django-cockroachdb/issues/19
             'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
-            # Nondeterministic query: https://github.com/cockroachdb/django-cockroachdb/issues/48
-            'queries.tests.SubqueryTests.test_slice_subquery_and_query',
             # Forward references in fixtures won't work until cockroachdb can
             # disable constraints: https://github.com/cockroachdb/cockroach/issues/19444
             'serializers.test_data.SerializerDataTests.test_json_serializer',
@@ -258,6 +252,15 @@ class DatabaseCreation(PostgresDatabaseCreation):
                 # CharField max_length is ignored on cockroachdb. CharField is
                 # introspected as TextField.
                 'introspection.tests.IntrospectionTests.test_get_table_description_col_lengths',
+            )
+        if not self.connection.features.is_cockroachdb_20_2:
+            expected_failures += (
+                # stddev/variance functions not supported:
+                # https://github.com/cockroachdb/django-cockroachdb/issues/25
+                'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_numerical_aggregates',
+                'aggregation_regress.tests.AggregationTests.test_stddev',
+                # Nondeterministic query: https://github.com/cockroachdb/django-cockroachdb/issues/48
+                'queries.tests.SubqueryTests.test_slice_subquery_and_query',
             )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
