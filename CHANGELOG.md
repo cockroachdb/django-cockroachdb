@@ -3,6 +3,7 @@
 ## 2.2.3 - Unreleased
 
 - Fix `dbshell` crash: `unknown flag: --password`.
+- Add support for CockroachDB 20.2.
 
 ## 2.2.2 - 2020-08-05
 

@@ -6,6 +6,9 @@ from django.db.models import ForeignKey
 
 
 class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
+    # Don't include the USING clause as per
+    # https://github.com/cockroachdb/cockroach/issues/49329#issuecomment-666585887
+    sql_alter_column_type = "ALTER COLUMN %(column)s TYPE %(type)s"
     # Partial indexes ('%(condition)s' in SQL string) aren't implemented in
     # cockroachdb: https://github.com/cockroachdb/cockroach/issues/9683
     # If implemented, this attribute can be removed.
