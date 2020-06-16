@@ -79,7 +79,7 @@ If using Kerberos authentication, you can specify a custom service name in
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
-## Known issues and limitations (as of CockroachDB 20.1.8)
+## Known issues and limitations (as of CockroachDB 20.2.0)
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
@@ -102,11 +102,13 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
      `unsupported binary operator: <int> / <int> (desired <int>)`
    - [The power() database function doesn't accept negative exponents](https://github.com/cockroachdb/django-cockroachdb/issues/22):
      `power(): integer out of range`
-   - The `StdDev` and `Variance` aggregates
-     [aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/25).
    - [sum() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/73):
       `sum(): unsupported binary operator: <float> + <int>`
    - [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
      `greatest(): expected <arg> to be of type <type>, found type <other type>`
    - [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
    - [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
+
+## Additional limitations in CockroachDB 20.1.x
+
+- The `StdDev` and `Variance` aggregates aren't supported.

@@ -2,6 +2,8 @@
 
 ## 3.1.2 - Unreleased
 
+- Added support for CockroachDB 20.2.
+
 - Fixed crash when cloning test databases: `TypeError: settings_to_cmd_args()
   missing 1 required positional argument: 'parameters'`.
 

@@ -1,11 +1,14 @@
+import operator
+
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
+from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
     # Not supported: https://github.com/cockroachdb/cockroach/issues/40476
-    has_select_for_update_nowait = False
+    has_select_for_update_nowait = property(operator.attrgetter('is_cockroachdb_20_2'))
     has_select_for_update_skip_locked = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/31632
@@ -57,3 +60,14 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # This can be removed when CockroachDB adds support for NULL FIRST/LAST:
     # https://github.com/cockroachdb/cockroach/issues/6224
     supports_order_by_nulls_modifier = False
+
+    # CockroachDB stopped creating indexes on foreign keys in 20.2.
+    indexes_foreign_keys = property(operator.attrgetter('is_not_cockroachdb_20_2'))
+
+    @cached_property
+    def is_cockroachdb_20_2(self):
+        return self.connection.cockroachdb_version >= (20, 2)
+
+    @cached_property
+    def is_not_cockroachdb_20_2(self):
+        return self.connection.cockroachdb_version < (20, 2)

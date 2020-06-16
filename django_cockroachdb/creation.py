@@ -24,10 +24,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # greatest(): expected avg(price) to be of type float, found type
             # decimal: https://github.com/cockroachdb/django-cockroachdb/issues/74
             'aggregation.tests.AggregateTestCase.test_expression_on_aggregation',
-            # stddev/variance functions not supported:
-            # https://github.com/cockroachdb/django-cockroachdb/issues/25
-            'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_numerical_aggregates',
-            'aggregation_regress.tests.AggregationTests.test_stddev',
             # POWER() doesn't support negative exponents:
             # https://github.com/cockroachdb/django-cockroachdb/issues/22
             'db_functions.math.test_power.PowerTests.test_integer',
@@ -63,8 +59,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # Unsupported query: mixed type addition in SELECT:
             # https://github.com/cockroachdb/django-cockroachdb/issues/19
             'annotations.tests.NonAggregateAnnotationTestCase.test_mixed_type_annotation_numbers',
-            # Nondeterministic query: https://github.com/cockroachdb/django-cockroachdb/issues/48
-            'queries.tests.SubqueryTests.test_slice_subquery_and_query',
             # Forward references in fixtures won't work until cockroachdb can
             # disable constraints: https://github.com/cockroachdb/cockroach/issues/19444
             'backends.base.test_creation.TestDeserializeDbFromString.test_circular_reference',
@@ -154,6 +148,15 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'model_fields.test_jsonfield.TestQuerying.test_ordering_by_transform',
             'model_fields.test_jsonfield.TestQuerying.test_ordering_grouping_by_key_transform',
         )
+        if not self.connection.features.is_cockroachdb_20_2:
+            expected_failures += (
+                # stddev/variance functions not supported:
+                # https://github.com/cockroachdb/django-cockroachdb/issues/25
+                'aggregation.test_filter_argument.FilteredAggregateTests.test_filtered_numerical_aggregates',
+                'aggregation_regress.tests.AggregationTests.test_stddev',
+                # Nondeterministic query: https://github.com/cockroachdb/django-cockroachdb/issues/48
+                'queries.tests.SubqueryTests.test_slice_subquery_and_query',
+            )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
             test_app = test_name.split('.')[0]
