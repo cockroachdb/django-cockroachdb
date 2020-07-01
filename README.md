@@ -23,21 +23,6 @@ Django. For example, to get the latest compatible release for Django 3.0.x:
 The minor release number of Django doesn't correspond to the minor release
 number of django-cockroachdb. Use the latest minor release of each.
 
-If a release series of django-cockroachdb only has pre-releases (alphas or
-betas), you'll see an error with a list of the available versions. In that
-case, specify the exact version that you want. For example, if
-django-cockroachdb 3.0 alpha 1 is available:
-
-```
-$ pip install django-cockroachdb==3.0.*`
-ERROR: Could not find a version that satisfies the requirement
-django-cockroachdb==3.0.* (from versions: 3.0a1)
-
-$ pip install django-cockroachdb==3.0a1
-...
-Successfully installed django-cockroachdb-3.0a1 psycopg2-2.8.4
-```
-
 Configure the Django `DATABASES` setting similar to this:
 
 ```python
