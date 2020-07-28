@@ -39,7 +39,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     can_rollback_ddl = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/17511
-    supports_callproc_kwargs = False
     create_test_procedure_without_params_sql = None
     create_test_procedure_with_int_param_sql = None
 
