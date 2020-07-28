@@ -7,10 +7,10 @@ from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
-    # Not supported: https://github.com/cockroachdb/cockroach/issues/6583
-    has_select_for_update = False
+    has_select_for_update = property(operator.attrgetter('is_cockroachdb_20_1'))
+    has_select_for_update_of = property(operator.attrgetter('is_cockroachdb_20_1'))
+    # Not supported: https://github.com/cockroachdb/cockroach/issues/40476
     has_select_for_update_nowait = False
-    has_select_for_update_of = False
     has_select_for_update_skip_locked = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/31632

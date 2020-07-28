@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.2 - Unreleased
+
+- Enable `QuerySet.select_for_update()` and
+  `QuerySet.select_for_update(of=...)` in CockroachDB 20.1.
+
 ## 2.2.1 - 2020-05-15
 
 - Add support for `QuerySet.explain()` options.
