@@ -288,6 +288,20 @@ class DatabaseCreation(PostgresDatabaseCreation):
                 klass = getattr(test_module, test_class_name)
                 setattr(test_module, test_class_name, skip('unsupported by cockroachdb')(klass))
 
+        skip_tests = (
+            # CockroachDB has more restrictive blocking than other databases.
+            # https://github.com/cockroachdb/django-cockroachdb/issues/153#issuecomment-664697963
+            'select_for_update.tests.SelectForUpdateTests.test_block',
+        )
+        for test_name in skip_tests:
+            test_case_name, _, method_name = test_name.rpartition('.')
+            test_app = test_name.split('.')[0]
+            # Importing a test app that isn't installed raises RuntimeError.
+            if test_app in settings.INSTALLED_APPS:
+                test_case = import_string(test_case_name)
+                method = getattr(test_case, method_name)
+                setattr(test_case, method_name, skip('unsupported by cockroachdb')(method))
+
     def create_test_db(self, *args, **kwargs):
         # This environment variable is set by teamcity-build/runtests.py or
         # by a developer running the tests locally.
