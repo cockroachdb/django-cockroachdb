@@ -87,7 +87,7 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
 - Migrations have some limitations. CockroachDB doesn't support:
 
-   - [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
+   - [changing column type if it's part of an index](https://go.crdb.dev/issue/47636)
    - dropping or changing a table's primary key
 
 - Known Bugs:
@@ -112,3 +112,4 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 ## Additional limitations in CockroachDB 20.1.x
 
 - The `StdDev` and `Variance` aggregates aren't supported.
+- Changing a column's type isn't supported.
