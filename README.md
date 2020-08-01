@@ -92,7 +92,7 @@ To use `django.contrib.gis` with CockroachDB, use
 
 - Migrations have some limitations. CockroachDB doesn't support:
 
-   - [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
+   - [changing column type if it's part of an index](https://go.crdb.dev/issue/47636)
    - dropping or changing a table's primary key
    - [indexes on expressions](https://github.com/cockroachdb/cockroach/issues/9682) (Django's [`Index.expressions`](https://docs.djangoproject.com/en/stable/ref/models/indexes/#django.db.models.Index.expressions))
 
@@ -131,6 +131,8 @@ To use `django.contrib.gis` with CockroachDB, use
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
 
 ## Known issues and limitations in CockroachDB 20.2.x and earlier
+
+- Changing a column's type isn't supported.
 
 - [Timezones after 2038 use incorrect DST settings](https://github.com/cockr
 oachdb/django-cockroachdb/issues/124).
