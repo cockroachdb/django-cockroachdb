@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.2 - Unreleased
+## 2.2.2 - 2020-08-05
 
 - Enable `QuerySet.select_for_update()` and
   `QuerySet.select_for_update(of=...)` in CockroachDB 20.1.
