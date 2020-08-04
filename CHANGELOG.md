@@ -5,6 +5,9 @@
 - Enable `QuerySet.select_for_update()` and
   `QuerySet.select_for_update(of=...)` in CockroachDB 20.1.
 
+- Fix creation/deletion of `unique_rowid()` default when altering to/from
+  `AutoField`.
+
 ## 3.0.1 - 2020-05-20
 
 - Add support for `QuerySet.explain()` options.
