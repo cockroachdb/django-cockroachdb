@@ -36,6 +36,25 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
             self, model, old_field, new_field, old_type, new_type, old_db_params,
             new_db_params, strict,
         )
+        # Add or remove `DEFAULT unique_rowid()` for AutoField.
+        old_suffix = old_field.db_type_suffix(self.connection)
+        new_suffix = new_field.db_type_suffix(self.connection)
+        if old_suffix != new_suffix:
+            if new_suffix:
+                self.execute(self.sql_alter_column % {
+                    'table': self.quote_name(model._meta.db_table),
+                    'changes': 'ALTER COLUMN %(column)s SET %(expression)s' % {
+                        'column': self.quote_name(new_field.column),
+                        'expression': new_suffix,
+                    }
+                })
+            else:
+                self.execute(self.sql_alter_column % {
+                    'table': self.quote_name(model._meta.db_table),
+                    'changes': 'ALTER COLUMN %(column)s DROP DEFAULT' % {
+                        'column': self.quote_name(new_field.column),
+                    }
+                })
 
     def _alter_column_type_sql(self, model, old_field, new_field, new_type):
         if new_type.lower() in ("serial", "bigserial"):
