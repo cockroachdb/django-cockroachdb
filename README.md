@@ -16,9 +16,9 @@ production it is advised to use the package built from sources.
 ## Install and usage
 
 Use the version of django-cockroachdb that corresponds to your version of
-Django. For example, to get the latest compatible release for Django 3.0.x:
+Django. For example, to get the latest compatible release for Django 3.1.x:
 
-`pip install django-cockroachdb==3.0.*`
+`pip install django-cockroachdb==3.1.*`
 
 The minor release number of Django doesn't correspond to the minor release
 number of django-cockroachdb. Use the latest minor release of each.
@@ -108,27 +108,3 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
       `greatest(): expected <arg> to be of type <type>, found type <other type>`
    8. [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
    9. [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
-
-## Additional issues and limitations in CockroachDB 19.2.x (as of 19.2.9)
-
-1. Savepoints aren't supported. This means a few things:
-   1. Django's [transaction.atomic()](https://docs.djangoproject.com/en/stable/topics/db/transactions/#django.db.transaction.atomic)
-      can't be nested.
-   2. Django's `TestCase` works like `TransactionTestCase`. That is,
-      transactions aren't used to speed up the former.
-
-2. Known Bugs:
-   1. [The extract() function doesn't respect the time zone.](https://github.com/cockroachdb/django-cockroachdb/issues/47)
-   2. [Interval math across daylight saving time is incorrect.](https://github.com/cockroachdb/django-cockroachdb/issues/54)
-   3. [`date_trunc('week', <value>)` truncates to midnight Sunday rather than Monday](https://github.com/cockroachdb/django-cockroachdb/issues/92)
-   4. [date_trunc() results are incorrectly localized.](https://github.com/cockroachdb/django-cockroachdb/issues/32)
-   5. [cast() timestamptz to time doesn't respect the time zone.](https://github.com/cockroachdb/django-cockroachdb/issues/37)
-   6. [Interval math may be incorrect on date columns.](https://github.com/cockroachdb/django-cockroachdb/issues/53)
-
-3. Unsupported queries:
-   1. [extract() doesn't support interval columns (DurationField)](https://github.com/cockroachdb/django-cockroachdb/issues/29):
-      `unknown signature: extract(string, interval)`
-   2. [The log() function doesn't support custom bases](https://github.com/cockroachdb/django-cockroachdb/issues/50):
-      `unknown signature: extract(string, interval)`
-   3. [timezone() doesn't support UTC offsets](https://github.com/cockroachdb/django-cockroachdb/issues/97):
-      `timezone(): unknown time zone UTC...`
