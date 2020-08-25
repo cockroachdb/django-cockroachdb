@@ -280,6 +280,21 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # CockroachDB has more restrictive blocking than other databases.
             # https://github.com/cockroachdb/django-cockroachdb/issues/153#issuecomment-664697963
             'select_for_update.tests.SelectForUpdateTests.test_block',
+            # Since QuerySet.select_for_update() was enabled, this test is
+            # already skipped by the 'Database took too long to lock the row'
+            # logic in the test. Skipping it entirely prevents some error
+            # output in the logs:
+            # Exception in thread Thread-1:
+            # ...
+            # psycopg2.errors.SerializationFailure: restart transaction:
+            # TransactionRetryWithProtoRefreshError: WriteTooOldError: write
+            # at timestamp 1598314405.858850941,0 too old; wrote at
+            # 1598314405.883337663,1
+            'get_or_create.tests.UpdateOrCreateTransactionTests.test_creation_in_transaction',
+            # Sometimes fails as above or with
+            # AssertionError: datetime.timedelta(microseconds=28529) not
+            # greater than datetime.timedelta(microseconds=500000)
+            'get_or_create.tests.UpdateOrCreateTransactionTests.test_updates_in_transaction',
         )
         for test_name in skip_tests:
             test_case_name, _, method_name = test_name.rpartition('.')
