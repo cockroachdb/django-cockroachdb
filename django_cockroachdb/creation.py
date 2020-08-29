@@ -66,11 +66,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'serializers.test_data.SerializerDataTests.test_python_serializer',
             'serializers.test_data.SerializerDataTests.test_xml_serializer',
             'serializers.test_data.SerializerDataTests.test_yaml_serializer',
-            # cockroachdb doesn't distinguish between tables and views. Both
-            # are included regardless of whether inspectdb's --include-views
-            # option is set.
-            'inspectdb.tests.InspectDBTransactionalTests.test_include_views',
-            'introspection.tests.IntrospectionTests.test_table_names_with_views',
             # No sequence for AutoField in cockroachdb.
             'introspection.tests.IntrospectionTests.test_sequence_list',
             # Unsupported query: unsupported binary operator: <int> / <int>:
@@ -261,6 +256,11 @@ class DatabaseCreation(PostgresDatabaseCreation):
                 'aggregation_regress.tests.AggregationTests.test_stddev',
                 # Nondeterministic query: https://github.com/cockroachdb/django-cockroachdb/issues/48
                 'queries.tests.SubqueryTests.test_slice_subquery_and_query',
+                # `SHOW TABLES` doesn't distinguish between tables and views.
+                # Both are included regardless of whether inspectdb's
+                # --include-views option is set.
+                'inspectdb.tests.InspectDBTransactionalTests.test_include_views',
+                'introspection.tests.IntrospectionTests.test_table_names_with_views',
             )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')
