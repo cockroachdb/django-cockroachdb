@@ -85,9 +85,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'introspection.tests.IntrospectionTests.test_table_names_with_views',
             # No sequence for AutoField in cockroachdb.
             'introspection.tests.IntrospectionTests.test_sequence_list',
-            # CharField max_length is ignored on cockroachdb. CharField is
-            # introspected as TextField.
-            'introspection.tests.IntrospectionTests.test_get_table_description_col_lengths',
             # Unsupported query: unsupported binary operator: <int> / <int>:
             # https://github.com/cockroachdb/django-cockroachdb/issues/21
             'expressions.tests.ExpressionOperatorTests.test_lefthand_division',

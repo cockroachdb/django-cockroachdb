@@ -48,13 +48,10 @@ DATABASES = {
 
 ## Notes on Django fields
 
-1. `CharField`'s `max_length` is ignored. It uses the same storage as
-   `TextField` so `CharField` is introspected by `inspectdb` as `TextField`.
-
-2. `IntegerField` uses the same storage as `BigIntegerField` so `IntegerField`
+1. `IntegerField` uses the same storage as `BigIntegerField` so `IntegerField`
    is introspected by `inspectdb` as `BigIntegerField`.
 
-3. `AutoField` and `BigAutoField` are both stored as
+2. `AutoField` and `BigAutoField` are both stored as
    [integer](https://www.cockroachlabs.com/docs/stable/int.html) (64-bit) with
    [`DEFAULT unique_rowid()`](https://www.cockroachlabs.com/docs/stable/functions-and-operators.html#id-generation-functions).
 
@@ -77,7 +74,7 @@ DATABASES = {
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
-## Known issues and limitations (as of CockroachDB 20.1.4)
+## Known issues and limitations (as of CockroachDB 20.1.5)
 
 1. CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
    which means certain things in Django like forward references in fixtures
