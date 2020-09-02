@@ -154,6 +154,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # ordering by JSON isn't supported:
             # https://github.com/cockroachdb/cockroach/issues/35706
             'model_fields.test_jsonfield.TestQuerying.test_deep_distinct',
+            'model_fields.test_jsonfield.TestQuerying.test_order_grouping_custom_decoder',
             'model_fields.test_jsonfield.TestQuerying.test_ordering_by_transform',
             'model_fields.test_jsonfield.TestQuerying.test_ordering_grouping_by_key_transform',
         )
