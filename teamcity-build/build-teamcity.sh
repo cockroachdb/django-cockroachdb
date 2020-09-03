@@ -22,9 +22,15 @@ cd ../..
 pip3 install .
 
 # download and start cockroach
-wget "https://binaries.cockroachdb.com/cockroach-${VERSION}.linux-amd64.tgz"
-tar -xvf cockroach-${VERSION}*
-cp cockroach-${VERSION}*/cockroach cockroach_exec
+if [ $VERSION == "LATEST" ]
+then
+    wget "https://edge-binaries.cockroachdb.com/cockroach/cockroach.linux-gnu-amd64.LATEST" -O cockroach_exec
+    chmod +x cockroach_exec
+else
+    wget "https://binaries.cockroachdb.com/cockroach-${VERSION}.linux-amd64.tgz"
+    tar -xvf cockroach-${VERSION}*
+    cp cockroach-${VERSION}*/cockroach cockroach_exec
+fi
 ./cockroach_exec start-single-node --insecure &
 
 cd _django_repo/tests/
