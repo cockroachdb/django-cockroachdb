@@ -8,6 +8,7 @@ from django.db.models import Index
 class DatabaseIntrospection(PostgresDatabaseIntrospection):
     data_types_reverse = dict(PostgresDatabaseIntrospection.data_types_reverse)
     data_types_reverse[1184] = 'DateTimeField'  # TIMESTAMPTZ
+    index_default_access_method = 'prefix'
 
     def get_table_list(self, cursor):
         cursor.execute("SELECT table_name, type FROM [SHOW TABLES]")
@@ -19,12 +20,12 @@ class DatabaseIntrospection(PostgresDatabaseIntrospection):
         Retrieve any constraints or keys (unique, pk, fk, check, index) across
         one or more columns. Also retrieve the definition of expression-based
         indexes.
-
-        This comes from Django before 1d8cfa36089f2d1295abad03a99fc3c259bde6b5
-        where unnest(anyarray, anyarray) usage was added. Remove this method
-        when cockroachdb supports unnest(anyarray, anyarray):
-        https://github.com/cockroachdb/cockroach/issues/41434
         """
+        # Remove this method when CockroachDB 21.1 is the minimum supported
+        # version. In older versions, Django's test suite takes 30 minutes
+        # longer when not using the queries below.
+        if self.connection.features.is_cockroachdb_21_1:
+            return super().get_constraints(cursor, table_name)
         constraints = {}
         # Loop over the key table, collecting things as constraints. The column
         # array must return column names in the same order in which they were
