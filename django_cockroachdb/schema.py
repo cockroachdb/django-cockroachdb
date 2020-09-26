@@ -9,10 +9,13 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # Don't include the USING clause as per
     # https://github.com/cockroachdb/cockroach/issues/49329#issuecomment-666585887
     sql_alter_column_type = "ALTER COLUMN %(column)s TYPE %(type)s"
-    # Partial indexes ('%(condition)s' in SQL string) aren't implemented in
-    # cockroachdb: https://github.com/cockroachdb/cockroach/issues/9683
-    # If implemented, this attribute can be removed.
-    sql_create_index = 'CREATE INDEX %(name)s ON %(table)s%(using)s (%(columns)s)%(extra)s'
+
+    @property
+    def sql_create_index(self):
+        if self.connection.features.is_cockroachdb_20_2:
+            return PostgresDatabaseSchemaEditor.sql_create_index
+        else:
+            return 'CREATE INDEX %(name)s ON %(table)s%(using)s (%(columns)s)%(extra)s'
 
     # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE" before
     # "ALTER TABLE..." to run any any deferred checks to allow dropping the

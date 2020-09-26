@@ -17,7 +17,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     can_defer_constraint_checks = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/9683
-    supports_partial_indexes = False
+    supports_partial_indexes = property(operator.attrgetter('is_cockroachdb_20_2'))
 
     uses_savepoints = property(operator.attrgetter('is_cockroachdb_20_1'))
     can_release_savepoints = property(operator.attrgetter('is_cockroachdb_20_1'))
