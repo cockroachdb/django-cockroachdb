@@ -18,7 +18,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     supports_deferrable_unique_constraints = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/9683
-    supports_partial_indexes = False
+    supports_partial_indexes = property(operator.attrgetter('is_cockroachdb_20_2'))
 
     # There are limitations on having DDL statements in a transaction:
     # https://www.cockroachlabs.com/docs/stable/known-limitations.html#schema-changes-within-transactions
