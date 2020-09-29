@@ -73,7 +73,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
 
     # adding a REFERENCES constraint while also adding a column via ALTER not
     # supported: https://github.com/cockroachdb/cockroach/issues/32917
-    can_create_inline_fk = False
+    can_create_inline_fk = property(operator.attrgetter('is_cockroachdb_20_2'))
 
     # CockroachDB stopped creating indexes on foreign keys in 20.2.
     indexes_foreign_keys = property(operator.attrgetter('is_not_cockroachdb_20_2'))

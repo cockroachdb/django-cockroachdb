@@ -25,7 +25,15 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
 
     # adding a REFERENCES constraint while also adding a column via ALTER not
     # supported: https://github.com/cockroachdb/cockroach/issues/32917
-    sql_create_column_inline_fk = None
+    @property
+    def sql_create_column_inline_fk(self):
+        if self.connection.features.is_cockroachdb_20_2:
+            # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE"
+            # after creating this foreign key. This isn't supported by
+            # CockroachDB.
+            return 'CONSTRAINT %(name)s REFERENCES %(to_table)s(%(to_column)s)%(deferrable)s'
+        else:
+            return None
 
     def _index_columns(self, table, columns, col_suffixes, opclasses):
         # cockroachdb doesn't support PostgreSQL opclasses.
