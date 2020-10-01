@@ -48,24 +48,24 @@ DATABASES = {
 
 ## Notes on Django fields
 
-1. `IntegerField` uses the same storage as `BigIntegerField` so `IntegerField`
-   is introspected by `inspectdb` as `BigIntegerField`.
+- `IntegerField` uses the same storage as `BigIntegerField` so `IntegerField`
+  is introspected by `inspectdb` as `BigIntegerField`.
 
-2. `AutoField` and `BigAutoField` are both stored as
-   [integer](https://www.cockroachlabs.com/docs/stable/int.html) (64-bit) with
-   [`DEFAULT unique_rowid()`](https://www.cockroachlabs.com/docs/stable/functions-and-operators.html#id-generation-functions).
+- `AutoField` and `BigAutoField` are both stored as
+  [integer](https://www.cockroachlabs.com/docs/stable/int.html) (64-bit) with
+  [`DEFAULT unique_rowid()`](https://www.cockroachlabs.com/docs/stable/functions-and-operators.html#id-generation-functions).
 
 ## Notes on Django QuerySets
 
-1. [`QuerySet.explain()`](https://docs.djangoproject.com/en/stable/ref/models/querysets/#explain)
-   accepts `verbose`, `types`, `opt`, `vec`, and `distsql` options which
-   correspond to [CockroachDB's parameters](https://www.cockroachlabs.com/docs/stable/explain.html#parameters).
-   For example:
+- [`QuerySet.explain()`](https://docs.djangoproject.com/en/stable/ref/models/querysets/#explain)
+  accepts `verbose`, `types`, `opt`, `vec`, and `distsql` options which
+  correspond to [CockroachDB's parameters](https://www.cockroachlabs.com/docs/stable/explain.html#parameters).
+  For example:
 
-    ```python
-    >>> Choice.objects.explain(opt=True, verbose=True)
-    'scan polls_choice\n ├── columns: id:1 question_id:4 choice_text:2 votes:3\n ├── stats: [rows=1]\n ├── cost: 1.1\n ├── key: (1)\n ├── fd: (1)-->(2-4)\n └── prune: (1-4)'
-    ```
+   ```python
+   >>> Choice.objects.explain(opt=True, verbose=True)
+   'scan polls_choice\n ├── columns: id:1 question_id:4 choice_text:2 votes:3\n ├── stats: [rows=1]\n ├── cost: 1.1\n ├── key: (1)\n ├── fd: (1)-->(2-4)\n └── prune: (1-4)'
+   ```
 
 ## FAQ
 
@@ -76,32 +76,32 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
 ## Known issues and limitations (as of CockroachDB 20.1.5)
 
-1. CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
-   which means certain things in Django like forward references in fixtures
-   aren't supported.
+- CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
+  which means certain things in Django like forward references in fixtures
+  aren't supported.
 
-2. Migrations have some limitations. CockroachDB doesn't support:
+- Migrations have some limitations. CockroachDB doesn't support:
 
-   1. [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
-   2. dropping or changing a table's primary key
+   - [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
+   - dropping or changing a table's primary key
 
-3. Known Bugs:
-   1. [Timezones after 2038 use incorrect DST settings](https://github.com/cockroachdb/django-cockroachdb/issues/124).
+- Known Bugs:
+   - [Timezones after 2038 use incorrect DST settings](https://github.com/cockroachdb/django-cockroachdb/issues/124).
 
-4. Unsupported queries:
-   1. [Mixed type addition in SELECT](https://github.com/cockroachdb/django-cockroachdb/issues/19):
-      `unsupported binary operator: <int> + <float>`
-   2. [UPDATE float column with integer column](https://github.com/cockroachdb/django-cockroachdb/issues/20):
-      `value type int doesn't match type FLOAT8 of column <name>`
-   3. [Division that yields a different type](https://github.com/cockroachdb/django-cockroachdb/issues/21):
-      `unsupported binary operator: <int> / <int> (desired <int>)`
-   4. [The power() database function doesn't accept negative exponents](https://github.com/cockroachdb/django-cockroachdb/issues/22):
-      `power(): integer out of range`
-   5. The `StdDev` and `Variance` aggregates
-      [aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/25).
-   6. [sum() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/73):
+- Unsupported queries:
+   - [Mixed type addition in SELECT](https://github.com/cockroachdb/django-cockroachdb/issues/19):
+     `unsupported binary operator: <int> + <float>`
+   - [UPDATE float column with integer column](https://github.com/cockroachdb/django-cockroachdb/issues/20):
+     `value type int doesn't match type FLOAT8 of column <name>`
+   - [Division that yields a different type](https://github.com/cockroachdb/django-cockroachdb/issues/21):
+     `unsupported binary operator: <int> / <int> (desired <int>)`
+   - [The power() database function doesn't accept negative exponents](https://github.com/cockroachdb/django-cockroachdb/issues/22):
+     `power(): integer out of range`
+   - The `StdDev` and `Variance` aggregates
+     [aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/25).
+   - [sum() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/73):
       `sum(): unsupported binary operator: <float> + <int>`
-   7. [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
-      `greatest(): expected <arg> to be of type <type>, found type <other type>`
-   8. [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
-   9. [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
+   - [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
+     `greatest(): expected <arg> to be of type <type>, found type <other type>`
+   - [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
+   - [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
