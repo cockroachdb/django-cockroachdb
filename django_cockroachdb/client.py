@@ -8,7 +8,7 @@ class DatabaseClient(BaseDatabaseClient):
     executable_name = 'cockroach'
 
     @classmethod
-    def settings_to_cmd_args(cls, settings_dict):
+    def settings_to_cmd_args(cls, settings_dict, parameters):
         args = [cls.executable_name, 'sql']
         db = settings_dict['OPTIONS'].get('db', settings_dict['NAME'])
         user = settings_dict['OPTIONS'].get('user', settings_dict['USER'])
@@ -36,8 +36,9 @@ class DatabaseClient(BaseDatabaseClient):
             args += ["--port=%s" % port]
         if insecure:
             args += ["--insecure"]
+        args.extend(parameters)
         return args
 
-    def runshell(self):
-        args = DatabaseClient.settings_to_cmd_args(self.connection.settings_dict)
+    def runshell(self, parameters):
+        args = DatabaseClient.settings_to_cmd_args(self.connection.settings_dict, parameters)
         subprocess.check_call(args)
