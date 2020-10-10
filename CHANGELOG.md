@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.1.1 - Unreleased
+## 3.1.1 - 2020-10-14
 
 - Fixed `dbshell` startup crash.
 
