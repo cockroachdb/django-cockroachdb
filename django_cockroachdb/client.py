@@ -12,7 +12,6 @@ class DatabaseClient(BaseDatabaseClient):
         args = [cls.executable_name, 'sql']
         db = settings_dict['OPTIONS'].get('db', settings_dict['NAME'])
         user = settings_dict['OPTIONS'].get('user', settings_dict['USER'])
-        passwd = settings_dict['OPTIONS'].get('passwd', settings_dict['PASSWORD'])
         host = settings_dict['OPTIONS'].get('host', settings_dict['HOST'])
         port = settings_dict['OPTIONS'].get('port', settings_dict['PORT'])
         sslrootcert = settings_dict['OPTIONS'].get('sslrootcert')
@@ -28,8 +27,6 @@ class DatabaseClient(BaseDatabaseClient):
             insecure = True
         if user:
             args += ["--user=%s" % user]
-        if passwd:
-            args += ["--password=%s" % passwd]
         if host:
             args += ["--host=%s" % host]
         if port:

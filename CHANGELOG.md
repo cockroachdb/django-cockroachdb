@@ -5,6 +5,8 @@
 - Fixed crash when cloning test databases: `TypeError: settings_to_cmd_args()
   missing 1 required positional argument: 'parameters'`.
 
+- Fixed `dbshell` crash: `unknown flag: --password`.
+
 ## 3.1.1 - 2020-10-14
 
 - Fixed `dbshell` startup crash.
