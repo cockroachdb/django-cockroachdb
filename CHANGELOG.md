@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1.2 - Unreleased
+
+- Fixed crash when cloning test databases: `TypeError: settings_to_cmd_args()
+  missing 1 required positional argument: 'parameters'`.
+
 ## 3.1.1 - 2020-10-14
 
 - Fixed `dbshell` startup crash.

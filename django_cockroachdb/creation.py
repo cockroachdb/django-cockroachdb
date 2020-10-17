@@ -242,7 +242,7 @@ class DatabaseCreation(PostgresDatabaseCreation):
 
     def _clone_db(self, source_database_name, target_database_name):
         # Chop off ['cockroach', 'sql', '--database=test_djangotests', ...]
-        connect_args = DatabaseClient.settings_to_cmd_args(self.connection.settings_dict)[3:]
+        connect_args = DatabaseClient.settings_to_cmd_args(self.connection.settings_dict, [])[3:]
         dump_cmd = ['cockroach', 'dump', source_database_name] + connect_args
         load_cmd = ['cockroach', 'sql', '-d', target_database_name] + connect_args
         with subprocess.Popen(dump_cmd, stdout=subprocess.PIPE) as dump_proc:
