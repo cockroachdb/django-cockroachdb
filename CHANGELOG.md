@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.3 - Unreleased
+
+- Fix `dbshell` crash: `unknown flag: --password`.
+
 ## 3.0.2 - 2020-08-05
 
 - Enable `QuerySet.select_for_update()` and
