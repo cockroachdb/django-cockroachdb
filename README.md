@@ -30,7 +30,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django_cockroachdb',
         'NAME': 'django',
-        'USER': 'root',
+        'USER': 'myprojectuser',
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '26257',
