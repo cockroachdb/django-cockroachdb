@@ -48,7 +48,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             'queries.test_bulk_update.BulkUpdateNoteTests.test_multiple_fields',
             'queries.test_bulk_update.BulkUpdateTests.test_inherited_fields',
             'queries.tests.Queries1Tests.test_ticket9411',
-            'queries.tests.Ticket14056Tests.test_ticket_14056',
             'queries.tests.RelatedLookupTypeTests.test_values_queryset_lookup',
             'syndication_tests.tests.SyndicationFeedTest.test_rss2_feed',
             'syndication_tests.tests.SyndicationFeedTest.test_latest_post_date',

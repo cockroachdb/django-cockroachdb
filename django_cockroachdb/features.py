@@ -56,6 +56,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # Not supported: https://github.com/cockroachdb/cockroach/issues/41645
     supports_regex_backreferencing = False
 
+    # CockroachDB sorts NULL values first with ASC and last with DESC.
+    # PostgreSQL behaves the opposite.
+    nulls_order_largest = False
+
     # Introspection may work but 'CREATE MATERIALIZED VIEW' (required for the
     # test) isn't implemented: https://github.com/cockroachdb/cockroach/issues/41649
     can_introspect_materialized_views = False
