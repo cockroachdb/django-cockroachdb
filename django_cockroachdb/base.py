@@ -1,4 +1,5 @@
 import re
+from contextlib import contextmanager
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import cached_property
@@ -68,6 +69,14 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     def _set_autocommit(self, autocommit):
         with self.wrap_database_errors:
             self.connection.autocommit = autocommit
+
+    @contextmanager
+    def _nodb_cursor(self):
+        # Overidden to avoid inapplicable "Django was unable to create a
+        # connection to the 'postgres' database and will use the first
+        # PostgreSQL database instead." warning.
+        with super(PostgresDatabaseWrapper, self)._nodb_cursor() as cursor:
+            yield cursor
 
     @cached_property
     def cockroachdb_server_info(self):
