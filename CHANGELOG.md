@@ -10,6 +10,9 @@
 - Prevented exception hiding in `DatabaseWrapper._nodb_cursor()`
   (`RuntimeError: generator didn't yield`).
 
+- Fixed `dbshell` and `test` (if running tests in parallel) when using password
+  authentication.
+
 ## 3.1.1 - 2020-10-14
 
 - Fixed `dbshell` startup crash.

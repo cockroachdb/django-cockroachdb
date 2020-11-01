@@ -240,11 +240,12 @@ class DatabaseCreation(PostgresDatabaseCreation):
         self._clone_db(source_database_name, target_database_name)
 
     def _clone_db(self, source_database_name, target_database_name):
+        connect_args, env = DatabaseClient.settings_to_cmd_args_env(self.connection.settings_dict, [])
         # Chop off ['cockroach', 'sql', '--database=test_djangotests', ...]
-        connect_args = DatabaseClient.settings_to_cmd_args(self.connection.settings_dict, [])[3:]
+        connect_args = connect_args[3:]
         dump_cmd = ['cockroach', 'dump', source_database_name] + connect_args
         load_cmd = ['cockroach', 'sql', '-d', target_database_name] + connect_args
-        with subprocess.Popen(dump_cmd, stdout=subprocess.PIPE) as dump_proc:
-            with subprocess.Popen(load_cmd, stdin=dump_proc.stdout, stdout=subprocess.DEVNULL):
+        with subprocess.Popen(dump_cmd, stdout=subprocess.PIPE, env=env) as dump_proc:
+            with subprocess.Popen(load_cmd, stdin=dump_proc.stdout, stdout=subprocess.DEVNULL, env=env):
                 # Allow dump_proc to receive a SIGPIPE if the load process exits.
                 dump_proc.stdout.close()
