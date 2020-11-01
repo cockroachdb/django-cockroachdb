@@ -34,11 +34,13 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '26257',
-        # If connecting with SSL, remove the PASSWORD entry above and include
-        # the section below, replacing the file paths as appropriate.
+        # If connecting with SSL, include the section below, replacing the
+        # file paths as appropriate.
         'OPTIONS': {
             'sslmode': 'require',
             'sslrootcert': '/certs/ca.crt',
+            # Either sslcert and sslkey (below) or PASSWORD (above) is
+            # required.
             'sslcert': '/certs/client.myprojectuser.crt',
             'sslkey': '/certs/client.myprojectuser.key',
         },
