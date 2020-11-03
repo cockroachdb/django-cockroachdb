@@ -46,6 +46,9 @@ DATABASES = {
 }
 ```
 
+If using Kerberos authentication, you can specify a custom service name in
+`'OPTIONS'` using the key `'krbsrvname'`.
+
 ## Notes on Django fields
 
 1. `IntegerField` uses the same storage as `BigIntegerField` so `IntegerField`
