@@ -10,10 +10,10 @@ class DatabaseClient(BaseDatabaseClient):
     @classmethod
     def settings_to_cmd_args(cls, settings_dict, parameters):
         args = [cls.executable_name, 'sql']
-        db = settings_dict['OPTIONS'].get('db', settings_dict['NAME'])
-        user = settings_dict['OPTIONS'].get('user', settings_dict['USER'])
-        host = settings_dict['OPTIONS'].get('host', settings_dict['HOST'])
-        port = settings_dict['OPTIONS'].get('port', settings_dict['PORT'])
+        db = settings_dict['NAME']
+        user = settings_dict['USER']
+        host = settings_dict['HOST']
+        port = settings_dict['PORT']
         sslrootcert = settings_dict['OPTIONS'].get('sslrootcert')
 
         if db:
