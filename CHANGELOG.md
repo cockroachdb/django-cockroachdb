@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.1.2 - Unreleased
+## 3.1.2 - 2020-11-17
 
 - Added support for CockroachDB 20.2.
 
