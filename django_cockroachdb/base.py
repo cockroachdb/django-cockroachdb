@@ -14,16 +14,16 @@ except ImportError as err:
         'Did you install psycopg2 or psycopg2-binary?'
     ) from err
 
-from django.db.backends.postgresql.base import (    # isort:skip
+from django.db.backends.postgresql.base import (
     DatabaseWrapper as PostgresDatabaseWrapper,
 )
 
-from .client import DatabaseClient                  # isort:skip
-from .creation import DatabaseCreation              # isort:skip
-from .features import DatabaseFeatures              # isort:skip
-from .introspection import DatabaseIntrospection    # isort:skip
-from .operations import DatabaseOperations          # isort:skip
-from .schema import DatabaseSchemaEditor            # isort:skip
+from .client import DatabaseClient
+from .creation import DatabaseCreation
+from .features import DatabaseFeatures
+from .introspection import DatabaseIntrospection
+from .operations import DatabaseOperations
+from .schema import DatabaseSchemaEditor
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
