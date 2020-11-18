@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.3 - Unreleased
+
+- Added the `django_cockroachdb_gis` backend.
+
 ## 3.1.2 - 2020-11-17
 
 - Added support for CockroachDB 20.2.

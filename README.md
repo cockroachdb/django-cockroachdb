@@ -79,6 +79,22 @@ If using Kerberos authentication, you can specify a custom service name in
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
+## GIS support
+
+Starting with CockroachDB 20.2.x and django-cockroachdb 3.1.3, you can use
+`django.contrib.gis` with CockroachDB.
+
+Use `'ENGINE': 'django_cockroachdb_gis'` in Django's `DATABASES` setting.
+
+You must [install GEOS](https://docs.djangoproject.com/en/stable/ref/contrib/gis/install/geolibs/)
+rather than have Django use the `libgeos_c.so` bundled with CockroachDB. In
+other words, if you try this Django setting:
+
+`GEOS_LIBRARY_PATH = '/usr/local/lib/cockroach/libgeos_c.so'`
+
+It will fail with `OSError: libgeos.so.3.8.1: cannot open shared object file:
+No such file or directory`.
+
 ## Known issues and limitations (as of CockroachDB 20.2.4)
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
@@ -108,6 +124,25 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
      `greatest(): expected <arg> to be of type <type>, found type <other type>`
    - [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
    - [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
+
+- GIS:
+   - Some database functions aren't supported: `AsGML`, `AsKML`, `AsSVG`,
+     `BoundingCircle`,  `GeometryDistance`, `LineLocatePoint`, and `MemSize`.
+   - The `Length` database function isn't supported on geodetic fields:
+     [st_lengthspheroid(): unimplemented](https://github.com/cockroachdb/cockroach/issues/48968).
+   - `Union` may crash with
+     [unknown signature: st_union(geometry, geometry)](https://github.com/cockroachdb/cockroach/issues/49064).
+   - The spheroid argument of ST_DistanceSpheroid
+     [isn't supported](https://github.com/cockroachdb/cockroach/issues/48922):
+     `unknown signature: st_distancespheroid(geometry, geometry, string)`.
+   - 3D storage isn't supported.
+   - These lookups aren't supported:
+     - [contained (@)](https://github.com/cockroachdb/cockroach/issues/56124)
+     - [exact/same_as (~=)](https://github.com/cockroachdb/cockroach/issues/57096)
+     - [left (<<) and right (>>)](https://github.com/cockroachdb/cockroach/issues/57092)
+     - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
+       overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
+     - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
 
 ## Additional limitations in CockroachDB 20.1.x
 
