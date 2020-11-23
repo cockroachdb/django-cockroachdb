@@ -1,4 +1,5 @@
 from django.contrib.gis.db.backends.postgis.operations import PostGISOperations
+from django.utils.functional import cached_property
 
 from django_cockroachdb.operations import (
     DatabaseOperations as CockroachOperations,
@@ -28,12 +29,14 @@ class DatabaseOperations(CockroachOperations, PostGISOperations):
         del ops['strictly_below']  # <<|
         return ops
 
-    unsupported_functions = {
-        'AsGML',  # unknown function: st_asgml(): https://github.com/cockroachdb/cockroach/issues/48877
-        'AsKML',  # unknown signature: st_askml(geometry, int): https://github.com/cockroachdb/cockroach/issues/48881
-        'AsSVG',  # unknown function: st_assvg(): # https://github.com/cockroachdb/cockroach/issues/48883
-        'BoundingCircle',  # st_minimumboundingcircle(): https://github.com/cockroachdb/cockroach/issues/48987
-        'GeometryDistance',  # <-> operator: https://github.com/cockroachdb/cockroach/issues/57099
-        'LineLocatePoint',  # st_linelocatepoint(): https://github.com/cockroachdb/cockroach/issues/48973
-        'MemSize',  # unknown function: st_memsize(): https://github.com/cockroachdb/cockroach/issues/48985
-    }
+    @cached_property
+    def unsupported_functions(self):
+        unsupported = {
+            'AsGML',  # st_asgml(): https://github.com/cockroachdb/cockroach/issues/48877
+            'AsKML',  # st_askml(geometry, int): https://github.com/cockroachdb/cockroach/issues/48881
+            'AsSVG',  # st_assvg(): # https://github.com/cockroachdb/cockroach/issues/48883
+            'GeometryDistance',  # <-> operator: https://github.com/cockroachdb/cockroach/issues/57099
+        }
+        if not self.connection.features.is_cockroachdb_21_1:
+            unsupported.update({'BoundingCircle', 'LineLocatePoint', 'MemSize'})
+        return unsupported

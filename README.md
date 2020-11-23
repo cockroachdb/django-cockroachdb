@@ -84,16 +84,7 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 To use `django.contrib.gis` with CockroachDB, use
 `'ENGINE': 'django_cockroachdb_gis'` in Django's `DATABASES` setting.
 
-You must [install GEOS](https://docs.djangoproject.com/en/stable/ref/contrib/gis/install/geolibs/)
-rather than have Django use the `libgeos_c.so` bundled with CockroachDB. In
-other words, if you try this Django setting:
-
-`GEOS_LIBRARY_PATH = '/usr/local/lib/cockroach/libgeos_c.so'`
-
-It will fail with `OSError: libgeos.so.3.8.1: cannot open shared object file:
-No such file or directory`.
-
-## Known issues and limitations (as of CockroachDB 20.2.10)
+## Known issues and limitations (as of CockroachDB 21.1.0)
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
@@ -104,9 +95,6 @@ No such file or directory`.
    - [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
    - dropping or changing a table's primary key
    - [indexes on expressions](https://github.com/cockroachdb/cockroach/issues/9682) (Django's [`Index.expressions`](https://docs.djangoproject.com/en/stable/ref/models/indexes/#django.db.models.Index.expressions))
-
-- Known Bugs:
-   - [Timezones after 2038 use incorrect DST settings](https://github.com/cockroachdb/django-cockroachdb/issues/124).
 
 - Unsupported queries:
    - [Mixed type addition in SELECT](https://github.com/cockroachdb/django-cockroachdb/issues/19):
@@ -122,11 +110,10 @@ No such file or directory`.
    - [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
      `greatest(): expected <arg> to be of type <type>, found type <other type>`
    - [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
-   - [The `SHA224` and `SHA384` database functions aren't supported](https://github.com/cockroachdb/django-cockroachdb/issues/81).
 
 - GIS:
    - Some database functions aren't supported: `AsGML`, `AsKML`, `AsSVG`,
-     `BoundingCircle`,  `GeometryDistance`, `LineLocatePoint`, and `MemSize`.
+     and `GeometryDistance`.
    - The `Length` database function isn't supported on geodetic fields:
      [st_lengthspheroid(): unimplemented](https://github.com/cockroachdb/cockroach/issues/48968).
    - `Union` may crash with
@@ -142,3 +129,21 @@ No such file or directory`.
      - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
        overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
+
+## Known issues and limitations in CockroachDB 20.2.x and earlier
+
+- [Timezones after 2038 use incorrect DST settings](https://github.com/cockr
+oachdb/django-cockroachdb/issues/124).
+
+- The `SHA224` and `SHA384` database functions aren't supported.
+
+- The  `BoundingCircle`, `LineLocatePoint`, and `MemSize` GIS database
+  functions aren't supported.
+
+- You can't use the `libgeos_c.so` bundled with CockroachDB. If you try this
+  Django setting:
+
+      `GEOS_LIBRARY_PATH = '/usr/local/lib/cockroach/libgeos_c.so'`
+
+  It will fail with `OSError: libgeos.so.3.8.1: cannot open shared object file:
+  No such file or directory`.

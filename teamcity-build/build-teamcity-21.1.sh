@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -x
 
-# Coming in https://github.com/cockroachdb/django-cockroachdb/pull/196
+./teamcity-build/build-teamcity.sh "v21.1.0"
