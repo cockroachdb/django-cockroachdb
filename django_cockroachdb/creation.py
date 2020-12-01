@@ -93,20 +93,25 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # tablespace SQL because cockroachdb automatically indexes foreign
             # keys.
             'model_options.test_tablespaces.TablespacesTests.test_tablespace_for_many_to_many_field',
-            # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
-            # not supported for columns that are part of an index.
-            # https://go.crdb.dev/issue/47636
+            # Unsupported type conversion: https://github.com/cockroachdb/cockroach/issues/9851
             'migrations.test_executor.ExecutorTests.test_alter_id_type_with_fk',
             'migrations.test_operations.OperationTests.test_alter_field_pk_fk',
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_related_name_target_type_change',  # noqa
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_type_change',  # noqa
+            'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
             'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
             'schema.tests.SchemaTests.test_alter_auto_field_to_char_field',
             'schema.tests.SchemaTests.test_alter_autofield_pk_to_smallautofield_pk_sequence_owner',
+            'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
+            'schema.tests.SchemaTests.test_alter_textual_field_keep_null_status',
             'schema.tests.SchemaTests.test_char_field_pk_to_auto_field',
             'schema.tests.SchemaTests.test_char_field_with_db_index_to_fk',
+            'schema.tests.SchemaTests.test_m2m_rename_field_in_target_model',
+            'schema.tests.SchemaTests.test_rename',
             'schema.tests.SchemaTests.test_text_field_with_db_index_to_fk',
             # cockroachdb doesn't support dropping the primary key.
             'schema.tests.SchemaTests.test_alter_int_pk_to_int_unique',
@@ -128,9 +133,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
             # unsupported comparison operator: <jsonb> > <string>:
             # https://github.com/cockroachdb/cockroach/issues/49144
             'model_fields.test_jsonfield.TestQuerying.test_deep_lookup_transform',
-            # excluding null json keys incorrectly returns values where the
-            # key doesn't exist: https://github.com/cockroachdb/cockroach/issues/49143
-            'model_fields.test_jsonfield.TestQuerying.test_none_key_exclude',
             # ordering by JSON isn't supported:
             # https://github.com/cockroachdb/cockroach/issues/35706
             'model_fields.test_jsonfield.TestQuerying.test_deep_distinct',
@@ -146,19 +148,14 @@ class DatabaseCreation(PostgresDatabaseCreation):
                 'aggregation_regress.tests.AggregationTests.test_stddev',
                 # Nondeterministic query: https://github.com/cockroachdb/django-cockroachdb/issues/48
                 'queries.tests.SubqueryTests.test_slice_subquery_and_query',
-                # Unsupported type conversion: https://github.com/cockroachdb/cockroach/issues/9851
-                'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
-                'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
-                'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
-                'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
-                'schema.tests.SchemaTests.test_alter_textual_field_keep_null_status',
-                'schema.tests.SchemaTests.test_m2m_rename_field_in_target_model',
-                'schema.tests.SchemaTests.test_rename',
                 # `SHOW TABLES` doesn't distinguish between tables and views.
                 # Both are included regardless of whether inspectdb's
                 # --include-views option is set.
                 'inspectdb.tests.InspectDBTransactionalTests.test_include_views',
                 'introspection.tests.IntrospectionTests.test_table_names_with_views',
+                # excluding null json keys incorrectly returns values where the
+                # key doesn't exist: https://github.com/cockroachdb/cockroach/issues/49143
+                'model_fields.test_jsonfield.TestQuerying.test_none_key_exclude',
             )
         for test_name in expected_failures:
             test_case_name, _, method_name = test_name.rpartition('.')

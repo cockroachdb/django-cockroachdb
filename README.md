@@ -79,7 +79,7 @@ If using Kerberos authentication, you can specify a custom service name in
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
-## Known issues and limitations (as of CockroachDB 20.2.1)
+## Known issues and limitations (as of CockroachDB 20.2.2)
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
@@ -87,7 +87,7 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
 - Migrations have some limitations. CockroachDB doesn't support:
 
-   - [changing column type if it's part of an index](https://go.crdb.dev/issue/47636)
+   - [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
    - dropping or changing a table's primary key
 
 - Known Bugs:
@@ -112,4 +112,3 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 ## Additional limitations in CockroachDB 20.1.x
 
 - The `StdDev` and `Variance` aggregates aren't supported.
-- Changing a column's type isn't supported.
