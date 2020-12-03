@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.1.3 - Unreleased
+## 3.1.3 - 2020-01-26
 
 - Added the `django_cockroachdb_gis` backend.
 
