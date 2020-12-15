@@ -79,7 +79,7 @@ If using Kerberos authentication, you can specify a custom service name in
 You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
 You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
-## Known issues and limitations (as of CockroachDB 20.2.2)
+## Known issues and limitations (as of CockroachDB 20.2.4)
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
