@@ -57,6 +57,10 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
                 })
 
     def _alter_column_type_sql(self, model, old_field, new_field, new_type):
+        self.sql_alter_column_type = 'ALTER COLUMN %(column)s TYPE %(type)s'
+        # Cast when data type changed.
+        if self._field_data_type(old_field) != self._field_data_type(new_field):
+            self.sql_alter_column_type += ' USING %(column)s::%(type)s'
         if new_type.lower() in ("serial", "bigserial"):
             column = new_field.column
             col_type = "integer" if new_type.lower() == "serial" else "bigint"
@@ -75,6 +79,15 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
             )
         else:
             return BaseDatabaseSchemaEditor._alter_column_type_sql(self, model, old_field, new_field, new_type)
+
+    # Borrowed from Django 3.0.
+    def _field_data_type(self, field):
+        if field.is_relation:
+            return field.rel_db_type(self.connection)
+        return self.connection.data_types.get(
+            field.get_internal_type(),
+            field.db_type(self.connection),
+        )
 
     def _field_should_be_indexed(self, model, field):
         # Foreign keys are automatically indexed by cockroachdb.
