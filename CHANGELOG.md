@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.3 - Unreleased
+## 3.0.3 - 2020-01-25
 
 - Fix `dbshell` crash: `unknown flag: --password`.
 - Add support for CockroachDB 20.2.
