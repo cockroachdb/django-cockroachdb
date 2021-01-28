@@ -158,9 +158,8 @@ for app_name in enabled_test_apps:
     if res != 0:
         shouldFail = True
 
-if os.environ.get('RUN_GIS_TESTS'):
-    res = os.system("python3 runtests.py gis_tests --settings cockroach_gis_settings -v 2")
-    if res != 0:
-        shouldFail = True
+res = os.system("python3 runtests.py gis_tests --settings cockroach_gis_settings -v 2")
+if res != 0:
+    shouldFail = True
 
 sys.exit(1 if shouldFail else 0)

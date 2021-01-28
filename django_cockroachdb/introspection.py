@@ -10,11 +10,6 @@ class DatabaseIntrospection(PostgresDatabaseIntrospection):
     data_types_reverse[1184] = 'DateTimeField'  # TIMESTAMPTZ
 
     def get_table_list(self, cursor):
-        if not self.connection.features.is_cockroachdb_20_2:
-            # `type` isn't included in SHOW TABLES.
-            cursor.execute("SELECT table_name FROM [SHOW TABLES]")
-            return [TableInfo(row[0], 't') for row in cursor.fetchall()]
-
         cursor.execute("SELECT table_name, type FROM [SHOW TABLES]")
         # The second TableInfo field is 't' for table or 'v' for view.
         return [TableInfo(row[0], 't' if row[1] == 'table' else 'v') for row in cursor.fetchall()]

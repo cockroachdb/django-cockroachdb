@@ -36,11 +36,6 @@ else
     cp cockroach-${VERSION}*/cockroach cockroach_exec
 fi
 
-# --spatial-lib is an unknown option before CockroachDB 20.2.
-if [[ -z "${RUN_GIS_TESTS}" ]]; then
-    SPATIAL_LIBS=""
-fi
-
 ./cockroach_exec start-single-node --insecure $SPATIAL_LIBS &
 
 cd _django_repo/tests/

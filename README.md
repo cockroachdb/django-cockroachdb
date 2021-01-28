@@ -143,7 +143,3 @@ No such file or directory`.
      - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
        overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
-
-## Additional limitations in CockroachDB 20.1.x
-
-- The `StdDev` and `Variance` aggregates aren't supported.
