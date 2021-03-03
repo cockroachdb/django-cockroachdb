@@ -1,5 +1,4 @@
 import os
-import sys
 from unittest import expectedFailure, skip
 
 from django.conf import settings
@@ -42,32 +41,6 @@ class DatabaseCreation(PostgresDatabaseCreation):
         super().create_test_db(*args, **kwargs)
 
     def _clone_test_db(self, suffix, verbosity, keepdb=False):
-        source_database_name = self.connection.settings_dict['NAME']
-        target_database_name = self.get_test_db_clone_settings(suffix)['NAME']
-        test_db_params = {
-            'dbname': self.connection.ops.quote_name(target_database_name),
-            'suffix': self.sql_table_creation_suffix(),
-        }
-        with self._nodb_cursor() as cursor:
-            try:
-                self._execute_create_test_db(cursor, test_db_params, keepdb)
-            except Exception:
-                if keepdb:
-                    # If the database should be kept, skip everything else.
-                    return
-                try:
-                    if verbosity >= 1:
-                        self.log('Destroying old test database for alias %s...' % (
-                            self._get_database_display_str(verbosity, target_database_name),
-                        ))
-                    cursor.execute('DROP DATABASE %(dbname)s' % test_db_params)
-                    self._execute_create_test_db(cursor, test_db_params, keepdb)
-                except Exception as e:
-                    self.log('Got an error recreating the test database: %s' % e)
-                    sys.exit(2)
-        self._clone_db(source_database_name, target_database_name)
-
-    def _clone_db(self, source_database_name, target_database_name):
         raise NotImplementedError(
             "CockroachDB doesn't support cloning databases. "
             "Disable the option to run tests in parallel processes."
