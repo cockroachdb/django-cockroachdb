@@ -45,6 +45,21 @@ def float_cast(self, compiler, connection, **extra_context):
     return clone.as_sql(compiler, connection, **extra_context)
 
 
+def round_cast(self, compiler, connection, **extra_context):
+    # ROUND() doesn't accept integer values. Cast to decimal (rather than
+    # float) so that half away from zero rounding is used, consistent with
+    # other databases (rather than half to even rounding).
+    clone = self.copy()
+    value, precision = self.get_source_expressions()
+    value = (
+        Cast(value, DecimalField(max_digits=2147481649, decimal_places=0))
+        if isinstance(value.output_field, IntegerField)
+        else value
+    )
+    clone.set_source_expressions([value, precision])
+    return clone.as_sql(compiler, connection, **extra_context)
+
+
 def when(self, compiler, connection, **extra_context):
     # As for coalesce(), cast datetimes to timestamptz.
     if isinstance(getattr(self.result, 'value', None), datetime.datetime):
@@ -55,12 +70,13 @@ def when(self, compiler, connection, **extra_context):
 def register_functions():
     math_funcs_needing_float_cast = (
         ACos, ASin, ATan, ATan2, Ceil, Cos, Cot, Degrees, Exp, Floor, Ln, Log,
-        Radians, Round, Sin, Sqrt, Tan,
+        Radians, Sin, Sqrt, Tan,
     )
     for func in math_funcs_needing_float_cast:
         func.as_cockroachdb = float_cast
     Coalesce.as_cockroachdb = coalesce
     Collate.as_cockroachdb = collate
     JSONObject.as_cockroachdb = JSONObject.as_postgresql
+    Round.as_cockroachdb = round_cast
     StrIndex.as_cockroachdb = StrIndex.as_postgresql
     When.as_cockroachdb = when

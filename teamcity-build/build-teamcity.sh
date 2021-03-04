@@ -6,7 +6,7 @@ set -x
 VERSION="${1:-v19.2.5}"
 
 # clone django into the repo.
-git clone --depth 1 --single-branch --branch cockroach-3.2.x https://github.com/timgraham/django _django_repo
+git clone --depth 1 --single-branch --branch cockroach-4.0.x https://github.com/timgraham/django _django_repo
 
 # install the django requirements.
 cd _django_repo/tests/

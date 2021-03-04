@@ -34,9 +34,6 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             'gis_tests.geoapp.test_functions.GISFunctionsTests.test_union',
             'gis_tests.geoapp.tests.GeoLookupTest.test_gis_lookups_with_complex_expressions',
             'gis_tests.geoapp.tests.GeoLookupTest.test_relate_lookup',
-            # Time zone issue with dates before 1883:
-            # https://github.com/cockroachdb/cockroach/issues/54294
-            'gis_tests.geoapp.test_regress.GeoRegressionTests.test_unicode_date',
             # NotSupportedError: this box2d comparison operator is experimental
             'gis_tests.geoapp.tests.GeoLookupTest.test_contains_contained_lookups',
             # unknown signature: st_dwithin(geography, geometry, decimal) (desired <bool>)
@@ -75,6 +72,9 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # This test assumes the GEOS version used by the database and
             # Django are the same which isn't the case on CI.
             'gis_tests.geos_tests.test_geos.GEOSTest.test_emptyCollections',
+            # 3D opclass not present on CockroachDB:
+            # https://github.com/cockroachdb/cockroach/issues/47420#issuecomment-969578772
+            'gis_tests.gis_migrations.test_operations.OperationTests.test_add_3d_field_opclass',
         })
         if not self.connection.features.is_cockroachdb_21_2:
             expected_failures.update({

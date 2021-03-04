@@ -183,10 +183,33 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # cannot index a json element:
             # https://github.com/cockroachdb/cockroach/issues/35706
             'schema.tests.SchemaTests.test_func_index_json_key_transform',
-            # unexpected partial unique index in pg_constraint query:
+            # unexpected unique index in pg_constraint query:
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
+            'schema.tests.SchemaTests.test_func_unique_constraint',
+            'schema.tests.SchemaTests.test_func_unique_constraint_collate',
+            'schema.tests.SchemaTests.test_func_unique_constraint_covering',
+            'schema.tests.SchemaTests.test_unique_constraint_field_and_expression',
+            # ProgrammingError: value type float doesn't match type decimal of
+            # column "n2":
+            # INSERT INTO "db_functions_decimalmodel" ("n1", "n2") VALUES ( -5.75, PI())
+            # (This is fixed in CockroachDB nightly which will be 22.1.)
+            'db_functions.math.test_round.RoundTests.test_decimal_with_precision',
+            # incompatible COALESCE expressions: unsupported binary operator:
+            # <int> * <int> (desired <decimal>):
+            # https://github.com/cockroachdb/cockroach/issues/73587
+            'aggregation.tests.AggregateTestCase.test_aggregation_default_expression',
+            # DataError: incompatible COALESCE expressions: expected pi() to be
+            # of type decimal, found type float
+            # https://github.com/cockroachdb/cockroach/issues/73587#issuecomment-988408190
+            'aggregation.tests.AggregateTestCase.test_aggregation_default_using_decimal_from_database',
         })
+        if not self.connection.features.is_cockroachdb_21_2:
+            expected_failures.update({
+                # interval division with float rounds differently from Python.
+                # https://github.com/cockroachdb/cockroach/issues/66118
+                'expressions.tests.FTimeDeltaTests.test_durationfield_multiply_divide',
+            })
         return expected_failures
 
     @cached_property

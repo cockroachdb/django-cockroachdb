@@ -1,12 +1,11 @@
 import time
-from datetime import timedelta
 
+from django.db.backends.base.base import timezone_constructor
 from django.db.backends.postgresql.operations import (
     DatabaseOperations as PostgresDatabaseOperations,
 )
 from django.db.utils import OperationalError
 from psycopg2 import errorcodes
-from pytz import timezone
 
 
 class DatabaseOperations(PostgresDatabaseOperations):
@@ -34,15 +33,8 @@ class DatabaseOperations(PostgresDatabaseOperations):
         """
         # getattr() guards against F() objects which don't have tzinfo.
         if value and getattr(value, 'tzinfo', '') is None and self.connection.timezone_name is not None:
-            connection_timezone = timezone(self.connection.timezone_name)
-            try:
-                value = connection_timezone.localize(value)
-            except OverflowError:
-                # Localizing datetime.datetime.max (used to cache a value
-                # forever, for example) may overflow. Subtract a day to prevent
-                # that.
-                value -= timedelta(days=1)
-                value = connection_timezone.localize(value)
+            connection_timezone = timezone_constructor(self.connection.timezone_name)
+            value = value.replace(tzinfo=connection_timezone)
         return value
 
     def sequence_reset_by_name_sql(self, style, sequences):
