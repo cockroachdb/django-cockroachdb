@@ -37,7 +37,7 @@ DATABASES = {
         # If connecting with SSL, include the section below, replacing the
         # file paths as appropriate.
         'OPTIONS': {
-            'sslmode': 'require',
+            'sslmode': 'verify-full',
             'sslrootcert': '/certs/ca.crt',
             # Either sslcert and sslkey (below) or PASSWORD (above) is
             # required.
