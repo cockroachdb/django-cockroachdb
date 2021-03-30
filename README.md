@@ -95,7 +95,7 @@ other words, if you try this Django setting:
 It will fail with `OSError: libgeos.so.3.8.1: cannot open shared object file:
 No such file or directory`.
 
-## Known issues and limitations (as of CockroachDB 20.2.6)
+## Known issues and limitations (as of CockroachDB 20.2.7)
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
