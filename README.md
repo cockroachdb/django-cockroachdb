@@ -16,9 +16,9 @@ production it is advised to use the package built from sources.
 ## Install and usage
 
 Use the version of django-cockroachdb that corresponds to your version of
-Django. For example, to get the latest compatible release for Django 3.1.x:
+Django. For example, to get the latest compatible release for Django 3.2.x:
 
-`pip install django-cockroachdb==3.1.*`
+`pip install django-cockroachdb==3.2.*`
 
 The minor release number of Django doesn't correspond to the minor release
 number of django-cockroachdb. Use the latest minor release of each.
@@ -81,10 +81,8 @@ You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
 
 ## GIS support
 
-Starting with CockroachDB 20.2.x and django-cockroachdb 3.1.3, you can use
-`django.contrib.gis` with CockroachDB.
-
-Use `'ENGINE': 'django_cockroachdb_gis'` in Django's `DATABASES` setting.
+To use `django.contrib.gis` with CockroachDB, use
+`'ENGINE': 'django_cockroachdb_gis'` in Django's `DATABASES` setting.
 
 You must [install GEOS](https://docs.djangoproject.com/en/stable/ref/contrib/gis/install/geolibs/)
 rather than have Django use the `libgeos_c.so` bundled with CockroachDB. In
@@ -105,6 +103,7 @@ No such file or directory`.
 
    - [changing column type](https://github.com/cockroachdb/cockroach/issues/9851)
    - dropping or changing a table's primary key
+   - [indexes on expressions](https://github.com/cockroachdb/cockroach/issues/9682) (Django's [`Index.expressions`](https://docs.djangoproject.com/en/stable/ref/models/indexes/#django.db.models.Index.expressions))
 
 - Known Bugs:
    - [Timezones after 2038 use incorrect DST settings](https://github.com/cockroachdb/django-cockroachdb/issues/124).

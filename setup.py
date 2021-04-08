@@ -14,7 +14,7 @@ setup(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
-        'Framework :: Django :: 3.1',
+        'Framework :: Django :: 3.2',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',

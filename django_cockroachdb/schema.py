@@ -20,6 +20,16 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # creating this foreign key. This isn't supported by CockroachDB.
     sql_create_column_inline_fk = 'CONSTRAINT %(name)s REFERENCES %(to_table)s(%(to_column)s)%(deferrable)s'
 
+    def add_index(self, model, index, concurrently=False):
+        if index.contains_expressions and not self.connection.features.supports_expression_indexes:
+            return None
+        super().add_index(model, index, concurrently)
+
+    def remove_index(self, model, index, concurrently=False):
+        if index.contains_expressions and not self.connection.features.supports_expression_indexes:
+            return None
+        super().remove_index(model, index, concurrently)
+
     def _index_columns(self, table, columns, col_suffixes, opclasses):
         # cockroachdb doesn't support PostgreSQL opclasses.
         return BaseDatabaseSchemaEditor._index_columns(self, table, columns, col_suffixes, opclasses)

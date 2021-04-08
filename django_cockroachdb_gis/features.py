@@ -39,10 +39,6 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # Time zone issue with dates before 1883:
             # https://github.com/cockroachdb/cockroach/issues/54294
             'gis_tests.geoapp.test_regress.GeoRegressionTests.test_unicode_date',
-            # This test assumes the GEOS version used by the database and
-            # Django are the same which isn't the case on CI.
-            # https://github.com/cockroachdb/cockroach/issues/54429
-            'gis_tests.geoapp.test_functions.GISFunctionsTests.test_intersection',
             # NotSupportedError: this box2d comparison operator is experimental
             'gis_tests.geoapp.tests.GeoLookupTest.test_contains_contained_lookups',
             # unknown signature: st_dwithin(geography, geometry, decimal) (desired <bool>)
