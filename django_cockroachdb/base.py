@@ -1,6 +1,9 @@
+import os
 import re
 from contextlib import contextmanager
 
+import django
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import cached_property
 
@@ -24,6 +27,8 @@ from .features import DatabaseFeatures
 from .introspection import DatabaseIntrospection
 from .operations import DatabaseOperations
 from .schema import DatabaseSchemaEditor
+
+RAN_TELEMETRY_QUERY = False
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
@@ -49,6 +54,26 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     introspection_class = DatabaseIntrospection
     ops_class = DatabaseOperations
     client_class = DatabaseClient
+
+    def init_connection_state(self):
+        super().init_connection_state()
+        global RAN_TELEMETRY_QUERY
+        if (
+            # increment_feature_counter is new in CockroachDB 21.1.
+            self.features.is_cockroachdb_21_1 and
+            # Run the telemetry query once, not for every connection.
+            not RAN_TELEMETRY_QUERY and
+            # Don't run telemetry if the user disables it...
+            not getattr(settings, 'DISABLE_COCKROACHDB_TELEMETRY', False) and
+            # ... or when running Django's test suite.
+            not os.environ.get('RUNNING_DJANGOS_TEST_SUITE') == 'true'
+        ):
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT crdb_internal.increment_feature_counter('Django %d.%d')"
+                    % django.VERSION[:2]
+                )
+                RAN_TELEMETRY_QUERY = True
 
     def check_constraints(self, table_names=None):
         """
