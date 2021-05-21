@@ -21,7 +21,7 @@
 
 set -euo pipefail
 
-image=cockroachdb/cockroach-django-builder:20201123
+image=cockroachdb/cockroach-django-builder:20211210
 
 gopath=$(go env GOPATH)
 gopath0=${gopath%%:*}

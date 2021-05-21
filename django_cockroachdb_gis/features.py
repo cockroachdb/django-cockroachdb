@@ -76,6 +76,9 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # data is currently not supported for columns that are part of an
             # index: https://github.com/cockroachdb/cockroach/issues/47636
             'gis_tests.gis_migrations.test_operations.OperationTests.test_alter_geom_field_dim',
+            # This test assumes the GEOS version used by the database and
+            # Django are the same which isn't the case on CI.
+            'gis_tests.geos_tests.test_geos.GEOSTest.test_emptyCollections',
         })
         if not self.connection.features.is_cockroachdb_21_2:
             expected_failures.update({
