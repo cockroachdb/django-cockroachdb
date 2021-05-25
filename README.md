@@ -90,7 +90,7 @@ By default, CockroachDB 21.1 and later will send the version of Django you are
 using back to Cockroach Labs. To disable this, set
 `DISABLE_COCKROACHDB_TELEMETRY = True` in your Django settings.
 
-## Known issues and limitations (as of CockroachDB 21.1.0)
+## Known issues and limitations (as of CockroachDB 21.1.1)
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
