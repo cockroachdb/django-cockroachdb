@@ -101,6 +101,12 @@ using back to Cockroach Labs. To disable this, set
    - [changing column type if it's part of an index](https://go.crdb.dev/issue/47636)
    - dropping or changing a table's primary key
    - [indexes on expressions](https://github.com/cockroachdb/cockroach/issues/9682) (Django's [`Index.expressions`](https://docs.djangoproject.com/en/stable/ref/models/indexes/#django.db.models.Index.expressions))
+   - CockroachDB executes `ALTER COLUMN` queries asynchronously which is at
+     odds with Django's assumption that the database is altered before the next
+     migration operation begins. CockroachDB will give an error like
+     `unimplemented: table <...> is currently undergoing a schema change` if a
+     later operation tries to modify the table before the asynchronous query
+     finishes. A future version of CockroachDB [may fix this](https://github.com/cockroachdb/cockroach/issues/47137).
 
 - Unsupported queries:
    - [Mixed type addition in SELECT](https://github.com/cockroachdb/django-cockroachdb/issues/19):
