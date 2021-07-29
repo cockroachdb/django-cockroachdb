@@ -21,6 +21,7 @@ from django.db.backends.postgresql.base import (
     DatabaseWrapper as PostgresDatabaseWrapper,
 )
 
+from . import __version__ as django_cockroachdb_version
 from .client import DatabaseClient
 from .creation import DatabaseCreation
 from .features import DatabaseFeatures
@@ -70,8 +71,12 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
         ):
             with self.connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT crdb_internal.increment_feature_counter('Django %d.%d')"
-                    % django.VERSION[:2]
+                    "SELECT crdb_internal.increment_feature_counter(%s)",
+                    ["Django %d.%d" % django.VERSION[:2]]
+                )
+                cursor.execute(
+                    "SELECT crdb_internal.increment_feature_counter(%s)",
+                    ["django-cockroachdb %s" % django_cockroachdb_version]
                 )
                 RAN_TELEMETRY_QUERY = True
 
