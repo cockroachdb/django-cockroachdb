@@ -1,5 +1,3 @@
-import operator
-
 from django.contrib.gis.db.backends.postgis.features import (
     DatabaseFeatures as PostGISFeatures,
 )
@@ -9,8 +7,6 @@ from django_cockroachdb.features import DatabaseFeatures as CockroachFeatures
 
 
 class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
-    supports_3d_storage = property(operator.attrgetter('is_cockroachdb_21_1'))
-    supports_3d_functions = property(operator.attrgetter('is_cockroachdb_21_1'))
     supports_raster = False
     # Not supported: https://github.com/cockroachdb/cockroach/issues/57092
     supports_left_right_lookups = False

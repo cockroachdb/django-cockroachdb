@@ -79,10 +79,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     supports_expression_indexes = property(operator.attrgetter('is_cockroachdb_21_2'))
 
     @cached_property
-    def is_cockroachdb_20_2(self):
-        return self.connection.cockroachdb_version >= (20, 2)
-
-    @cached_property
     def is_cockroachdb_21_1(self):
         return self.connection.cockroachdb_version >= (21, 1)
 
@@ -191,34 +187,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
         })
-        if not self.connection.features.is_cockroachdb_21_1:
-            expected_failures.update({
-                # unimplemented: unable to encode JSON as a table key:
-                # https://github.com/cockroachdb/cockroach/issues/35706
-                'model_fields.test_jsonfield.TestQuerying.test_join_key_transform_annotation_expression',
-                # unknown function: sha224() and sha384():
-                # https://github.com/cockroachdb/django-cockroachdb/issues/81
-                'db_functions.text.test_sha224.SHA224Tests.test_basic',
-                'db_functions.text.test_sha224.SHA224Tests.test_transform',
-                'db_functions.text.test_sha384.SHA384Tests.test_basic',
-                'db_functions.text.test_sha384.SHA384Tests.test_transform',
-                # timezones after 2038 use incorrect DST settings:
-                # https://github.com/cockroachdb/django-cockroachdb/issues/124
-                'expressions.tests.FTimeDeltaTests.test_datetime_subtraction_microseconds',
-                # db_collation appears even if none is specified:
-                # https://github.com/cockroachdb/cockroach/issues/54989
-                'inspectdb.tests.InspectDBTestCase.test_field_types',
-                # Unsupported type conversion: https://github.com/cockroachdb/cockroach/issues/9851
-                'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
-                'schema.tests.SchemaTests.test_alter_field_db_collation',
-                'schema.tests.SchemaTests.test_alter_field_type_and_db_collation',
-                'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
-                'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
-                'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
-                'schema.tests.SchemaTests.test_alter_textual_field_keep_null_status',
-                'schema.tests.SchemaTests.test_m2m_rename_field_in_target_model',
-                'schema.tests.SchemaTests.test_rename',
-            })
         return expected_failures
 
     @cached_property

@@ -142,24 +142,3 @@ using back to Cockroach Labs. To disable this, set
 - [Indexes on expressions](https://github.com/cockroachdb/cockroach/issues/9682)
   (Django's [`Index.expressions`](https://docs.djangoproject.com/en/stable/ref/models/indexes/#django.db.models.Index.expressions))
   aren't supported.
-
-## Known issues and limitations in CockroachDB 20.2.x and earlier
-
-- Changing a column's type isn't supported.
-
-- [Timezones after 2038 use incorrect DST settings](https://github.com/cockroachdb/django-cockroachdb/issues/124).
-
-- The `SHA224` and `SHA384` database functions aren't supported.
-
-- The  `BoundingCircle`, `LineLocatePoint`, and `MemSize` GIS database
-  functions aren't supported.
-
-- You can't use the `libgeos_c.so` bundled with CockroachDB. If you try this
-  Django setting:
-
-      `GEOS_LIBRARY_PATH = '/usr/local/lib/cockroach/libgeos_c.so'`
-
-  It will fail with `OSError: libgeos.so.3.8.1: cannot open shared object file:
-  No such file or directory`.
-
-- 3D geometries aren't supported.
