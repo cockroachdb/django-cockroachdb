@@ -74,11 +74,6 @@ If using Kerberos authentication, you can specify a custom service name in
 
 ## FAQ
 
-### Why do I get the error ``psycopg2.errors.InvalidName: no database specified``?
-
-You may need to [create the database](https://www.cockroachlabs.com/docs/stable/create-database.html).
-You can use `cockroach sql --insecure` on the command line to get a SQL prompt.
-
 ## GIS support
 
 To use `django.contrib.gis` with CockroachDB, use
