@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.2 - Unreleased
+
+- Added support for CockroachDB 21.2.x.
+
 ## 3.2.1 - 2021-05-20
 
 - Added support for CockroachDB 21.1.x.
