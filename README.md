@@ -95,7 +95,6 @@ using back to Cockroach Labs. To disable this, set
 
    - [changing column type if it's part of an index](https://go.crdb.dev/issue/47636)
    - dropping or changing a table's primary key
-   - [indexes on expressions](https://github.com/cockroachdb/cockroach/issues/9682) (Django's [`Index.expressions`](https://docs.djangoproject.com/en/stable/ref/models/indexes/#django.db.models.Index.expressions))
    - CockroachDB executes `ALTER COLUMN` queries asynchronously which is at
      odds with Django's assumption that the database is altered before the next
      migration operation begins. CockroachDB will give an error like
@@ -136,6 +135,12 @@ using back to Cockroach Labs. To disable this, set
      - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
        overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
+
+## Known issues and limitations in CockroachDB 21.1.x and earlier
+
+- [Indexes on expressions](https://github.com/cockroachdb/cockroach/issues/9682)
+  (Django's [`Index.expressions`](https://docs.djangoproject.com/en/stable/ref/models/indexes/#django.db.models.Index.expressions))
+  aren't supported.
 
 ## Known issues and limitations in CockroachDB 20.2.x and earlier
 

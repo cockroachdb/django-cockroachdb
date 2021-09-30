@@ -1,3 +1,5 @@
+import operator
+
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
@@ -74,7 +76,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     }
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/9682
-    supports_expression_indexes = False
+    supports_expression_indexes = property(operator.attrgetter('is_cockroachdb_21_2'))
 
     @cached_property
     def is_cockroachdb_21_1(self):
@@ -184,9 +186,20 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'model_fields.test_jsonfield.TestQuerying.test_order_grouping_custom_decoder',
             'model_fields.test_jsonfield.TestQuerying.test_ordering_by_transform',
             'model_fields.test_jsonfield.TestQuerying.test_ordering_grouping_by_key_transform',
+            # cannot index a json element:
+            # https://github.com/cockroachdb/cockroach/issues/35706
+            'schema.tests.SchemaTests.test_func_index_json_key_transform',
             # unexpected partial unique index in pg_constraint query:
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
+            # COLLATE expressions in index elements not supported:
+            # https://github.com/cockroachdb/cockroach/issues/71240
+            'schema.tests.SchemaTests.test_func_index_collate',
+            'schema.tests.SchemaTests.test_func_index_collate_f_ordered',
+            # ALTER COLUMN ... SET NOT NULL crashes with "validate check
+            # constraint: column "crdb_internal_idx_expr" does not exist":
+            # https://github.com/cockroachdb/cockroach/issues/72012
+            'migrations.test_operations.OperationTests.test_alter_field_with_func_index',
         })
         if not self.connection.features.is_cockroachdb_21_1:
             expected_failures.update({
