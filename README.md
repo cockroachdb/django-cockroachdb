@@ -81,7 +81,7 @@ To use `django.contrib.gis` with CockroachDB, use
 
 ## Disabling CockroachDB telemetry
 
-By default, CockroachDB 21.1 and later will send the version of Django you are
+By default, CockroachDB sends the version of django-cockroachdb that you're
 using back to Cockroach Labs. To disable this, set
 `DISABLE_COCKROACHDB_TELEMETRY = True` in your Django settings.
 

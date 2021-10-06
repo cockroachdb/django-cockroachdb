@@ -2,7 +2,6 @@ import os
 import re
 from contextlib import contextmanager
 
-import django
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import cached_property
@@ -70,10 +69,6 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
             not os.environ.get('RUNNING_DJANGOS_TEST_SUITE') == 'true'
         ):
             with self.connection.cursor() as cursor:
-                cursor.execute(
-                    "SELECT crdb_internal.increment_feature_counter(%s)",
-                    ["Django %d.%d" % django.VERSION[:2]]
-                )
                 cursor.execute(
                     "SELECT crdb_internal.increment_feature_counter(%s)",
                     ["django-cockroachdb %s" % django_cockroachdb_version]
