@@ -192,10 +192,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # unexpected partial unique index in pg_constraint query:
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
-            # COLLATE expressions in index elements not supported:
-            # https://github.com/cockroachdb/cockroach/issues/71240
-            'schema.tests.SchemaTests.test_func_index_collate',
-            'schema.tests.SchemaTests.test_func_index_collate_f_ordered',
             # ALTER COLUMN ... SET NOT NULL crashes with "validate check
             # constraint: column "crdb_internal_idx_expr" does not exist":
             # https://github.com/cockroachdb/cockroach/issues/72012

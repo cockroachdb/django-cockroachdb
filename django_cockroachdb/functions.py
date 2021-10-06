@@ -5,8 +5,8 @@ from django.db.models import (
 )
 from django.db.models.expressions import When
 from django.db.models.functions import (
-    ACos, ASin, ATan, ATan2, Cast, Ceil, Coalesce, Cos, Cot, Degrees, Exp,
-    Floor, JSONObject, Ln, Log, Radians, Round, Sin, Sqrt, StrIndex, Tan,
+    ACos, ASin, ATan, ATan2, Cast, Ceil, Coalesce, Collate, Cos, Cot, Degrees,
+    Exp, Floor, JSONObject, Ln, Log, Radians, Round, Sin, Sqrt, StrIndex, Tan,
 )
 
 
@@ -22,6 +22,16 @@ def coalesce(self, compiler, connection, **extra_context):
         ])
         return super(Coalesce, clone).as_sql(compiler, connection, **extra_context)
     return self.as_sql(compiler, connection, **extra_context)
+
+
+def collate(self, compiler, connection, **extra_context):
+    return self.as_sql(
+        compiler, connection,
+        # CockroachDB requires parentheses around the expression in
+        # CREATE INDEX: https://github.com/cockroachdb/cockroach/issues/71240
+        template='(%(expressions)s %(function)s %(collation)s)',
+        **extra_context
+    )
 
 
 def float_cast(self, compiler, connection, **extra_context):
@@ -50,6 +60,7 @@ def register_functions():
     for func in math_funcs_needing_float_cast:
         func.as_cockroachdb = float_cast
     Coalesce.as_cockroachdb = coalesce
+    Collate.as_cockroachdb = collate
     JSONObject.as_cockroachdb = JSONObject.as_postgresql
     StrIndex.as_cockroachdb = StrIndex.as_postgresql
     When.as_cockroachdb = when
