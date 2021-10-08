@@ -120,6 +120,8 @@ using back to Cockroach Labs. To disable this, set
 - GIS:
    - Some database functions aren't supported: `AsGML`, `AsKML`, `AsSVG`,
      and `GeometryDistance`.
+   - Some 3D functions or signatures aren't supported: `ST_3DPerimeter`,
+     `ST_3DExtent`, `ST_Scale`, and `ST_LengthSpheroid`.
    - The `Length` database function isn't supported on geodetic fields:
      [st_lengthspheroid(): unimplemented](https://github.com/cockroachdb/cockroach/issues/48968).
    - `Union` may crash with
@@ -127,7 +129,6 @@ using back to Cockroach Labs. To disable this, set
    - The spheroid argument of ST_DistanceSpheroid
      [isn't supported](https://github.com/cockroachdb/cockroach/issues/48922):
      `unknown signature: st_distancespheroid(geometry, geometry, string)`.
-   - 3D storage isn't supported.
    - These lookups aren't supported:
      - [contained (@)](https://github.com/cockroachdb/cockroach/issues/56124)
      - [exact/same_as (~=)](https://github.com/cockroachdb/cockroach/issues/57096)
@@ -160,3 +161,5 @@ using back to Cockroach Labs. To disable this, set
 
   It will fail with `OSError: libgeos.so.3.8.1: cannot open shared object file:
   No such file or directory`.
+
+- 3D geometries aren't supported.
