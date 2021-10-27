@@ -141,8 +141,7 @@ using back to Cockroach Labs. To disable this, set
 
 - Changing a column's type isn't supported.
 
-- [Timezones after 2038 use incorrect DST settings](https://github.com/cockr
-oachdb/django-cockroachdb/issues/124).
+- [Timezones after 2038 use incorrect DST settings](https://github.com/cockroachdb/django-cockroachdb/issues/124).
 
 - The `SHA224` and `SHA384` database functions aren't supported.
 
