@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.2 - Unreleased
+
+- Confirmed support for CockroachDB 22.1.x. No code changes were required.
+
 ## 4.0.1 - 2022-04-14
 
 - Added validation of `QuerySet.explain()` options.
