@@ -46,6 +46,8 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     data_types_suffix = dict(
         PostgresDatabaseWrapper.data_types_suffix,
         BigAutoField='DEFAULT unique_rowid()',
+        # Unsupported: https://github.com/cockroachdb/django-cockroachdb/issues/84
+        SmallAutoField='',
         AutoField='DEFAULT unique_rowid()',
     )
 

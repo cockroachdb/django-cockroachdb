@@ -25,6 +25,7 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # https://github.com/cockroachdb/cockroach/issues/57096
             'gis_tests.geoapp.tests.GeoLookupTest.test_equals_lookups',
             'gis_tests.geoapp.tests.GeoLookupTest.test_null_geometries_excluded_in_lookups',
+            'gis_tests.gis_migrations.test_operations.OperationTests.test_add_check_constraint',
             'gis_tests.relatedapp.tests.RelatedGeoModelTest.test06_f_expressions',
             # unknown signature: st_union(geometry, geometry)
             # https://github.com/cockroachdb/cockroach/issues/49064

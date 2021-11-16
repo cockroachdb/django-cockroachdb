@@ -54,7 +54,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'BigAutoField': 'BigIntegerField',
             'IntegerField': 'BigIntegerField',
             'PositiveIntegerField': 'BigIntegerField',
-            'SmallAutoField': 'BigIntegerField',
+            'SmallAutoField': 'SmallIntegerField',
         }
 
     supports_order_by_nulls_modifier = property(operator.attrgetter('is_cockroachdb_22_1'))
@@ -136,13 +136,16 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # https://go.crdb.dev/issue/47636
             'migrations.test_executor.ExecutorTests.test_alter_id_type_with_fk',
             'migrations.test_operations.OperationTests.test_alter_field_pk_fk',
+            'migrations.test_operations.OperationTests.test_alter_field_pk_fk_db_collation',
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_fk_with_to_field_related_name_target_type_change',  # noqa
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_type_change',  # noqa
             'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
             'schema.tests.SchemaTests.test_alter_auto_field_to_char_field',
-            'schema.tests.SchemaTests.test_alter_autofield_pk_to_smallautofield_pk_sequence_owner',
+            'schema.tests.SchemaTests.test_alter_autofield_pk_to_smallautofield_pk',
+            'schema.tests.SchemaTests.test_alter_primary_key_db_collation',
+            'schema.tests.SchemaTests.test_alter_primary_key_the_same_name',
             'schema.tests.SchemaTests.test_char_field_pk_to_auto_field',
             'schema.tests.SchemaTests.test_char_field_with_db_index_to_fk',
             'schema.tests.SchemaTests.test_text_field_with_db_index_to_fk',
@@ -154,6 +157,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # SmallAutoField doesn't work:
             # https://github.com/cockroachdb/cockroach-django/issues/84
             'bulk_create.tests.BulkCreateTests.test_bulk_insert_nullable_fields',
+            'many_to_one.tests.ManyToOneTests.test_add_remove_set_by_pk_raises',
             'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
@@ -195,6 +199,9 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # Passing a naive datetime to cursor.execute() doesn't work in
                 # older versions of CockroachDB.
                 'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime',
+                # unknown signature: date_trunc(string, interval):
+                # https://github.com/cockroachdb/cockroach/issues/76960
+                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_second_func_no_fractional',
             })
         return expected_failures
 

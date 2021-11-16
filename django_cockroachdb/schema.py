@@ -20,6 +20,10 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # creating this foreign key. This isn't supported by CockroachDB.
     sql_create_column_inline_fk = 'CONSTRAINT %(name)s REFERENCES %(to_table)s(%(to_column)s)%(deferrable)s'
 
+    # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE" after this
+    # statement. This isn't supported by CockroachDB.
+    sql_update_with_default = "UPDATE %(table)s SET %(column)s = %(default)s WHERE %(column)s IS NULL"
+
     def add_index(self, model, index, concurrently=False):
         if index.contains_expressions and not self.connection.features.supports_expression_indexes:
             return None
@@ -73,22 +77,25 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
 
     def _alter_column_type_sql(self, model, old_field, new_field, new_type):
         self.sql_alter_column_type = 'ALTER COLUMN %(column)s TYPE %(type)s'
-        # Make ALTER TYPE with SERIAL make sense.
-        # table = strip_quotes(model._meta.db_table)
-        serial_fields_map = {'bigserial': 'bigint', 'serial': 'integer', 'smallserial': 'smallint'}
-        if new_type.lower() in serial_fields_map:
+        new_internal_type = new_field.get_internal_type()
+        old_internal_type = old_field.get_internal_type()
+        # Make ALTER TYPE with AutoField make sense.
+        auto_field_types = {'AutoField', 'BigAutoField', 'SmallAutoField'}
+        old_is_auto = old_internal_type in auto_field_types
+        new_is_auto = new_internal_type in auto_field_types
+        if new_is_auto and not old_is_auto:
             column = strip_quotes(new_field.column)
             return (
                 (
                     self.sql_alter_column_type % {
                         "column": self.quote_name(column),
-                        "type": serial_fields_map[new_type.lower()],
+                        "type": new_type,
                     },
                     [],
                 ),
-                # The PostgreSQL backend manages the column sequence here but
+                # The PostgreSQL backend manages the column's identity here but
                 # this isn't applicable on CockroachDB because unique_rowid()
-                # is used instead of sequences.
+                # is used instead.
                 [],
             )
         else:

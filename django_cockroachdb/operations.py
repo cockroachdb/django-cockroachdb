@@ -22,6 +22,23 @@ class DatabaseOperations(PostgresDatabaseOperations):
     }
     explain_options = frozenset(['DISTSQL', 'OPT', 'TYPES', 'VEC', 'VERBOSE'])
 
+    def datetime_extract_sql(self, lookup_type, sql, params, tzname):
+        if self.connection.features.is_cockroachdb_22_1:
+            return super().datetime_extract_sql(lookup_type, sql, params, tzname)
+        # Override the changes from https://github.com/django/django/commit/b7f263551c64e3f80544892e314ed5b0b22cc7c8
+        # which aren't compatible with older versions of CockroachDB:
+        # https://github.com/cockroachdb/cockroach/issues/76960
+        sql, params = self._convert_sql_to_tz(sql, params, tzname)
+        return self.date_extract_sql(lookup_type, sql, params)
+
+    def time_extract_sql(self, lookup_type, sql, params):
+        if self.connection.features.is_cockroachdb_22_1:
+            return super().time_extract_sql(lookup_type, sql, params)
+        # Override the changes from https://github.com/django/django/commit/b7f263551c64e3f80544892e314ed5b0b22cc7c8
+        # which aren't compatible with older versions of CockroachDB:
+        # https://github.com/cockroachdb/cockroach/issues/76960
+        return self.date_extract_sql(lookup_type, sql, params)
+
     def deferrable_sql(self):
         # Deferrable constraints aren't supported:
         # https://github.com/cockroachdb/cockroach/issues/31632

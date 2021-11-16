@@ -1,13 +1,5 @@
 # Changelog
 
-## 4.0.2 - Unreleased
+## 4.1 - Unreleased
 
-- Confirmed support for CockroachDB 22.1.x. No code changes were required.
-
-## 4.0.1 - 2022-04-14
-
-- Added validation of `QuerySet.explain()` options.
-
-## 4.0 - 2022-01-20
-
-Initial release for Django 4.0.x and CockroachDB 21.1.x and 21.2.x.
+Initial release for Django 4.1.x and CockroachDB 21.2.x and 22.1.x.
