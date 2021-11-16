@@ -161,12 +161,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # CockroachDB doesn't support changing the primary key of table.
             'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
             'schema.tests.SchemaTests.test_primary_key',
-            # ALTER COLUMN fails if previous asynchronous ALTER COLUMN hasn't
-            # finished. https://github.com/cockroachdb/cockroach/issues/47137
-            # These tests only fail sometimes, e.g.
-            # https://github.com/cockroachdb/cockroach/issues/65691
-            'schema.tests.SchemaTests.test_alter_field_db_collation',
-            'schema.tests.SchemaTests.test_alter_field_type_and_db_collation',
             # SmallAutoField doesn't work:
             # https://github.com/cockroachdb/cockroach-django/issues/84
             'bulk_create.tests.BulkCreateTests.test_bulk_insert_nullable_fields',
@@ -227,6 +221,13 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     def django_test_skips(self):
         skips = super().django_test_skips
         skips.update({
+            # https://github.com/cockroachdb/cockroach/issues/47137
+            # These tests only fail sometimes, e.g.
+            # https://github.com/cockroachdb/cockroach/issues/65691
+            'ALTER COLUMN fails if previous asynchronous ALTER COLUMN has not finished.': {
+                'schema.tests.SchemaTests.test_alter_field_db_collation',
+                'schema.tests.SchemaTests.test_alter_field_type_and_db_collation',
+            },
             # https://github.com/cockroachdb/django-cockroachdb/issues/20
             'Unsupported query: UPDATE float column with integer column.': {
                 'expressions.tests.ExpressionsNumericTests',
