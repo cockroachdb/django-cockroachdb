@@ -57,9 +57,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'SmallAutoField': 'BigIntegerField',
         }
 
-    # This can be removed when CockroachDB adds support for NULL FIRST/LAST:
-    # https://github.com/cockroachdb/cockroach/issues/6224
-    supports_order_by_nulls_modifier = False
+    supports_order_by_nulls_modifier = property(operator.attrgetter('is_cockroachdb_22_1'))
 
     # CockroachDB doesn't create indexes on foreign keys.
     indexes_foreign_keys = False
@@ -87,6 +85,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (21, 2)
 
     @cached_property
+    def is_cockroachdb_22_1(self):
+        return self.connection.cockroachdb_version >= (22, 1)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -94,6 +96,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # https://github.com/cockroachdb/django-cockroachdb/issues/73
             'aggregation.tests.AggregateTestCase.test_add_implementation',
             'aggregation.tests.AggregateTestCase.test_combine_different_types',
+            'expressions.tests.ExpressionsNumericTests.test_complex_expressions',
             # greatest(): expected avg(price) to be of type float, found type
             # decimal: https://github.com/cockroachdb/django-cockroachdb/issues/74
             'aggregation.tests.AggregateTestCase.test_expression_on_aggregation',
@@ -131,12 +134,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'backends.tests.FkConstraintsTests.test_check_constraints_sql_keywords',
             'backends.tests.FkConstraintsTests.test_disable_constraint_checks_context_manager',
             'backends.tests.FkConstraintsTests.test_disable_constraint_checks_manually',
-            # Passing a naive datetime to cursor.execute() probably can't work
-            # on CockroachDB. The value needs a timezone so psycopg2 will cast
-            # it to timestamptz rather than timestamp to avoid "value type
-            # timestamp doesn't match type timestamptz of column "dt"" but
-            # there aren't any hooks to do that.
-            'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime',
             # SchemaEditor._model_indexes_sql() doesn't output some expected
             # tablespace SQL because CockroachDB automatically indexes foreign
             # keys.
@@ -184,6 +181,12 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
         })
+        if not self.connection.features.is_cockroachdb_22_1:
+            expected_failures.update({
+                # Passing a naive datetime to cursor.execute() doesn't work in
+                # older versions of CockroachDB.
+                'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime',
+            })
         if not self.connection.features.is_cockroachdb_21_1:
             expected_failures.update({
                 # unimplemented: unable to encode JSON as a table key:
@@ -225,10 +228,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'schema.tests.SchemaTests.test_alter_field_db_collation',
                 'schema.tests.SchemaTests.test_alter_field_type_and_db_collation',
             },
-            # https://github.com/cockroachdb/django-cockroachdb/issues/20
-            'Unsupported query: UPDATE float column with integer column.': {
-                'expressions.tests.ExpressionsNumericTests',
-            },
             # https://github.com/cockroachdb/django-cockroachdb/issues/153#issuecomment-664697963
             'CockroachDB has more restrictive blocking than other databases.': {
                 'select_for_update.tests.SelectForUpdateTests.test_block',
@@ -255,4 +254,11 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'get_or_create.tests.UpdateOrCreateTransactionTests.test_updates_in_transaction',
             },
         })
+        if not self.connection.features.is_cockroachdb_22_1:
+            skips.update({
+                # https://github.com/cockroachdb/django-cockroachdb/issues/20
+                'Unsupported query: UPDATE float column with integer column.': {
+                    'expressions.tests.ExpressionsNumericTests',
+                },
+            })
         return skips

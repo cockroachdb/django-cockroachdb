@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.4 - Unreleased
+
+- Confirmed support for CockroachDB 22.1.x. No code changes were required.
+
 ## 3.2.3 - 2022-04-14
 
 - Added support for 3D geometries.
