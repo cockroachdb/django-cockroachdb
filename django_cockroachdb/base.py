@@ -48,6 +48,15 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
         AutoField='DEFAULT unique_rowid()',
     )
 
+    # Workaround for a CockroachDB bug
+    # https://github.com/cockroachdb/django-cockroachdb/issues/243
+    # https://github.com/cockroachdb/cockroach/issues/44123
+    operators = {
+        **PostgresDatabaseWrapper.operators,
+        'startswith': r"LIKE %s ESCAPE '\'",
+        'istartswith': r"LIKE UPPER(%s) ESCAPE '\'",
+    }
+
     SchemaEditorClass = DatabaseSchemaEditor
     creation_class = DatabaseCreation
     features_class = DatabaseFeatures
