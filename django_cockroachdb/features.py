@@ -79,6 +79,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     supports_expression_indexes = property(operator.attrgetter('is_cockroachdb_21_2'))
 
     @cached_property
+    def is_cockroachdb_20_2(self):
+        return self.connection.cockroachdb_version >= (20, 2)
+
+    @cached_property
     def is_cockroachdb_21_1(self):
         return self.connection.cockroachdb_version >= (21, 1)
 
