@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -x
 
-./teamcity-build/build-teamcity.sh "v21.1.14"
+./teamcity-build/build-teamcity.sh "v21.1.15"
