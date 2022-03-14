@@ -79,9 +79,6 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
         })
         if not self.connection.features.is_cockroachdb_21_2:
             expected_failures.update({
-                # GDALException: Invalid OGR String Type "linestringz":
-                # https://github.com/cockroachdb/cockroach/issues/70824
-                'gis_tests.inspectapp.tests.InspectDbTests.test_3d_columns',
                 # unknown signature: st_translate(geometry, int, int, decimal)
                 'gis_tests.geo3d.tests.Geo3DFunctionsTests.test_translate',
             })
