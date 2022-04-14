@@ -3,6 +3,7 @@
 ## 3.2.3 - TBD
 
 - Added support for 3D geometries.
+- Added validation of `QuerySet.explain()` options.
 
 ## 3.2.2 - 2021-11-16
 

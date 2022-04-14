@@ -167,9 +167,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
-            # This backend raises "ValueError: CockroachDB's EXPLAIN doesn't
-            # support any formats." instead of an "unknown format" error.
-            'queries.test_explain.ExplainTests.test_unknown_format',
             # unsupported comparison operator: <jsonb> > <string>:
             # https://github.com/cockroachdb/cockroach/issues/49144
             'model_fields.test_jsonfield.TestQuerying.test_deep_lookup_transform',

@@ -21,6 +21,7 @@ class DatabaseOperations(PostgresDatabaseOperations):
         'AutoField': (-9223372036854775808, 9223372036854775807),
         'BigAutoField': (-9223372036854775808, 9223372036854775807),
     }
+    explain_options = frozenset(['DISTSQL', 'OPT', 'TYPES', 'VEC', 'VERBOSE'])
 
     def deferrable_sql(self):
         # Deferrable constraints aren't supported:
@@ -53,10 +54,18 @@ class DatabaseOperations(PostgresDatabaseOperations):
         return []
 
     def explain_query_prefix(self, format=None, **options):
-        if format:
-            raise ValueError("CockroachDB's EXPLAIN doesn't support any formats.")
-        prefix = self.explain_prefix
-        extra = [name for name, value in options.items() if value]
+        extra = []
+        # Normalize options.
+        if options:
+            options = {
+                name.upper(): value
+                for name, value in options.items()
+            }
+            for valid_option in self.explain_options:
+                value = options.pop(valid_option, None)
+                if value:
+                    extra.append(valid_option)
+        prefix = super().explain_query_prefix(format, **options)
         if extra:
             prefix += ' (%s)' % ', '.join(extra)
         return prefix
