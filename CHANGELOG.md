@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.1 - TBD
+## 4.0.1 - 2022-04-14
 
 - Added validation of `QuerySet.explain()` options.
 
