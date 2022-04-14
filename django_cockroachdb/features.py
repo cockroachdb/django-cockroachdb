@@ -147,7 +147,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'migrations.test_executor.ExecutorTests.test_alter_id_type_with_fk',
             'migrations.test_operations.OperationTests.test_alter_field_pk_fk',
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
-            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_related_name_target_type_change',  # noqa
+            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_fk_with_to_field_related_name_target_type_change',  # noqa
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_type_change',  # noqa
             'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
