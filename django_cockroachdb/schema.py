@@ -75,8 +75,7 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
                     }
                 })
 
-    def _alter_column_type_sql(self, model, old_field, new_field, new_type):
-        self.sql_alter_column_type = 'ALTER COLUMN %(column)s TYPE %(type)s'
+    def _alter_column_type_sql(self, model, old_field, new_field, new_type, old_collation, new_collation):
         new_internal_type = new_field.get_internal_type()
         old_internal_type = old_field.get_internal_type()
         # Make ALTER TYPE with AutoField make sense.
@@ -90,6 +89,7 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
                     self.sql_alter_column_type % {
                         "column": self.quote_name(column),
                         "type": new_type,
+                        "collation": "",
                     },
                     [],
                 ),
@@ -99,7 +99,10 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
                 [],
             )
         else:
-            return BaseDatabaseSchemaEditor._alter_column_type_sql(self, model, old_field, new_field, new_type)
+            return BaseDatabaseSchemaEditor._alter_column_type_sql(
+                self, model, old_field, new_field, new_type,
+                old_collation, new_collation,
+            )
 
     def _field_should_be_indexed(self, model, field):
         # Foreign keys are automatically indexed by cockroachdb.

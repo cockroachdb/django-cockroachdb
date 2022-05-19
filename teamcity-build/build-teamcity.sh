@@ -7,13 +7,13 @@ VERSION="${1:-v19.2.5}"
 
 # clone django into the repo.
 rm -rf _django_repo
-git clone --depth 1 --single-branch --branch cockroach-4.1.x https://github.com/timgraham/django _django_repo
+git clone --depth 1 --single-branch --branch cockroach-4.2.x https://github.com/timgraham/django _django_repo
 
 # install the django requirements.
 cd _django_repo/tests/
 pip3 install -e ..
 pip3 install -r requirements/py3.txt
-pip3 install -r requirements/postgres.txt
+pip3 install psycopg2
 cd ../..
 
 # install the django-cockroachdb backend.

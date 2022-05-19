@@ -50,7 +50,7 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             'gis_tests.distapp.tests.DistanceFunctionsTests.test_length',
             # Unsupported ~= (https://github.com/cockroachdb/cockroach/issues/57096)
             # and @ operators (https://github.com/cockroachdb/cockroach/issues/56124).
-            'gis_tests.geogapp.tests.GeographyTest.test04_invalid_operators_functions',
+            'gis_tests.geogapp.tests.GeographyTest.test_operators_functions_unavailable_for_geography',
             # unknown function: st_3dperimeter
             # https://github.com/cockroachdb/cockroach/issues/60871
             'gis_tests.geo3d.tests.Geo3DFunctionsTests.test_perimeter',
