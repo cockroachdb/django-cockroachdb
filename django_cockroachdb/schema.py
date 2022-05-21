@@ -24,6 +24,15 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # statement. This isn't supported by CockroachDB.
     sql_update_with_default = "UPDATE %(table)s SET %(column)s = %(default)s WHERE %(column)s IS NULL"
 
+    def __enter__(self):
+        super().__enter__()
+        # As long as DatabaseFeatures.can_rollback_ddl = False, compose() may
+        # fail if connection is None as per
+        # https://github.com/django/django/pull/15687#discussion_r1038175823.
+        # See also https://github.com/django/django/pull/15687#discussion_r1041503991.
+        self.connection.ensure_connection()
+        return self
+
     def add_index(self, model, index, concurrently=False):
         if index.contains_expressions and not self.connection.features.supports_expression_indexes:
             return None

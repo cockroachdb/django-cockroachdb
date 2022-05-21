@@ -1,3 +1,5 @@
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django_cockroachdb',
@@ -6,6 +8,7 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': 26257,
+        'OPTIONS': {},
     },
     'other': {
         'ENGINE': 'django_cockroachdb',
@@ -14,8 +17,13 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': 26257,
+        'OPTIONS': {},
     },
 }
+if os.environ.get('USE_SERVER_SIDE_BINDING'):
+    DATABASES['default']['OPTIONS']['server_side_binding'] = True
+    DATABASES['other']['OPTIONS']['server_side_binding'] = True
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 SECRET_KEY = 'django_tests_secret_key'
 PASSWORD_HASHERS = [

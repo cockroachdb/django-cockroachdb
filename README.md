@@ -2,7 +2,12 @@
 
 ## Prerequisites
 
-You must install either:
+You must install:
+
+* [psycopg](https://pypi.org/project/psycopg/), which may have some
+ prerequisites [depending on which version you use](https://www.psycopg.org/psycopg3/docs/basic/install.html).
+
+You can also use either:
 
 * [psycopg2](https://pypi.org/project/psycopg2/), which has some
   [prerequisites](https://www.psycopg.org/docs/install.html#prerequisites) of

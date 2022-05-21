@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 set -x
 
-# Not supported
+export USE_SERVER_SIDE_BINDING=1
+./teamcity-build/build-teamcity.sh "v22.2.7"

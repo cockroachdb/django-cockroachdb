@@ -117,10 +117,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'serializers.test_data.SerializerDataTests.test_yaml_serializer',
             # No sequence for AutoField in CockroachDB.
             'introspection.tests.IntrospectionTests.test_sequence_list',
-            # Unsupported query: unsupported binary operator: <int> / <int>:
-            # https://github.com/cockroachdb/django-cockroachdb/issues/21
-            'expressions.tests.ExpressionOperatorTests.test_lefthand_division',
-            'expressions.tests.ExpressionOperatorTests.test_right_hand_division',
             # CockroachDB doesn't support disabling constraints:
             # https://github.com/cockroachdb/cockroach/issues/19444
             'auth_tests.test_views.UUIDUserTests.test_admin_password_change',
@@ -196,6 +192,63 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # https://github.com/cockroachdb/cockroach/issues/73587#issuecomment-988408190
             'aggregation.tests.AggregateTestCase.test_aggregation_default_using_decimal_from_database',
         })
+        if self.uses_server_side_binding:
+            expected_failures.update({
+                # could not determine data type of placeholder:
+                # https://github.com/cockroachdb/cockroach/issues/91396
+                'backends.tests.EscapingChecks.test_parameter_escaping',
+                'backends.tests.EscapingChecksDebug.test_parameter_escaping',
+                'expressions.tests.BasicExpressionsTests.test_annotate_values_filter',
+                'expressions_case.tests.CaseDocumentationExamples.test_lookup_example',
+                'expressions_case.tests.CaseDocumentationExamples.test_simple_example',
+                'expressions_case.tests.CaseExpressionTests.test_aggregation_empty_cases',
+                'expressions_case.tests.CaseExpressionTests.test_annotate',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_exclude',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_values_not_in_order_by',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_aggregation_in_condition',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_aggregation_in_predicate',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_annotation_in_condition',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_annotation_in_predicate',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_empty_when',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_expression_as_condition',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_full_when',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_join_in_condition',
+                'expressions_case.tests.CaseExpressionTests.test_annotate_with_join_in_predicate',
+                'expressions_case.tests.CaseExpressionTests.test_case_reuse',
+                'expressions_case.tests.CaseExpressionTests.test_combined_q_object',
+                'expressions_case.tests.CaseExpressionTests.test_lookup_different_fields',
+                'expressions_case.tests.CaseExpressionTests.test_lookup_in_condition',
+                'expressions_case.tests.CaseExpressionTests.test_update_generic_ip_address',
+                'lookup.tests.LookupQueryingTests.test_conditional_expression',
+                'ordering.tests.OrderingTests.test_order_by_constant_value',
+                'queries.test_bulk_update.BulkUpdateNoteTests.test_batch_size',
+                'queries.test_bulk_update.BulkUpdateNoteTests.test_multiple_fields',
+                'queries.test_bulk_update.BulkUpdateNoteTests.test_simple',
+                'queries.test_bulk_update.BulkUpdateTests.test_custom_pk',
+                'queries.test_bulk_update.BulkUpdateTests.test_database_routing',
+                'queries.test_bulk_update.BulkUpdateTests.test_database_routing_batch_atomicity',
+                'queries.test_bulk_update.BulkUpdateTests.test_falsey_pk_value',
+                'queries.test_bulk_update.BulkUpdateTests.test_inherited_fields',
+                'queries.test_bulk_update.BulkUpdateTests.test_large_batch',
+                'queries.test_bulk_update.BulkUpdateTests.test_updated_rows_when_passing_duplicates',
+                'queries.test_q.QCheckTests.test_expression',
+                # unsupported binary operator: <interval> / <decimal>
+                'expressions.tests.FTimeDeltaTests.test_durationfield_multiply_divide',
+                # InvalidParameterValue: unsupported binary operator: <int4> / <float>
+                'queries.tests.Ticket23605Tests.test_ticket_23605',
+                # InvalidParameterValue: unsupported binary operator: <int2> + <float>
+                'annotations.tests.NonAggregateAnnotationTestCase.test_combined_annotation_commutative',
+                # incompatible COALESCE expressions: unsupported binary
+                # operator: <decimal> / <float>  (desired <decimal>)
+                'aggregation.tests.AggregateTestCase.test_aggregation_default_passed_another_aggregate',
+            })
+        else:
+            expected_failures.update({
+                # Unsupported query: unsupported binary operator: <int> / <int>:
+                # https://github.com/cockroachdb/django-cockroachdb/issues/21
+                'expressions.tests.ExpressionOperatorTests.test_lefthand_division',
+                'expressions.tests.ExpressionOperatorTests.test_right_hand_division',
+            })
         return expected_failures
 
     @cached_property
@@ -224,7 +277,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # output in the logs:
                 # Exception in thread Thread-1:
                 # ...
-                # psycopg2.errors.SerializationFailure: restart transaction:
+                # psycopg.errors.SerializationFailure: restart transaction:
                 # TransactionRetryWithProtoRefreshError: WriteTooOldError: write
                 # at timestamp 1598314405.858850941,0 too old; wrote at
                 # 1598314405.883337663,1

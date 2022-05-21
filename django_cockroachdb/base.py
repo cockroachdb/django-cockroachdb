@@ -7,14 +7,12 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import cached_property
 
 try:
-    import psycopg2  # noqa
-    import psycopg2.extensions  # noqa
-    import psycopg2.extras  # noqa
-except ImportError as err:
-    raise ImproperlyConfigured(
-        'Error loading psycopg2 module.\n'
-        'Did you install psycopg2 or psycopg2-binary?'
-    ) from err
+    try:
+        import psycopg  # noqa
+    except ImportError:
+        import psycopg2  # noqa
+except ImportError:
+    raise ImproperlyConfigured("Error loading psycopg or psycopg2 module")
 
 from django.db.backends.postgresql.base import (
     DatabaseWrapper as PostgresDatabaseWrapper,

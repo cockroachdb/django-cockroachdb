@@ -37,9 +37,6 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             'gis_tests.geoapp.tests.GeoLookupTest.test_relate_lookup',
             # NotSupportedError: this box2d comparison operator is experimental
             'gis_tests.geoapp.tests.GeoLookupTest.test_contains_contained_lookups',
-            # unknown signature: st_dwithin(geography, geometry, decimal) (desired <bool>)
-            # https://github.com/cockroachdb/cockroach/issues/53720
-            'gis_tests.geogapp.tests.GeographyTest.test02_distance_lookup',
             # unknown signature: st_distancespheroid(geometry, geometry, string)
             # https://github.com/cockroachdb/cockroach/issues/48922#issuecomment-693096502
             'gis_tests.distapp.tests.DistanceTest.test_distance_lookups_with_expression_rhs',
@@ -74,4 +71,15 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # https://github.com/cockroachdb/cockroach/issues/47420#issuecomment-969578772
             'gis_tests.gis_migrations.test_operations.OperationTests.test_add_3d_field_opclass',
         })
+        if self.uses_server_side_binding:
+            expected_failures.update({
+                # unknown signature: st_scale(geometry, int, int)
+                'gis_tests.geoapp.test_functions.GISFunctionsTests.test_scale',
+            })
+        else:
+            expected_failures.update({
+                # unknown signature: st_dwithin(geography, geometry, decimal) (desired <bool>)
+                # https://github.com/cockroachdb/cockroach/issues/53720
+                'gis_tests.geogapp.tests.GeographyTest.test02_distance_lookup',
+            })
         return expected_failures

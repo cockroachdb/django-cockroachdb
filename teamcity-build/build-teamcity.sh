@@ -13,7 +13,11 @@ git clone --depth 1 --single-branch --branch cockroach-4.2.x https://github.com/
 cd _django_repo/tests/
 pip3 install -e ..
 pip3 install -r requirements/py3.txt
-pip3 install psycopg2
+if [[ -z "${USE_PSYCOPG2}" ]]; then
+    pip3 install -r requirements/postgres.txt
+else
+    pip3 install psycopg2
+fi
 cd ../..
 
 # install the django-cockroachdb backend.

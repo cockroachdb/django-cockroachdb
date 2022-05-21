@@ -2,6 +2,7 @@ from django.db.backends.base.base import timezone_constructor
 from django.db.backends.postgresql.operations import (
     DatabaseOperations as PostgresDatabaseOperations,
 )
+from django.db.backends.postgresql.psycopg_any import is_psycopg3
 
 
 class DatabaseOperations(PostgresDatabaseOperations):
@@ -16,6 +17,19 @@ class DatabaseOperations(PostgresDatabaseOperations):
         'AutoField': (-9223372036854775808, 9223372036854775807),
         'BigAutoField': (-9223372036854775808, 9223372036854775807),
     }
+
+    if is_psycopg3:
+        from psycopg.types import numeric
+
+        integerfield_type_map = {
+            "SmallIntegerField": numeric.Int2,
+            "IntegerField": numeric.Int8,
+            "BigIntegerField": numeric.Int8,
+            "PositiveSmallIntegerField": numeric.Int2,
+            "PositiveIntegerField": numeric.Int8,
+            "PositiveBigIntegerField": numeric.Int8,
+        }
+
     explain_options = frozenset(['DISTSQL', 'OPT', 'TYPES', 'VEC', 'VERBOSE'])
 
     def deferrable_sql(self):
@@ -25,7 +39,7 @@ class DatabaseOperations(PostgresDatabaseOperations):
 
     def adapt_datetimefield_value(self, value):
         """
-        Add a timezone to datetimes so that psycopg2 will cast it to
+        Add a timezone to datetimes so that psycopg will cast it to
         TIMESTAMPTZ (as cockroach expects) rather than TIMESTAMP.
         """
         # getattr() guards against F() objects which don't have tzinfo.
