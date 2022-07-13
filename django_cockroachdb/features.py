@@ -73,13 +73,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         'swedish_ci': 'sv-x-icu',
     }
 
-    # Not supported: https://github.com/cockroachdb/cockroach/issues/9682
-    supports_expression_indexes = property(operator.attrgetter('is_cockroachdb_21_2'))
-
-    @cached_property
-    def is_cockroachdb_21_1(self):
-        return self.connection.cockroachdb_version >= (21, 1)
-
     @cached_property
     def is_cockroachdb_21_2(self):
         return self.connection.cockroachdb_version >= (21, 2)
@@ -202,12 +195,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # Passing a naive datetime to cursor.execute() doesn't work in
                 # older versions of CockroachDB.
                 'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime',
-            })
-        if not self.connection.features.is_cockroachdb_21_2:
-            expected_failures.update({
-                # interval division with float rounds differently from Python.
-                # https://github.com/cockroachdb/cockroach/issues/66118
-                'expressions.tests.FTimeDeltaTests.test_durationfield_multiply_divide',
             })
         return expected_failures
 

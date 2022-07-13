@@ -73,9 +73,4 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # https://github.com/cockroachdb/cockroach/issues/47420#issuecomment-969578772
             'gis_tests.gis_migrations.test_operations.OperationTests.test_add_3d_field_opclass',
         })
-        if not self.connection.features.is_cockroachdb_21_2:
-            expected_failures.update({
-                # unknown signature: st_translate(geometry, int, int, decimal)
-                'gis_tests.geo3d.tests.Geo3DFunctionsTests.test_translate',
-            })
         return expected_failures

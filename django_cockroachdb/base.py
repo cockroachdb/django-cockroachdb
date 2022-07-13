@@ -60,9 +60,9 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
         super().init_connection_state()
         global RAN_VERSION_CHECK
         if not RAN_VERSION_CHECK:
-            if not self.features.is_cockroachdb_21_1:
+            if not self.features.is_cockroachdb_21_2:
                 raise ImproperlyConfigured(
-                    'CockroachDB 21.1 or later required (found %s).'
+                    'CockroachDB 21.2 or later required (found %s).'
                     % '.'.join(str(x) for x in self.cockroachdb_version)
                 )
             RAN_VERSION_CHECK = True

@@ -139,9 +139,3 @@ using back to Cockroach Labs. To disable this, set
 
 - Unsupported query: [UPDATE float column with integer column](https://github.com/cockroachdb/django-cockroachdb/issues/20):
   `value type int doesn't match type FLOAT8 of column <name>`
-
-## Known issues and limitations in CockroachDB 21.1.x and earlier
-
-- [Indexes on expressions](https://github.com/cockroachdb/cockroach/issues/9682)
-  (Django's [`Index.expressions`](https://docs.djangoproject.com/en/stable/ref/models/indexes/#django.db.models.Index.expressions))
-  aren't supported.
