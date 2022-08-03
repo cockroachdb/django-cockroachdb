@@ -7,6 +7,8 @@ from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
+    minimum_database_version = (21, 2)
+
     # Cloning databases doesn't speed up tests.
     # https://github.com/cockroachdb/django-cockroachdb/issues/206
     can_clone_databases = False
@@ -72,10 +74,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         'non_default': 'sv',
         'swedish_ci': 'sv-x-icu',
     }
-
-    @cached_property
-    def is_cockroachdb_21_2(self):
-        return self.connection.cockroachdb_version >= (21, 2)
 
     @cached_property
     def is_cockroachdb_22_1(self):

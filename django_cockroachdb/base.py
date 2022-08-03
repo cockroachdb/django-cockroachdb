@@ -29,7 +29,6 @@ from .operations import DatabaseOperations
 from .schema import DatabaseSchemaEditor
 
 RAN_TELEMETRY_QUERY = False
-RAN_VERSION_CHECK = False
 
 
 class DatabaseWrapper(PostgresDatabaseWrapper):
@@ -60,14 +59,6 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
 
     def init_connection_state(self):
         super().init_connection_state()
-        global RAN_VERSION_CHECK
-        if not RAN_VERSION_CHECK:
-            if not self.features.is_cockroachdb_21_2:
-                raise ImproperlyConfigured(
-                    'CockroachDB 21.2 or later required (found %s).'
-                    % '.'.join(str(x) for x in self.cockroachdb_version)
-                )
-            RAN_VERSION_CHECK = True
         global RAN_TELEMETRY_QUERY
         if (
             # Run the telemetry query once, not for every connection.
@@ -131,3 +122,6 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
                 'string %r.' % self.cockroachdb_server_info
             )
         return tuple(int(x) for x in match.groups())
+
+    def get_database_version(self):
+        return self.cockroachdb_version
