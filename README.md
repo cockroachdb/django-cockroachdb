@@ -87,7 +87,7 @@ By default, CockroachDB sends the version of django-cockroachdb that you're
 using back to Cockroach Labs. To disable this, set
 `DISABLE_COCKROACHDB_TELEMETRY = True` in your Django settings.
 
-## Known issues and limitations in CockroachDB 22.1.x and earlier
+## Known issues and limitations in CockroachDB 22.2.x and earlier
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
@@ -136,6 +136,10 @@ using back to Cockroach Labs. To disable this, set
      - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
        overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
+
+## Known issues and limitations in CockroachDB 22.1.x and earlier
+
+- `QuerySet.select_for_update(skip_locked=True)` isn't supported.
 
 ## Known issues and limitations in CockroachDB 21.2.x and earlier
 
