@@ -7,6 +7,8 @@
   `DATABASES` setting.
 - Made `dbshell` use `sslcert`, `sslkey`, `sslmode`, and `options` from the
   `'OPTIONS'` part of the `DATABASES` setting.
+- Added support for CockroachDB 22.2, which adds support for
+  `QuerySet.select_for_update(skip_locked=True)`.
 
 ## 4.0.1 - 2022-04-14
 
