@@ -14,7 +14,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     can_clone_databases = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/40476
-    has_select_for_update_skip_locked = False
+    has_select_for_update_skip_locked = property(operator.attrgetter('is_cockroachdb_22_2'))
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/31632
     can_defer_constraint_checks = False
@@ -30,7 +30,8 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     create_test_procedure_without_params_sql = None
     create_test_procedure_with_int_param_sql = None
 
-    # Not supported: https://github.com/cockroachdb/cockroach/issues/20956
+    # Sequences on AutoField don't begin (or reset) to 1 like other databases
+    # due to use of DEFAULT unique_rowid().
     supports_sequence_reset = False
 
     # Forward references in fixtures won't work until cockroachdb can
@@ -78,6 +79,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     @cached_property
     def is_cockroachdb_22_1(self):
         return self.connection.cockroachdb_version >= (22, 1)
+
+    @cached_property
+    def is_cockroachdb_22_2(self):
+        return self.connection.cockroachdb_version >= (22, 2)
 
     @cached_property
     def django_test_expected_failures(self):
