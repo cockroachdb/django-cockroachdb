@@ -179,6 +179,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'schema.tests.SchemaTests.test_func_unique_constraint_collate',
             'schema.tests.SchemaTests.test_func_unique_constraint_covering',
             'schema.tests.SchemaTests.test_unique_constraint_field_and_expression',
+            # unimplemented: primary key dropped without subsequent addition of
+            # new primary key in same transaction
+            'schema.tests.SchemaTests.test_add_auto_field',
+            'schema.tests.SchemaTests.test_autofield_to_o2o',
             # incompatible COALESCE expressions: unsupported binary operator:
             # <int> * <int> (desired <decimal>):
             # https://github.com/cockroachdb/cockroach/issues/73587
