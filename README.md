@@ -140,8 +140,3 @@ using back to Cockroach Labs. To disable this, set
 ## Known issues and limitations in CockroachDB 22.1.x and earlier
 
 - `QuerySet.select_for_update(skip_locked=True)` isn't supported.
-
-## Known issues and limitations in CockroachDB 21.2.x and earlier
-
-- Unsupported query: [UPDATE float column with integer column](https://github.com/cockroachdb/django-cockroachdb/issues/20):
-  `value type int doesn't match type FLOAT8 of column <name>`

@@ -7,7 +7,7 @@ from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
-    minimum_database_version = (21, 2)
+    minimum_database_version = (22, 1)
 
     # Cloning databases doesn't speed up tests.
     # https://github.com/cockroachdb/django-cockroachdb/issues/206
@@ -60,8 +60,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'SmallAutoField': 'SmallIntegerField',
         }
 
-    supports_order_by_nulls_modifier = property(operator.attrgetter('is_cockroachdb_22_1'))
-
     # CockroachDB doesn't create indexes on foreign keys.
     indexes_foreign_keys = False
 
@@ -75,10 +73,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         'non_default': 'sv',
         'swedish_ci': 'sv-x-icu',
     }
-
-    @cached_property
-    def is_cockroachdb_22_1(self):
-        return self.connection.cockroachdb_version >= (22, 1)
 
     @cached_property
     def is_cockroachdb_22_2(self):
@@ -197,19 +191,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # https://github.com/cockroachdb/cockroach/issues/73587#issuecomment-988408190
             'aggregation.tests.AggregateTestCase.test_aggregation_default_using_decimal_from_database',
         })
-        if not self.connection.features.is_cockroachdb_22_1:
-            expected_failures.update({
-                # ProgrammingError: value type float doesn't match type decimal of
-                # column "n2":
-                # INSERT INTO "db_functions_decimalmodel" ("n1", "n2") VALUES ( -5.75, PI())
-                'db_functions.math.test_round.RoundTests.test_decimal_with_precision',
-                # Passing a naive datetime to cursor.execute() doesn't work in
-                # older versions of CockroachDB.
-                'timezones.tests.LegacyDatabaseTests.test_cursor_execute_accepts_naive_datetime',
-                # unknown signature: date_trunc(string, interval):
-                # https://github.com/cockroachdb/cockroach/issues/76960
-                'db_functions.datetime.test_extract_trunc.DateFunctionTests.test_extract_second_func_no_fractional',
-            })
         return expected_failures
 
     @cached_property
@@ -249,11 +230,4 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'get_or_create.tests.UpdateOrCreateTransactionTests.test_updates_in_transaction',
             },
         })
-        if not self.connection.features.is_cockroachdb_22_1:
-            skips.update({
-                # https://github.com/cockroachdb/django-cockroachdb/issues/20
-                'Unsupported query: UPDATE float column with integer column.': {
-                    'expressions.tests.ExpressionsNumericTests',
-                },
-            })
         return skips
