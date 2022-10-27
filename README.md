@@ -43,6 +43,8 @@ DATABASES = {
             # required.
             'sslcert': '/certs/client.myprojectuser.crt',
             'sslkey': '/certs/client.myprojectuser.key',
+            # If applicable
+            'options': '--cluster={routing-id}',
         },
     },
 }

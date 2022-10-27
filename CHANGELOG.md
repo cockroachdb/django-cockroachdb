@@ -3,6 +3,8 @@
 ## 4.0.2 - Unreleased
 
 - Confirmed support for CockroachDB 22.1.x. No code changes were required.
+- Made `dbshell` use `sslmode` and `options` from the `'OPTIONS'` part of the
+  `DATABASES` setting.
 
 ## 4.0.1 - 2022-04-14
 

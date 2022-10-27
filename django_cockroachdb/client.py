@@ -1,6 +1,7 @@
 import os.path
 import signal
 import subprocess
+from urllib.parse import urlencode
 
 from django.db.backends.base.client import BaseDatabaseClient
 
@@ -17,20 +18,27 @@ class DatabaseClient(BaseDatabaseClient):
         host = settings_dict['HOST']
         port = settings_dict['PORT']
         sslrootcert = settings_dict['OPTIONS'].get('sslrootcert')
+        sslmode = settings_dict['OPTIONS'].get('sslmode')
+        options = settings_dict['OPTIONS'].get('options')
 
+        url_params = {}
+        insecure = True  # Default to insecure.
         # Assume all certs are in the directory that has the sslrootcert.
         if sslrootcert:
             args += ["--certs-dir=%s" % os.path.dirname(sslrootcert)]
             insecure = False
-        else:
-            # Default to insecure if no ca exists.
-            insecure = True
+        if sslmode:
+            url_params["sslmode"] = sslmode
+            insecure = (sslmode == "disable")
+        if options:
+            url_params["options"] = options
         if insecure:
             args += ["--insecure"]
         args.extend(parameters)
 
         environ = os.environ.copy()
-        environ['COCKROACH_URL'] = f'postgresql://{user}:{password}@{host}:{port}/{db}'
+        query = urlencode(url_params)
+        environ['COCKROACH_URL'] = f'postgresql://{user}:{password}@{host}:{port}/{db}?{query}'
         return args, environ
 
     def runshell(self, parameters):
