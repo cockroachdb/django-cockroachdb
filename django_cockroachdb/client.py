@@ -18,8 +18,6 @@ class DatabaseClient(BaseDatabaseClient):
         port = settings_dict['PORT']
         sslrootcert = settings_dict['OPTIONS'].get('sslrootcert')
 
-        if db:
-            args += ["--database=%s" % db]
         # Assume all certs are in the directory that has the sslrootcert.
         if sslrootcert:
             args += ["--certs-dir=%s" % os.path.dirname(sslrootcert)]
@@ -27,20 +25,12 @@ class DatabaseClient(BaseDatabaseClient):
         else:
             # Default to insecure if no ca exists.
             insecure = True
-        if user:
-            args += ["--user=%s" % user]
-        if host:
-            args += ["--host=%s" % host]
-        if port:
-            args += ["--port=%s" % port]
         if insecure:
             args += ["--insecure"]
         args.extend(parameters)
-        # Use the COCKROACH_URL environment variable to securely provide the
-        # password.
+
         environ = os.environ.copy()
-        if password:
-            environ['COCKROACH_URL'] = f'postgresql://{user}:{password}@{host}:{port}/{db}'
+        environ['COCKROACH_URL'] = f'postgresql://{user}:{password}@{host}:{port}/{db}'
         return args, environ
 
     def runshell(self, parameters):
