@@ -3,8 +3,8 @@
 ## 3.2.4 - Unreleased
 
 - Confirmed support for CockroachDB 22.1.x. No code changes were required.
-- Made `dbshell` use `sslmode` and `options` from the `'OPTIONS'` part of the
-  `DATABASES` setting.
+- Made `dbshell` use `sslcert`, `sslkey`, `sslmode`, and `options` from the
+  `'OPTIONS'` part of the `DATABASES` setting.
 
 ## 3.2.3 - 2022-04-14
 
