@@ -1,4 +1,4 @@
-import os.path
+import os
 import signal
 import subprocess
 from urllib.parse import urlencode
@@ -18,14 +18,21 @@ class DatabaseClient(BaseDatabaseClient):
         host = settings_dict['HOST']
         port = settings_dict['PORT']
         sslrootcert = settings_dict['OPTIONS'].get('sslrootcert')
+        sslcert = settings_dict['OPTIONS'].get('sslcert')
+        sslkey = settings_dict['OPTIONS'].get('sslkey')
         sslmode = settings_dict['OPTIONS'].get('sslmode')
         options = settings_dict['OPTIONS'].get('options')
 
         url_params = {}
         insecure = True  # Default to insecure.
-        # Assume all certs are in the directory that has the sslrootcert.
         if sslrootcert:
-            args += ["--certs-dir=%s" % os.path.dirname(sslrootcert)]
+            url_params["sslrootcert"] = sslrootcert
+            insecure = False
+        if sslcert:
+            url_params["sslcert"] = sslcert
+            insecure = False
+        if sslkey:
+            url_params["sslkey"] = sslkey
             insecure = False
         if sslmode:
             url_params["sslmode"] = sslmode
