@@ -11,7 +11,7 @@ class DatabaseClient(BaseDatabaseClient):
 
     @classmethod
     def settings_to_cmd_args_env(cls, settings_dict, parameters):
-        args = [cls.executable_name, 'sql']
+        args = [cls.executable_name, 'sql'] + parameters
         db = settings_dict['NAME']
         user = settings_dict['USER']
         password = settings_dict['PASSWORD']
@@ -24,24 +24,18 @@ class DatabaseClient(BaseDatabaseClient):
         options = settings_dict['OPTIONS'].get('options')
 
         url_params = {}
-        insecure = True  # Default to insecure.
         if sslrootcert:
             url_params["sslrootcert"] = sslrootcert
-            insecure = False
         if sslcert:
             url_params["sslcert"] = sslcert
-            insecure = False
         if sslkey:
             url_params["sslkey"] = sslkey
-            insecure = False
         if sslmode:
             url_params["sslmode"] = sslmode
-            insecure = (sslmode == "disable")
+        else:
+            url_params["sslmode"] = "disable"
         if options:
             url_params["options"] = options
-        if insecure:
-            args += ["--insecure"]
-        args.extend(parameters)
 
         environ = os.environ.copy()
         query = urlencode(url_params)
