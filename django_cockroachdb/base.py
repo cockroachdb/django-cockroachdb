@@ -91,10 +91,6 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
     def chunked_cursor(self):
         return self.cursor()
 
-    def _set_autocommit(self, autocommit):
-        with self.wrap_database_errors:
-            self.connection.autocommit = autocommit
-
     @contextmanager
     def _nodb_cursor(self):
         # Overidden to avoid inapplicable "Django was unable to create a
