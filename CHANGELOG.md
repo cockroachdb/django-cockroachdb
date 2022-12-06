@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.1.1 - Unreleased
+## 4.1.1 - 2022-12-06
 
 - Made `dbshell` use `sslcert`, `sslkey`, `sslmode`, and `options` from the
   `'OPTIONS'` part of the `DATABASES` setting.
