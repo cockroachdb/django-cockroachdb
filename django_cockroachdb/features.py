@@ -49,6 +49,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # PostgreSQL behaves the opposite.
     nulls_order_largest = False
 
+    # pg_catalog.obj_description is very slow:
+    # https://github.com/cockroachdb/cockroach/issues/95068
+    supports_comments = False
+
     @cached_property
     def introspected_field_types(self):
         return {

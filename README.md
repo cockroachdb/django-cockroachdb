@@ -104,6 +104,9 @@ using back to Cockroach Labs. To disable this, set
      later operation tries to modify the table before the asynchronous query
      finishes. A future version of CockroachDB [may fix this](https://github.com/cockroachdb/cockroach/issues/47137).
 
+- The `Field.db_comment` and `Meta.db_table_comment` options aren't supported
+  due to [poor performance](https://github.com/cockroachdb/cockroach/issues/95068).
+
 - Unsupported queries:
    - [Mixed type addition in SELECT](https://github.com/cockroachdb/django-cockroachdb/issues/19):
      `unsupported binary operator: <int> + <float>`
