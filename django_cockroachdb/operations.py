@@ -1,8 +1,11 @@
+import time
+
 from django.db.backends.base.base import timezone_constructor
 from django.db.backends.postgresql.operations import (
     DatabaseOperations as PostgresDatabaseOperations,
 )
-from django.db.backends.postgresql.psycopg_any import is_psycopg3
+from django.db.backends.postgresql.psycopg_any import errors, is_psycopg3
+from django.db.utils import OperationalError
 
 
 class DatabaseOperations(PostgresDatabaseOperations):
@@ -71,6 +74,22 @@ class DatabaseOperations(PostgresDatabaseOperations):
         if extra:
             prefix += ' (%s)' % ', '.join(extra)
         return prefix
+
+    def execute_sql_flush(self, sql_list):
+        # Retry TRUNCATE if it fails with a serialization error.
+        num_retries = 10
+        initial_retry_delay = 0.5  # The initial retry delay, in seconds.
+        backoff_ = 1.5  # For each retry, the last delay is multiplied by this.
+        next_retry_delay = initial_retry_delay
+        for retry in range(1, num_retries + 1):
+            try:
+                return super().execute_sql_flush(sql_list)
+            except OperationalError as exc:
+                if (not isinstance(exc.__cause__, errors.SerializationFailure) or
+                        retry >= num_retries):
+                    raise
+                time.sleep(next_retry_delay)
+                next_retry_delay *= backoff_
 
     def sql_flush(self, style, tables, *, reset_sequences=False, allow_cascade=False):
         # CockroachDB doesn't support resetting sequences.
