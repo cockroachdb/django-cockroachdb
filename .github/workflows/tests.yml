@@ -29,12 +29,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - crdb-version: v22.1.18
+          - crdb-version: v22.1.22
             use_psycopg2: psycopg2
-          - crdb-version: v22.2.7
-          - crdb-version: v22.2.7
+          - crdb-version: v22.2.14
+          - crdb-version: v22.2.14
             use_psycopg2: psycopg2
-          - crdb-version: v22.2.7
+          - crdb-version: v22.2.14
             use_server_side_binding: server_side_binding
           # Uncomment to enable testing of CockroachDB nightly.
           #- crdb-version: LATEST
