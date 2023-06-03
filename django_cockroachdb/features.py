@@ -76,6 +76,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     }
 
     @cached_property
+    def is_cockroachdb_23_2(self):
+        return self.connection.cockroachdb_version >= (23, 2)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -154,19 +158,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'many_to_one.tests.ManyToOneTests.test_get_prefetch_querysets_reverse_invalid_querysets_length',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
-            # unsupported comparison operator: <jsonb> > <string>:
-            # https://github.com/cockroachdb/cockroach/issues/49144
-            'model_fields.test_jsonfield.TestQuerying.test_deep_lookup_transform',
-            # ordering by JSON isn't supported:
-            # https://github.com/cockroachdb/cockroach/issues/35706
-            'expressions_window.tests.WindowFunctionTests.test_key_transform',
-            'model_fields.test_jsonfield.TestQuerying.test_deep_distinct',
-            'model_fields.test_jsonfield.TestQuerying.test_order_grouping_custom_decoder',
-            'model_fields.test_jsonfield.TestQuerying.test_ordering_by_transform',
-            'model_fields.test_jsonfield.TestQuerying.test_ordering_grouping_by_key_transform',
-            # cannot index a json element:
-            # https://github.com/cockroachdb/cockroach/issues/35706
-            'schema.tests.SchemaTests.test_func_index_json_key_transform',
             # unexpected unique index in pg_constraint query:
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
@@ -182,13 +173,29 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # <int> * <int> (desired <decimal>):
             # https://github.com/cockroachdb/cockroach/issues/73587
             'aggregation.tests.AggregateTestCase.test_aggregation_default_expression',
-            # DataError: incompatible COALESCE expressions: expected pi() to be
-            # of type decimal, found type float
-            # https://github.com/cockroachdb/cockroach/issues/73587#issuecomment-988408190
-            'aggregation.tests.AggregateTestCase.test_aggregation_default_using_decimal_from_database',
             # ProgrammingError: VALUES types int and float cannot be matched
             'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
         })
+        if not self.is_cockroachdb_23_2:
+            expected_failures.update({
+                # cannot index a json element:
+                # https://github.com/cockroachdb/cockroach/issues/35706
+                'schema.tests.SchemaTests.test_func_index_json_key_transform',
+                # ordering by JSON isn't supported:
+                # https://github.com/cockroachdb/cockroach/issues/35706
+                'expressions_window.tests.WindowFunctionTests.test_key_transform',
+                'model_fields.test_jsonfield.TestQuerying.test_deep_distinct',
+                'model_fields.test_jsonfield.TestQuerying.test_order_grouping_custom_decoder',
+                'model_fields.test_jsonfield.TestQuerying.test_ordering_by_transform',
+                'model_fields.test_jsonfield.TestQuerying.test_ordering_grouping_by_key_transform',
+                # unsupported comparison operator: <jsonb> > <string>:
+                # https://github.com/cockroachdb/cockroach/issues/49144
+                'model_fields.test_jsonfield.TestQuerying.test_deep_lookup_transform',
+                # DataError: incompatible COALESCE expressions: expected pi() to be
+                # of type decimal, found type float
+                # https://github.com/cockroachdb/cockroach/issues/73587#issuecomment-988408190
+                'aggregation.tests.AggregateTestCase.test_aggregation_default_using_decimal_from_database',
+            })
         if self.uses_server_side_binding:
             expected_failures.update({
                 # could not determine data type of placeholder:
