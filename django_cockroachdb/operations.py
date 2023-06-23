@@ -1,6 +1,6 @@
 import time
+from zoneinfo import ZoneInfo
 
-from django.db.backends.base.base import timezone_constructor
 from django.db.backends.postgresql.operations import (
     DatabaseOperations as PostgresDatabaseOperations,
 )
@@ -47,7 +47,7 @@ class DatabaseOperations(PostgresDatabaseOperations):
         """
         # getattr() guards against F() objects which don't have tzinfo.
         if value and getattr(value, 'tzinfo', '') is None and self.connection.timezone_name is not None:
-            connection_timezone = timezone_constructor(self.connection.timezone_name)
+            connection_timezone = ZoneInfo(self.connection.timezone_name)
             value = value.replace(tzinfo=connection_timezone)
         return value
 

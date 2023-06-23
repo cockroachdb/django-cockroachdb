@@ -71,6 +71,8 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         # https://github.com/cockroachdb/cockroach/issues/54817
         'non_default': 'sv',
         'swedish_ci': 'sv-x-icu',
+        # Not supported: https://github.com/cockroachdb/cockroach/issues/111091
+        'virtual': None,
     }
 
     @cached_property
@@ -148,6 +150,8 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'bulk_create.tests.BulkCreateTests.test_bulk_insert_nullable_fields',
             'many_to_one.tests.ManyToOneTests.test_add_remove_set_by_pk_raises',
             'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
+            'many_to_one.tests.ManyToOneTests.test_get_prefetch_queryset_reverse_warning',
+            'many_to_one.tests.ManyToOneTests.test_get_prefetch_querysets_reverse_invalid_querysets_length',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
             # unsupported comparison operator: <jsonb> > <string>:
@@ -182,6 +186,8 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # of type decimal, found type float
             # https://github.com/cockroachdb/cockroach/issues/73587#issuecomment-988408190
             'aggregation.tests.AggregateTestCase.test_aggregation_default_using_decimal_from_database',
+            # ProgrammingError: VALUES types int and float cannot be matched
+            'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
         })
         if self.uses_server_side_binding:
             expected_failures.update({
@@ -223,6 +229,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'queries.test_bulk_update.BulkUpdateTests.test_large_batch',
                 'queries.test_bulk_update.BulkUpdateTests.test_updated_rows_when_passing_duplicates',
                 'queries.test_q.QCheckTests.test_expression',
+                'queries.test_qs_combinators.QuerySetSetOperationTests.test_union_multiple_models_with_values_list_and_annotations',  # noqa
                 # unsupported binary operator: <interval> / <decimal>
                 'expressions.tests.FTimeDeltaTests.test_durationfield_multiply_divide',
                 # InvalidParameterValue: unsupported binary operator: <int4> / <float>

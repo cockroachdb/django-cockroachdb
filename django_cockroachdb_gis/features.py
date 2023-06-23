@@ -54,6 +54,7 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # unknown function: st_3dextent()
             # https://github.com/cockroachdb/cockroach/issues/60864
             'gis_tests.geo3d.tests.Geo3DTest.test_extent',
+            'gis_tests.geo3d.tests.Geo3DTest.test_extent3d_filter',
             # unknown signature: st_scale(geometry, decimal, decimal, decimal)
             # https://github.com/cockroachdb/cockroach/issues/49027
             'gis_tests.geo3d.tests.Geo3DFunctionsTests.test_scale',
