@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -x
 
-# this script is meant to be invoked by one of the build-teamcity-$VERSION.sh scripts
-
-VERSION="${1:-v19.2.5}"
+# This script expects the first argument to be a CockroachDB version like
+# "v22.1.18" or "LATEST" to test with the nightly CockroachDB build.
+VERSION=$1
 
 # clone django into the repo.
 rm -rf _django_repo
@@ -13,10 +13,10 @@ git clone --depth 1 --single-branch --branch cockroach-4.2.x https://github.com/
 cd _django_repo/tests/
 pip3 install -e ..
 pip3 install -r requirements/py3.txt
-if [[ -z "${USE_PSYCOPG2}" ]]; then
-    pip3 install -r requirements/postgres.txt
-else
+if [ "${USE_PSYCOPG2}" == "psycopg2" ]; then
     pip3 install psycopg2
+else
+    pip3 install -r requirements/postgres.txt
 fi
 cd ../..
 
@@ -43,8 +43,8 @@ fi
 cd _django_repo/tests/
 
 # Bring in the settings needed to run the tests with cockroach.
-cp ../../teamcity-build/cockroach_settings.py .
-cp ../../teamcity-build/cockroach_gis_settings.py .
+cp ../../django-test-suite/cockroach_settings.py .
+cp ../../django-test-suite/cockroach_gis_settings.py .
 
 # Run the tests!
-python3 ../../teamcity-build/runtests.py
+python3 ../../django-test-suite/runtests.py

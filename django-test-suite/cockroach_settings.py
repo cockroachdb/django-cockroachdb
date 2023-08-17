@@ -20,7 +20,7 @@ DATABASES = {
         'OPTIONS': {},
     },
 }
-if os.environ.get('USE_SERVER_SIDE_BINDING'):
+if os.environ.get('USE_SERVER_SIDE_BINDING') == 'server_side_binding':
     DATABASES['default']['OPTIONS']['server_side_binding'] = True
     DATABASES['other']['OPTIONS']['server_side_binding'] = True
 

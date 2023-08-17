@@ -1,0 +1,43 @@
+name: Django test suite
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python38:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - crdb-version: v22.1.18
+            use_psycopg2: psycopg2
+          - crdb-version: v22.2.7
+          - crdb-version: v22.2.7
+            use_psycopg2: psycopg2
+          - crdb-version: v22.2.7
+            use_server_side_binding: server_side_binding
+          # Uncomment to enable testing of CockroachDB nightly.
+          #- crdb-version: LATEST
+          #- crdb-version: LATEST
+          #  use_psycopg2: psycopg2
+          #- crdb-version: LATEST
+          #  use_server_side_binding: server_side_binding
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - name: Install system packages for Django's Python test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install binutils gdal-bin
+      - name: Run build.sh
+        run: bash django-test-suite/build.sh ${{ matrix.crdb-version }}
+        env:
+          USE_PSYCOPG2: ${{ matrix.use_psycopg2 }}
+          USE_SERVER_SIDE_BINDING: ${{ matrix.use_server_side_binding }}
