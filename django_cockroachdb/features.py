@@ -1,5 +1,3 @@
-import operator
-
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
@@ -12,9 +10,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # Cloning databases doesn't speed up tests.
     # https://github.com/cockroachdb/django-cockroachdb/issues/206
     can_clone_databases = False
-
-    # Not supported: https://github.com/cockroachdb/cockroach/issues/40476
-    has_select_for_update_skip_locked = property(operator.attrgetter('is_cockroachdb_22_2'))
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/31632
     can_defer_constraint_checks = False
@@ -77,10 +72,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         'non_default': 'sv',
         'swedish_ci': 'sv-x-icu',
     }
-
-    @cached_property
-    def is_cockroachdb_22_2(self):
-        return self.connection.cockroachdb_version >= (22, 2)
 
     @cached_property
     def django_test_expected_failures(self):
