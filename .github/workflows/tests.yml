@@ -8,7 +8,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  python38:
+  # This job aggregates all matrix results and is used for a GitHub required status check.
+  test_results:
+    if: ${{ always() }}
+    runs-on: ubuntu-22.04
+    name: Test Results
+    needs: [test]
+    steps:
+      - run: |
+          result="${{ needs.test.result }}"
+          if [[ $result == "success" || $result == "skipped" ]]; then
+            exit 0
+          else
+            exit 1
+          fi
+
+  test:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
