@@ -175,6 +175,8 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'aggregation.tests.AggregateTestCase.test_aggregation_default_expression',
             # ProgrammingError: VALUES types int and float cannot be matched
             'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
+            # concat(): unknown signature: concat(string, int2) (desired <string>)
+            'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
         })
         if not self.is_cockroachdb_23_2:
             expected_failures.update({
@@ -183,6 +185,8 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'schema.tests.SchemaTests.test_func_index_json_key_transform',
                 # ordering by JSON isn't supported:
                 # https://github.com/cockroachdb/cockroach/issues/35706
+                'db_functions.comparison.test_json_object.JSONObjectTests.test_order_by_key',
+                'db_functions.comparison.test_json_object.JSONObjectTests.test_order_by_nested_key',
                 'expressions_window.tests.WindowFunctionTests.test_key_transform',
                 'model_fields.test_jsonfield.TestQuerying.test_deep_distinct',
                 'model_fields.test_jsonfield.TestQuerying.test_order_grouping_custom_decoder',
