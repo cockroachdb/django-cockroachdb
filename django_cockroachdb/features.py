@@ -147,6 +147,9 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # CockroachDB doesn't support dropping the primary key.
             'schema.tests.SchemaTests.test_alter_int_pk_to_int_unique',
             # CockroachDB doesn't support changing the primary key of table.
+            # psycopg.errors.InvalidColumnReference: column "id" is referenced
+            # by the primary key
+            'migrations.test_operations.OperationTests.test_alter_id_pk_to_uuid_pk',
             'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
             'schema.tests.SchemaTests.test_primary_key',
             # SmallAutoField doesn't work:
