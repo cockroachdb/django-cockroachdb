@@ -80,6 +80,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (23, 2)
 
     @cached_property
+    def is_cockroachdb_24_1(self):
+        return self.connection.cockroachdb_version >= (24, 1)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -195,6 +199,13 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # of type decimal, found type float
                 # https://github.com/cockroachdb/cockroach/issues/73587#issuecomment-988408190
                 'aggregation.tests.AggregateTestCase.test_aggregation_default_using_decimal_from_database',
+            })
+        if self.is_cockroachdb_24_1:
+            # USING cast required: https://github.com/cockroachdb/cockroach/issues/82416#issuecomment-2029803229
+            expected_failures.update({
+                'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
+                'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
+                'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
             })
         if self.uses_server_side_binding:
             expected_failures.update({
