@@ -213,6 +213,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # https://github.com/cockroachdb/cockroach/issues/91396
                 'backends.tests.EscapingChecks.test_parameter_escaping',
                 'backends.tests.EscapingChecksDebug.test_parameter_escaping',
+                'constraints.tests.CheckConstraintTests.test_database_default',
                 'expressions.tests.BasicExpressionsTests.test_annotate_values_filter',
                 'expressions_case.tests.CaseDocumentationExamples.test_lookup_example',
                 'expressions_case.tests.CaseDocumentationExamples.test_simple_example',
