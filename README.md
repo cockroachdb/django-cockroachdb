@@ -147,7 +147,3 @@ using back to Cockroach Labs. To disable this, set
   `unimplemented: table <...> is currently undergoing a schema change` if a
   later operation tries to modify the table before the asynchronous query
   finishes.
-
- ## Known issues and limitations in CockroachDB 23.1.x and earlier
-
-- CockroachDB doesn't support by ordering by JSON.
