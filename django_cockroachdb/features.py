@@ -313,5 +313,9 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # greater than datetime.timedelta(microseconds=500000)
                 'get_or_create.tests.UpdateOrCreateTransactionTests.test_updates_in_transaction',
             },
+            # https://www.cockroachlabs.com/docs/stable/transaction-retry-error-reference.html#abort_reason_client_reject
+            'Often fails with SerializationFailure: restart transaction: TransactionRetryWithProtoRefreshError': {
+                'admin_views.test_multidb.ViewOnSiteTests.test_contenttype_in_separate_db',
+            },
         })
         return skips
