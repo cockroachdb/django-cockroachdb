@@ -21,9 +21,9 @@ production it is advised to use the package built from sources.
 ## Install and usage
 
 Use the version of django-cockroachdb that corresponds to your version of
-Django. For example, to get the latest compatible release for Django 5.1.x:
+Django. For example, to get the latest compatible release for Django 5.2.x:
 
-`pip install django-cockroachdb==5.1.*`
+`pip install django-cockroachdb==5.2.*`
 
 The minor release number of Django doesn't correspond to the minor release
 number of django-cockroachdb. Use the latest minor release of each.
@@ -92,7 +92,7 @@ By default, CockroachDB sends the version of django-cockroachdb that you're
 using back to Cockroach Labs. To disable this, set
 `DISABLE_COCKROACHDB_TELEMETRY = True` in your Django settings.
 
-## Known issues and limitations in CockroachDB 24.1.x and earlier
+## Known issues and limitations in CockroachDB 24.2.x and earlier
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
@@ -144,7 +144,3 @@ using back to Cockroach Labs. To disable this, set
      - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
        overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
-
- ## Known issues and limitations in CockroachDB 23.1.x and earlier
-
-- CockroachDB doesn't support by ordering by JSON.
