@@ -181,7 +181,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # concat(): unknown signature: concat(string, int2) (desired <string>)
             'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
             # unknown signature: concat(varchar, int) (returning <string>)
-            'migrations.test_operations.OperationTests.test_add_generate_field',
+            'migrations.test_operations.OperationTests.test_add_generated_field',
         })
         if self.is_cockroachdb_24_1:
             # USING cast required: https://github.com/cockroachdb/cockroach/issues/82416#issuecomment-2029803229
