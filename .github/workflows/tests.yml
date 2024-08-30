@@ -29,20 +29,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - crdb-version: v23.1.11
-          - crdb-version: v23.1.11
+          - crdb-version: v23.1.25
+          - crdb-version: v23.1.25
             use_psycopg2: psycopg2
-          - crdb-version: v23.1.11
+          - crdb-version: v23.1.25
             use_server_side_binding: server_side_binding
-          - crdb-version: v23.2.0
-          - crdb-version: v23.2.0
+          - crdb-version: v23.2.9
+          - crdb-version: v23.2.9
             use_psycopg2: psycopg2
-          - crdb-version: v23.2.0
+          - crdb-version: v23.2.9
             use_server_side_binding: server_side_binding
-          - crdb-version: v24.1.0
-          - crdb-version: v24.1.0
+          - crdb-version: v24.1.3
+          - crdb-version: v24.1.3
             use_psycopg2: psycopg2
-          - crdb-version: v24.1.0
+          - crdb-version: v24.1.3
             use_server_side_binding: server_side_binding
           - crdb-version: v24.2.0
           - crdb-version: v24.2.0
