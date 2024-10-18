@@ -84,6 +84,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (24, 1)
 
     @cached_property
+    def is_cockroachdb_24_3(self):
+        return self.connection.cockroachdb_version >= (24, 3)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -136,15 +140,11 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'migrations.test_operations.OperationTests.test_alter_field_pk_fk',
             'migrations.test_operations.OperationTests.test_alter_field_pk_fk_char_to_int',
             'migrations.test_operations.OperationTests.test_alter_field_pk_fk_db_collation',
-            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_fk_with_to_field_related_name_target_type_change',  # noqa
-            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
             'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_type_change',  # noqa
-            'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
             'schema.tests.SchemaTests.test_alter_auto_field_to_char_field',
             'schema.tests.SchemaTests.test_alter_autofield_pk_to_smallautofield_pk',
             'schema.tests.SchemaTests.test_alter_primary_key_db_collation',
-            'schema.tests.SchemaTests.test_alter_primary_key_the_same_name',
             'schema.tests.SchemaTests.test_char_field_pk_to_auto_field',
             'schema.tests.SchemaTests.test_char_field_with_db_index_to_fk',
             'schema.tests.SchemaTests.test_text_field_with_db_index_to_fk',
@@ -182,11 +182,21 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'aggregation.tests.AggregateTestCase.test_aggregation_default_expression',
             # ProgrammingError: VALUES types int and float cannot be matched
             'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
-            # concat(): unknown signature: concat(string, int2) (desired <string>)
-            'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
-            # unknown signature: concat(varchar, int) (returning <string>)
-            'migrations.test_operations.OperationTests.test_add_generate_field',
         })
+        if not self.is_cockroachdb_24_3:
+            expected_failures.update({
+                # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
+                # not supported for columns that are part of an index.
+                # https://go.crdb.dev/issue/47636
+                'schema.tests.SchemaTests.test_alter_primary_key_the_same_name',
+                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
+                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
+                'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
+                # unknown signature: concat(varchar, int) (returning <string>)
+                'migrations.test_operations.OperationTests.test_add_generate_field',
+                # concat(): unknown signature: concat(string, int2) (desired <string>)
+                'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
+            })
         if not self.is_cockroachdb_23_2:
             expected_failures.update({
                 # cannot index a json element:
