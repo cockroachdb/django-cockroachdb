@@ -150,6 +150,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'schema.tests.SchemaTests.test_text_field_with_db_index_to_fk',
             # CockroachDB doesn't support dropping the primary key.
             'schema.tests.SchemaTests.test_alter_int_pk_to_int_unique',
+            # unimplemented: primary key dropped without subsequent addition of
+            # new primary key in same transaction
+            # https://github.com/cockroachdb/cockroach/issues/48026
+            'migrations.test_operations.OperationTests.test_composite_pk_operations',
             # CockroachDB doesn't support changing the primary key of table.
             # psycopg.errors.InvalidColumnReference: column "id" is referenced
             # by the primary key
@@ -165,6 +169,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'many_to_one.tests.ManyToOneTests.test_get_prefetch_querysets_reverse_invalid_querysets_length',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
+            'schema.tests.SchemaTests.test_alter_smallint_pk_to_smallautofield_pk',
             # unexpected unique index in pg_constraint query:
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
@@ -193,7 +198,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
                 'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
                 # unknown signature: concat(varchar, int) (returning <string>)
-                'migrations.test_operations.OperationTests.test_add_generate_field',
+                'migrations.test_operations.OperationTests.test_add_generated_field',
                 # concat(): unknown signature: concat(string, int2) (desired <string>)
                 'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
             })
@@ -204,12 +209,19 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
                 'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
             })
+        if self.is_cockroachdb_25_1:
+            expected_failures.update({
+                # expected STORED COMPUTED COLUMN expression to have type
+                # decimal, but 'pink + pink' has type int
+                'migrations.test_operations.OperationTests.test_generated_field_changes_output_field',
+            })
         if self.uses_server_side_binding:
             expected_failures.update({
                 # could not determine data type of placeholder:
                 # https://github.com/cockroachdb/cockroach/issues/91396
                 'backends.tests.EscapingChecks.test_parameter_escaping',
                 'backends.tests.EscapingChecksDebug.test_parameter_escaping',
+                'composite_pk.test_update.CompositePKUpdateTests.test_bulk_update_comments',
                 'constraints.tests.CheckConstraintTests.test_database_default',
                 'expressions.tests.BasicExpressionsTests.test_annotate_values_filter',
                 'expressions_case.tests.CaseDocumentationExamples.test_lookup_example',
