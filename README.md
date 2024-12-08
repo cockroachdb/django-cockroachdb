@@ -92,6 +92,10 @@ By default, CockroachDB sends the version of django-cockroachdb that you're
 using back to Cockroach Labs. To disable this, set
 `DISABLE_COCKROACHDB_TELEMETRY = True` in your Django settings.
 
+## Known compatability issues with other libraries
+- Does not work with [coockiecutter](https://github.com/cookiecutter/cookiecutter-django/) (sql is tailored to Postgress)
+- Does not work with [allauth.socialacount](https://github.com/pennersr/django-allauth) (psycopg.errors.DatatypeMismatch: column "extra_data" cannot be cast automatically to type JSONB)
+
 ## Known issues and limitations in CockroachDB 24.2.x and earlier
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
