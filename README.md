@@ -21,9 +21,9 @@ production it is advised to use the package built from sources.
 ## Install and usage
 
 Use the version of django-cockroachdb that corresponds to your version of
-Django. For example, to get the latest compatible release for Django 5.1.x:
+Django. For example, to get the latest compatible release for Django 5.2.x:
 
-`pip install django-cockroachdb==5.1.*`
+`pip install django-cockroachdb==5.2.*`
 
 The minor release number of Django doesn't correspond to the minor release
 number of django-cockroachdb. Use the latest minor release of each.
@@ -147,7 +147,3 @@ using back to Cockroach Labs. To disable this, set
   `unimplemented: table <...> is currently undergoing a schema change` if a
   later operation tries to modify the table before the asynchronous query
   finishes.
-
- ## Known issues and limitations in CockroachDB 23.1.x and earlier
-
-- CockroachDB doesn't support by ordering by JSON.
