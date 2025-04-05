@@ -70,6 +70,9 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             # 3D opclass not present on CockroachDB:
             # https://github.com/cockroachdb/cockroach/issues/47420#issuecomment-969578772
             'gis_tests.gis_migrations.test_operations.OperationTests.test_add_3d_field_opclass',
+            # GeometryType output value has incorrect casing:
+            # https://github.com/cockroachdb/cockroach/issues/152593
+            "gis_tests.geoapp.test_functions.GISFunctionsTests.test_geometry_type",
         })
         if self.uses_server_side_binding:
             expected_failures.update({

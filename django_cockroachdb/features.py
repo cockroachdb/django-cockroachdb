@@ -169,7 +169,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'bulk_create.tests.BulkCreateTests.test_bulk_insert_nullable_fields',
             'many_to_one.tests.ManyToOneTests.test_add_remove_set_by_pk_raises',
             'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
-            'many_to_one.tests.ManyToOneTests.test_get_prefetch_queryset_reverse_warning',
             'many_to_one.tests.ManyToOneTests.test_get_prefetch_querysets_reverse_invalid_querysets_length',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
@@ -209,6 +208,8 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'migrations.test_operations.OperationTests.test_add_generated_field',
                 # concat(): unknown signature: concat(string, int2) (desired <string>)
                 'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
+                # unknown signature: concat(timestamptz, string)
+                "aggregation.tests.AggregateTestCase.test_string_agg_order_by",
             })
         if self.is_cockroachdb_25_1:
             expected_failures.update({
@@ -235,9 +236,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_aggregation_in_predicate',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_annotation_in_condition',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_annotation_in_predicate',
-                'expressions_case.tests.CaseExpressionTests.test_annotate_with_empty_when',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_expression_as_condition',
-                'expressions_case.tests.CaseExpressionTests.test_annotate_with_full_when',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_join_in_condition',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_join_in_predicate',
                 'expressions_case.tests.CaseExpressionTests.test_case_reuse',
@@ -248,6 +247,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'lookup.tests.LookupQueryingTests.test_conditional_expression',
                 'ordering.tests.OrderingTests.test_order_by_constant_value',
                 'queries.test_bulk_update.BulkUpdateNoteTests.test_batch_size',
+                'queries.test_bulk_update.BulkUpdateNoteTests.test_max_batch_size',
                 'queries.test_bulk_update.BulkUpdateNoteTests.test_multiple_fields',
                 'queries.test_bulk_update.BulkUpdateNoteTests.test_simple',
                 'queries.test_bulk_update.BulkUpdateTests.test_custom_pk',
@@ -272,6 +272,8 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # incompatible COALESCE expressions: unsupported binary
                 # operator: <decimal> / <float>  (desired <decimal>)
                 'aggregation.tests.AggregateTestCase.test_aggregation_default_passed_another_aggregate',
+                # could not parse "@" as type timestamptz: parsing as type timestamp: empty or blank input
+                "aggregation.tests.AggregateTestCase.test_string_agg_order_by",
             })
             if self.is_cockroachdb_24_3:
                 expected_failures.update({
