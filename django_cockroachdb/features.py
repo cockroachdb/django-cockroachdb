@@ -88,6 +88,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (25, 1)
 
     @cached_property
+    def is_cockroachdb_25_2(self):
+        return self.connection.cockroachdb_version >= (25, 2)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -286,6 +290,18 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                     # psycopg.errors.IndeterminateDatatype: could not determine
                     # data type of placeholder $1
                     'expressions_case.tests.CaseExpressionTests.test_filter_with_expression_as_condition',
+                })
+            if self.is_cockroachdb_25_2:
+                expected_failures.update({
+                    # concat(): error type checking resolved expression::
+                    # could not determine data type of placeholder $1
+                    'aggregation_regress.tests.AggregationTests.test_aggregate_group_by_unseen_columns_unmanaged',
+                    'db_functions.text.test_concat.ConcatTests.test_many',
+                    'db_functions.text.test_concat.ConcatTests.test_mixed_char_text',
+                    'db_functions.text.test_replace.ReplaceTests.test_replace_expression',
+                    'expressions.tests.BasicExpressionsTests.test_slicing_of_f_expression_with_annotated_expression',
+                    'filtered_relation.tests.FilteredRelationTests.test_condition_with_func_and_lookup_outside_relation_name',  # noqa
+                    'select_for_update.tests.SelectForUpdateTests.test_for_update_of_values_list',
                 })
         else:
             expected_failures.update({
