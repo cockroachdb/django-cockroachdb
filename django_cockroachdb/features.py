@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
-    minimum_database_version = (23, 2)
+    minimum_database_version = (24, 1)
 
     # Cloning databases doesn't speed up tests.
     # https://github.com/cockroachdb/django-cockroachdb/issues/206
@@ -74,10 +74,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         # Not supported: https://github.com/cockroachdb/cockroach/issues/111091
         'virtual': None,
     }
-
-    @cached_property
-    def is_cockroachdb_24_1(self):
-        return self.connection.cockroachdb_version >= (24, 1)
 
     @cached_property
     def is_cockroachdb_24_3(self):
@@ -189,6 +185,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # new primary key in same transaction
             'schema.tests.SchemaTests.test_add_auto_field',
             'schema.tests.SchemaTests.test_autofield_to_o2o',
+            # USING cast required: https://github.com/cockroachdb/cockroach/issues/82416#issuecomment-2029803229
+            'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
             # incompatible COALESCE expressions: unsupported binary operator:
             # <int> * <int> (desired <decimal>):
             # https://github.com/cockroachdb/cockroach/issues/73587
@@ -209,13 +209,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'migrations.test_operations.OperationTests.test_add_generated_field',
                 # concat(): unknown signature: concat(string, int2) (desired <string>)
                 'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
-            })
-        if self.is_cockroachdb_24_1:
-            # USING cast required: https://github.com/cockroachdb/cockroach/issues/82416#issuecomment-2029803229
-            expected_failures.update({
-                'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
-                'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
-                'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
             })
         if self.is_cockroachdb_25_1:
             expected_failures.update({
