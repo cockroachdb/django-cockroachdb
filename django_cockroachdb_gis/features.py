@@ -8,8 +8,6 @@ from django_cockroachdb.features import DatabaseFeatures as CockroachFeatures
 
 class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
     supports_raster = False
-    # Not supported: https://github.com/cockroachdb/cockroach/issues/57092
-    supports_left_right_lookups = False
     # unimplemented: column point is of type geometry and thus is not indexable
     # https://go.crdb.dev/issue/35730
     supports_geometry_field_unique_index = False
