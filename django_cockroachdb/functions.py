@@ -5,9 +5,9 @@ from django.db.models import (
 )
 from django.db.models.expressions import When
 from django.db.models.functions import (
-    ACos, ASin, ATan, ATan2, Cast, Ceil, Coalesce, Collate, Cos, Cot, Degrees,
-    Exp, Floor, JSONArray, JSONObject, Ln, Log, Now, Radians, Round, Sin, Sqrt,
-    StrIndex, Tan,
+    UUID4, ACos, ASin, ATan, ATan2, Cast, Ceil, Coalesce, Collate, Cos, Cot,
+    Degrees, Exp, Floor, JSONArray, JSONObject, Ln, Log, Now, Radians, Round,
+    Sin, Sqrt, StrIndex, Tan,
 )
 
 
@@ -83,3 +83,4 @@ def register_functions():
     Round.as_cockroachdb = round_cast
     StrIndex.as_cockroachdb = StrIndex.as_postgresql
     When.as_cockroachdb = when
+    UUID4.as_cockroachdb = UUID4.as_postgresql

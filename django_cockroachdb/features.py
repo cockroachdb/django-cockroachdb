@@ -48,6 +48,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # https://github.com/cockroachdb/cockroach/issues/95068
     supports_comments = False
 
+    # CockroachDB doesn't support UNIQUE NULLS NOT DISTINCT:
+    # https://github.com/cockroachdb/cockroach/issues/115836
+    supports_nulls_distinct_unique_constraints = False
+
     @cached_property
     def introspected_field_types(self):
         return {
@@ -194,6 +198,14 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'aggregation.tests.AggregateTestCase.test_aggregation_default_expression',
             # ProgrammingError: VALUES types int and float cannot be matched
             'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
+            # bit_xor function not supported:
+            # https://github.com/cockroachdb/cockroach/issues/170352
+            'aggregation.tests.AggregateTestCase.test_aggregation_default_integer',
+            'aggregation.tests.AggregateTestCase.test_aggregation_default_unset',
+            'aggregation.tests.AggregateTestCase.test_aggregation_default_zero',
+            'aggregation.tests.AggregateTestCase.test_bit_xor',
+            'aggregation.tests.AggregateTestCase.test_bit_xor_on_only_false_values',
+            'aggregation.tests.AggregateTestCase.test_bit_xor_on_only_true_values',
         })
         if self.is_cockroachdb_25_1:
             expected_failures.update({
