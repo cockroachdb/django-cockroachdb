@@ -92,6 +92,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (25, 2)
 
     @cached_property
+    def is_cockroachdb_25_4(self):
+        return self.connection.cockroachdb_version >= (25, 4)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -354,6 +358,14 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'ALTER COLUMN fails if previous asynchronous ALTER COLUMN has not finished.': {
                     'schema.tests.SchemaTests.test_alter_field_db_collation',
                     'schema.tests.SchemaTests.test_alter_field_type_and_db_collation',
+                },
+            })
+        if self.is_cockroachdb_25_4:
+            skips.update({
+                # Error truncating hundreds of tables:
+                # https://github.com/cockroachdb/cockroach/issues/156682
+                'Test fails when run with all apps.': {
+                    'migration_test_data_persistence.tests.MigrationDataPersistenceClassSetup',
                 },
             })
         return skips
