@@ -48,6 +48,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # https://github.com/cockroachdb/cockroach/issues/95068
     supports_comments = False
 
+    # CockroachDB doesn't support UNIQUE NULLS NOT DISTINCT:
+    # https://github.com/cockroachdb/cockroach/issues/115836
+    supports_nulls_distinct_unique_constraints = False
+
     @cached_property
     def introspected_field_types(self):
         return {

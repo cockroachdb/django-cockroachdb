@@ -18,7 +18,10 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
 
     # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE" after
     # creating this foreign key. This isn't supported by CockroachDB.
-    sql_create_column_inline_fk = 'CONSTRAINT %(name)s REFERENCES %(to_table)s(%(to_column)s)%(deferrable)s'
+    sql_create_column_inline_fk = (
+        'CONSTRAINT %(name)s REFERENCES %(to_table)s(%(to_column)s)'
+        '%(on_delete_db)s%(deferrable)s'
+    )
 
     # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE" after this
     # statement. This isn't supported by CockroachDB.
