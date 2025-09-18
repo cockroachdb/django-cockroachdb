@@ -3,6 +3,9 @@
 ## 5.2.1 - Unreleased
 
 - Confirmed support for CockroachDB 25.2.x (no code changes required).
+- Fixed the ``Now`` database function to use the statement time
+  (``STATEMENT_TIMESTAMP``) rather than the transaction time
+  (``CURRENT_TIMESTAMP``).
 
 ## 5.2 - 2025-04-07
 
