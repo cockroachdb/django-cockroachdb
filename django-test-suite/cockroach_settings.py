@@ -24,7 +24,6 @@ if os.environ.get('USE_SERVER_SIDE_BINDING') == 'server_side_binding':
     DATABASES['default']['OPTIONS']['server_side_binding'] = True
     DATABASES['other']['OPTIONS']['server_side_binding'] = True
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 SECRET_KEY = 'django_tests_secret_key'
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',
