@@ -1,9 +1,9 @@
-from cockroach_settings import (
-    DATABASES, DEFAULT_AUTO_FIELD, PASSWORD_HASHERS, SECRET_KEY, USE_TZ,
-)
+from cockroach_settings import DATABASES, PASSWORD_HASHERS, SECRET_KEY, USE_TZ
 
 __all__ = [
-    'DATABASES', 'DEFAULT_AUTO_FIELD', 'PASSWORD_HASHERS', 'SECRET_KEY',
+    'DATABASES',
+    'PASSWORD_HASHERS',
+    'SECRET_KEY',
     'USE_TZ',
 ]
 
