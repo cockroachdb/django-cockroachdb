@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
-    minimum_database_version = (23, 2)
+    minimum_database_version = (24, 1)
 
     # Cloning databases doesn't speed up tests.
     # https://github.com/cockroachdb/django-cockroachdb/issues/206
@@ -74,14 +74,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         # Not supported: https://github.com/cockroachdb/cockroach/issues/111091
         'virtual': None,
     }
-
-    @cached_property
-    def is_cockroachdb_24_1(self):
-        return self.connection.cockroachdb_version >= (24, 1)
-
-    @cached_property
-    def is_cockroachdb_24_3(self):
-        return self.connection.cockroachdb_version >= (24, 3)
 
     @cached_property
     def is_cockroachdb_25_1(self):
@@ -169,7 +161,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'bulk_create.tests.BulkCreateTests.test_bulk_insert_nullable_fields',
             'many_to_one.tests.ManyToOneTests.test_add_remove_set_by_pk_raises',
             'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
-            'many_to_one.tests.ManyToOneTests.test_get_prefetch_queryset_reverse_warning',
             'many_to_one.tests.ManyToOneTests.test_get_prefetch_querysets_reverse_invalid_querysets_length',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
@@ -185,6 +176,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # new primary key in same transaction
             'schema.tests.SchemaTests.test_add_auto_field',
             'schema.tests.SchemaTests.test_autofield_to_o2o',
+            # USING cast required: https://github.com/cockroachdb/cockroach/issues/82416#issuecomment-2029803229
+            'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
+            'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
             # incompatible COALESCE expressions: unsupported binary operator:
             # <int> * <int> (desired <decimal>):
             # https://github.com/cockroachdb/cockroach/issues/73587
@@ -192,27 +187,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # ProgrammingError: VALUES types int and float cannot be matched
             'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
         })
-        if not self.is_cockroachdb_24_3:
-            expected_failures.update({
-                # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
-                # not supported for columns that are part of an index.
-                # https://go.crdb.dev/issue/47636
-                'schema.tests.SchemaTests.test_alter_primary_key_the_same_name',
-                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
-                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
-                'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
-                # unknown signature: concat(varchar, int) (returning <string>)
-                'migrations.test_operations.OperationTests.test_add_generated_field',
-                # concat(): unknown signature: concat(string, int2) (desired <string>)
-                'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
-            })
-        if self.is_cockroachdb_24_1:
-            # USING cast required: https://github.com/cockroachdb/cockroach/issues/82416#issuecomment-2029803229
-            expected_failures.update({
-                'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
-                'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
-                'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
-            })
         if self.is_cockroachdb_25_1:
             expected_failures.update({
                 # expected STORED COMPUTED COLUMN expression to have type
@@ -238,9 +212,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_aggregation_in_predicate',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_annotation_in_condition',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_annotation_in_predicate',
-                'expressions_case.tests.CaseExpressionTests.test_annotate_with_empty_when',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_expression_as_condition',
-                'expressions_case.tests.CaseExpressionTests.test_annotate_with_full_when',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_join_in_condition',
                 'expressions_case.tests.CaseExpressionTests.test_annotate_with_join_in_predicate',
                 'expressions_case.tests.CaseExpressionTests.test_case_reuse',
@@ -251,6 +223,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'lookup.tests.LookupQueryingTests.test_conditional_expression',
                 'ordering.tests.OrderingTests.test_order_by_constant_value',
                 'queries.test_bulk_update.BulkUpdateNoteTests.test_batch_size',
+                'queries.test_bulk_update.BulkUpdateNoteTests.test_max_batch_size',
                 'queries.test_bulk_update.BulkUpdateNoteTests.test_multiple_fields',
                 'queries.test_bulk_update.BulkUpdateNoteTests.test_simple',
                 'queries.test_bulk_update.BulkUpdateTests.test_custom_pk',
@@ -262,6 +235,12 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'queries.test_bulk_update.BulkUpdateTests.test_updated_rows_when_passing_duplicates',
                 'queries.test_q.QCheckTests.test_expression',
                 'queries.test_qs_combinators.QuerySetSetOperationTests.test_union_multiple_models_with_values_list_and_annotations',  # noqa
+                # psycopg.errors.IndeterminateDatatype: replace():
+                # replace(): replace(): concat(): could not determine data
+                # type of placeholder $3. This worked until v24.3 added
+                # support for non-string data to concat():
+                # https://github.com/cockroachdb/cockroach/pull/127098#issuecomment-2492652084
+                "model_fields.test_uuid.TestQuerying.test_filter_with_expr",
                 # error in argument for $2: could not parse ":" as type int2:
                 # strconv.ParseInt: parsing ":": invalid syntax
                 # https://github.com/cockroachdb/cockroach/issues/136295
@@ -275,16 +254,9 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # incompatible COALESCE expressions: unsupported binary
                 # operator: <decimal> / <float>  (desired <decimal>)
                 'aggregation.tests.AggregateTestCase.test_aggregation_default_passed_another_aggregate',
+                # could not parse "@" as type timestamptz: parsing as type timestamp: empty or blank input
+                "aggregation.tests.AggregateTestCase.test_string_agg_order_by",
             })
-            if self.is_cockroachdb_24_3:
-                expected_failures.update({
-                    # psycopg.errors.IndeterminateDatatype: replace():
-                    # replace(): replace(): concat(): could not determine data
-                    # type of placeholder $3. This worked until v24.3 added
-                    # support for non-string data to concat():
-                    # https://github.com/cockroachdb/cockroach/pull/127098#issuecomment-2492652084
-                    "model_fields.test_uuid.TestQuerying.test_filter_with_expr",
-                })
             if self.is_cockroachdb_25_1:
                 expected_failures.update({
                     # psycopg.errors.IndeterminateDatatype: could not determine
