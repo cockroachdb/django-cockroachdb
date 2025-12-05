@@ -96,6 +96,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (25, 4)
 
     @cached_property
+    def is_cockroachdb_26_1(self):
+        return self.connection.cockroachdb_version >= (26, 1)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -360,7 +364,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                     'schema.tests.SchemaTests.test_alter_field_type_and_db_collation',
                 },
             })
-        if self.is_cockroachdb_25_4:
+        if self.is_cockroachdb_25_4 and not self.is_cockroachdb_26_1:
             skips.update({
                 # Error truncating hundreds of tables:
                 # https://github.com/cockroachdb/cockroach/issues/156682
