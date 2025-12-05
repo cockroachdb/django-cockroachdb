@@ -48,6 +48,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # https://github.com/cockroachdb/cockroach/issues/95068
     supports_comments = False
 
+    # CockroachDB doesn't support UNIQUE NULLS NOT DISTINCT:
+    # https://github.com/cockroachdb/cockroach/issues/115836
+    supports_nulls_distinct_unique_constraints = False
+
     @cached_property
     def introspected_field_types(self):
         return {
@@ -74,10 +78,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         # Not supported: https://github.com/cockroachdb/cockroach/issues/111091
         'virtual': None,
     }
-
-    @cached_property
-    def is_cockroachdb_24_3(self):
-        return self.connection.cockroachdb_version >= (24, 3)
 
     @cached_property
     def is_cockroachdb_25_1(self):
@@ -195,22 +195,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # ProgrammingError: VALUES types int and float cannot be matched
             'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
         })
-        if not self.is_cockroachdb_24_3:
-            expected_failures.update({
-                # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
-                # not supported for columns that are part of an index.
-                # https://go.crdb.dev/issue/47636
-                'schema.tests.SchemaTests.test_alter_primary_key_the_same_name',
-                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
-                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
-                'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
-                # unknown signature: concat(varchar, int) (returning <string>)
-                'migrations.test_operations.OperationTests.test_add_generated_field',
-                # concat(): unknown signature: concat(string, int2) (desired <string>)
-                'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
-                # unknown signature: concat(timestamptz, string)
-                "aggregation.tests.AggregateTestCase.test_string_agg_order_by",
-            })
         if self.is_cockroachdb_25_1:
             expected_failures.update({
                 # expected STORED COMPUTED COLUMN expression to have type
@@ -259,6 +243,12 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'queries.test_bulk_update.BulkUpdateTests.test_updated_rows_when_passing_duplicates',
                 'queries.test_q.QCheckTests.test_expression',
                 'queries.test_qs_combinators.QuerySetSetOperationTests.test_union_multiple_models_with_values_list_and_annotations',  # noqa
+                # psycopg.errors.IndeterminateDatatype: replace():
+                # replace(): replace(): concat(): could not determine data
+                # type of placeholder $3. This worked until v24.3 added
+                # support for non-string data to concat():
+                # https://github.com/cockroachdb/cockroach/pull/127098#issuecomment-2492652084
+                "model_fields.test_uuid.TestQuerying.test_filter_with_expr",
                 # error in argument for $2: could not parse ":" as type int2:
                 # strconv.ParseInt: parsing ":": invalid syntax
                 # https://github.com/cockroachdb/cockroach/issues/136295
@@ -275,15 +265,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 # could not parse "@" as type timestamptz: parsing as type timestamp: empty or blank input
                 "aggregation.tests.AggregateTestCase.test_string_agg_order_by",
             })
-            if self.is_cockroachdb_24_3:
-                expected_failures.update({
-                    # psycopg.errors.IndeterminateDatatype: replace():
-                    # replace(): replace(): concat(): could not determine data
-                    # type of placeholder $3. This worked until v24.3 added
-                    # support for non-string data to concat():
-                    # https://github.com/cockroachdb/cockroach/pull/127098#issuecomment-2492652084
-                    "model_fields.test_uuid.TestQuerying.test_filter_with_expr",
-                })
             if self.is_cockroachdb_25_1:
                 expected_failures.update({
                     # psycopg.errors.IndeterminateDatatype: could not determine
