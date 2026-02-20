@@ -44,11 +44,6 @@ jobs:
             use_psycopg2: psycopg2
           - crdb-version: v25.2.2
             use_server_side_binding: server_side_binding
-          - crdb-version: v25.3.1
-          - crdb-version: v25.3.1
-            use_psycopg2: psycopg2
-          - crdb-version: v25.3.1
-            use_server_side_binding: server_side_binding
           - crdb-version: v25.4.0
           - crdb-version: v25.4.0
             use_psycopg2: psycopg2
