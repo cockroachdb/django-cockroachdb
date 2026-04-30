@@ -96,6 +96,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (26, 1)
 
     @cached_property
+    def is_cockroachdb_26_3(self):
+        return self.connection.cockroachdb_version >= (26, 3)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({

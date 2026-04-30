@@ -92,7 +92,7 @@ By default, CockroachDB sends the version of django-cockroachdb that you're
 using back to Cockroach Labs. To disable this, set
 `DISABLE_COCKROACHDB_TELEMETRY = True` in your Django settings.
 
-## Known issues and limitations in CockroachDB 26.2.x and earlier
+## Known issues and limitations in CockroachDB 26.3.x and earlier
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
@@ -122,15 +122,12 @@ using back to Cockroach Labs. To disable this, set
 - GIS:
    - Some database functions aren't supported: `AsGML`, `AsKML`, `AsSVG`,
      and `GeometryDistance`.
-   - Some 3D functions or signatures aren't supported: `ST_3DPerimeter`,
-     `ST_3DExtent`, `ST_Scale`, and `ST_LengthSpheroid`.
+   - Some 3D functions or signatures aren't supported: `ST_3DExtent`,
+     `ST_Scale`, and `ST_LengthSpheroid`.
    - The `Length` database function isn't supported on geodetic fields:
      [st_lengthspheroid(): unimplemented](https://github.com/cockroachdb/cockroach/issues/48968).
    - `Union` may crash with
      [unknown signature: st_union(geometry, geometry)](https://github.com/cockroachdb/cockroach/issues/49064).
-   - The spheroid argument of ST_DistanceSpheroid
-     [isn't supported](https://github.com/cockroachdb/cockroach/issues/48922):
-     `unknown signature: st_distancespheroid(geometry, geometry, string)`.
    - These lookups aren't supported:
      - [contained (@)](https://github.com/cockroachdb/cockroach/issues/56124)
      - [exact/same_as (~=)](https://github.com/cockroachdb/cockroach/issues/57096)
@@ -138,6 +135,13 @@ using back to Cockroach Labs. To disable this, set
      - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
        overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
+
+## Known issues and limitations in CockroachDB 26.2.x and earlier
+
+- GIS:
+  - The `ST_3DPerimeter` function isn't supported.
+  - The spheroid argument of `ST_DistanceSpheroid`
+    [isn't supported](https://github.com/cockroachdb/cockroach/issues/48922).
 
 ## Known issues and limitations in CockroachDB 24.3.x and earlier
 
