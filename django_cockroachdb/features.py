@@ -48,6 +48,12 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # https://github.com/cockroachdb/cockroach/issues/95068
     supports_comments = False
 
+    # Not supported: https://github.com/cockroachdb/cockroach/issues/172590
+    supports_any_value = False
+
+    # Not supported: https://github.com/cockroachdb/cockroach/issues/115836
+    supports_nulls_distinct_unique_constraints = False
+
     @cached_property
     def introspected_field_types(self):
         return {
@@ -98,6 +104,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     @cached_property
     def is_cockroachdb_26_1(self):
         return self.connection.cockroachdb_version >= (26, 1)
+
+    @cached_property
+    def is_cockroachdb_26_3(self):
+        return self.connection.cockroachdb_version >= (26, 3)
 
     @cached_property
     def django_test_expected_failures(self):
@@ -276,14 +286,17 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
                 # unsupported binary operator: <interval> / <decimal>
                 'expressions.tests.FTimeDeltaTests.test_durationfield_multiply_divide',
-                # InvalidParameterValue: unsupported binary operator: <int4> / <float>
-                'queries.tests.Ticket23605Tests.test_ticket_23605',
                 # InvalidParameterValue: unsupported binary operator: <int2> + <float>
                 'annotations.tests.NonAggregateAnnotationTestCase.test_combined_annotation_commutative',
                 # incompatible COALESCE expressions: unsupported binary
                 # operator: <decimal> / <float>  (desired <decimal>)
                 'aggregation.tests.AggregateTestCase.test_aggregation_default_passed_another_aggregate',
             })
+            if not self.is_cockroachdb_26_3:
+                expected_failures.update({
+                    # InvalidParameterValue: unsupported binary operator: <int4> / <float>
+                    'queries.tests.Ticket23605Tests.test_ticket_23605',
+                })
             if self.is_cockroachdb_24_3:
                 expected_failures.update({
                     # psycopg.errors.IndeterminateDatatype: replace():
@@ -311,7 +324,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                     'filtered_relation.tests.FilteredRelationTests.test_condition_with_func_and_lookup_outside_relation_name',  # noqa
                     'select_for_update.tests.SelectForUpdateTests.test_for_update_of_values_list',
                 })
-        else:
+        elif not self.is_cockroachdb_26_3:
             expected_failures.update({
                 # Unsupported query: unsupported binary operator: <int> / <int>:
                 # https://github.com/cockroachdb/django-cockroachdb/issues/21

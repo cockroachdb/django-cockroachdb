@@ -1,7 +1,7 @@
 import datetime
 
 from django.db.models import (
-    DateTimeField, DecimalField, FloatField, IntegerField,
+    DateTimeField, DecimalField, FloatField, IntegerField, TextField,
 )
 from django.db.models.expressions import When
 from django.db.models.functions import (
@@ -46,6 +46,52 @@ def float_cast(self, compiler, connection, **extra_context):
     return clone.as_sql(compiler, connection, **extra_context)
 
 
+def json_array(self, compiler, connection, **extra_context):
+    # Django uses json_array() for PostgreSQL 16+. CockroachDB 26.3+ reports
+    # itself as PostgreSQL 18 but doesn't support it:
+    # https://github.com/cockroachdb/cockroach/issues/172633.
+    # When it does, this function can be removed.
+    casted_obj = self.copy()
+    casted_obj.set_source_expressions(
+        [
+            (
+                # Conditional Cast to avoid unnecessary wrapping.
+                expression
+                if isinstance(expression, Cast)
+                else Cast(expression, expression.output_field)
+            )
+            for expression in casted_obj.get_source_expressions()
+        ]
+    )
+    return casted_obj.as_sql(
+        compiler,
+        connection,
+        function="JSONB_BUILD_ARRAY",
+        **extra_context,
+    )
+
+
+def json_object(self, compiler, connection, **extra_context):
+    # Django uses json_object([{ key_expression { VALUE | ':' }
+    # value_expression }]) for PostgreSQL 16+. CockroachDB 26.3+ reports itself
+    # as PostgreSQL 18 but doesn't support it:
+    # https://github.com/cockroachdb/cockroach/issues/172638.
+    # When it does, this function can be removed.
+    copy = self.copy()
+    copy.set_source_expressions(
+        [
+            Cast(expression, TextField()) if index % 2 == 0 else expression
+            for index, expression in enumerate(copy.get_source_expressions())
+        ]
+    )
+    return super(JSONObject, copy).as_sql(
+        compiler,
+        connection,
+        function="JSONB_BUILD_OBJECT",
+        **extra_context,
+    )
+
+
 def round_cast(self, compiler, connection, **extra_context):
     # ROUND() doesn't accept integer values. Cast to decimal (rather than
     # float) so that half away from zero rounding is used, consistent with
@@ -77,8 +123,8 @@ def register_functions():
         func.as_cockroachdb = float_cast
     Coalesce.as_cockroachdb = coalesce
     Collate.as_cockroachdb = collate
-    JSONArray.as_cockroachdb = JSONArray.as_postgresql
-    JSONObject.as_cockroachdb = JSONObject.as_postgresql
+    JSONArray.as_cockroachdb = json_array
+    JSONObject.as_cockroachdb = json_object
     Now.as_cockroachdb = Now.as_postgresql
     Round.as_cockroachdb = round_cast
     StrIndex.as_cockroachdb = StrIndex.as_postgresql
