@@ -61,8 +61,8 @@ jobs:
           #- crdb-version: LATEST
           #  use_server_side_binding: server_side_binding
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Install system packages for Django's Python test dependencies
