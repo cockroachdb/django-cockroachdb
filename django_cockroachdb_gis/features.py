@@ -27,6 +27,7 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             'gis_tests.relatedapp.tests.RelatedGeoModelTest.test06_f_expressions',
             # unknown signature: st_union(geometry, geometry)
             # https://github.com/cockroachdb/cockroach/issues/49064
+            'gis_tests.distapp.tests.DistanceTest.test_distance_lookups_with_expression_rhs',
             'gis_tests.distapp.tests.DistanceTest.test_dwithin',
             'gis_tests.geoapp.test_functions.GISFunctionsTests.test_diff_intersection_union',
             'gis_tests.geoapp.test_functions.GISFunctionsTests.test_union_mixed_srid',
@@ -35,20 +36,12 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             'gis_tests.geoapp.tests.GeoLookupTest.test_relate_lookup',
             # NotSupportedError: this box2d comparison operator is experimental
             'gis_tests.geoapp.tests.GeoLookupTest.test_contains_contained_lookups',
-            # unknown signature: st_distancespheroid(geometry, geometry, string)
-            # https://github.com/cockroachdb/cockroach/issues/48922#issuecomment-693096502
-            'gis_tests.distapp.tests.DistanceTest.test_distance_lookups_with_expression_rhs',
-            'gis_tests.distapp.tests.DistanceTest.test_geodetic_distance_lookups',
-            'gis_tests.distapp.tests.DistanceFunctionsTests.test_distance_geodetic_spheroid',
             # st_lengthspheroid(): unimplemented:
             # https://github.com/cockroachdb/cockroach/issues/48968
             'gis_tests.distapp.tests.DistanceFunctionsTests.test_length',
             # Unsupported ~= (https://github.com/cockroachdb/cockroach/issues/57096)
             # and @ operators (https://github.com/cockroachdb/cockroach/issues/56124).
             'gis_tests.geogapp.tests.GeographyTest.test_operators_functions_unavailable_for_geography',
-            # unknown function: st_3dperimeter
-            # https://github.com/cockroachdb/cockroach/issues/60871
-            'gis_tests.geo3d.tests.Geo3DFunctionsTests.test_perimeter',
             # unknown function: st_3dextent()
             # https://github.com/cockroachdb/cockroach/issues/60864
             'gis_tests.geo3d.tests.Geo3DTest.test_extent',
@@ -84,5 +77,15 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
                 # unknown signature: st_dwithin(geography, geometry, decimal) (desired <bool>)
                 # https://github.com/cockroachdb/cockroach/issues/53720
                 'gis_tests.geogapp.tests.GeographyTest.test02_distance_lookup',
+            })
+        if not self.is_cockroachdb_26_3:
+            expected_failures.update({
+                # unknown signature: st_distancespheroid(geometry, geometry, string)
+                # https://github.com/cockroachdb/cockroach/issues/48922#issuecomment-693096502
+                'gis_tests.distapp.tests.DistanceTest.test_geodetic_distance_lookups',
+                'gis_tests.distapp.tests.DistanceFunctionsTests.test_distance_geodetic_spheroid',
+                # unknown function: st_3dperimeter
+                # https://github.com/cockroachdb/cockroach/issues/60871
+                'gis_tests.geo3d.tests.Geo3DFunctionsTests.test_perimeter',
             })
         return expected_failures

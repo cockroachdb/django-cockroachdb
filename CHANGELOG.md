@@ -2,7 +2,8 @@
 
 ## 6.0.1 - Unreleased
 
-- Confirmed support for CockroachDB 26.1.x (no code changes required).
+- Confirmed support for CockroachDB 26.1.x, 26.2.x, and 26.3.x (no code changes
+  required).
 
 ## 6.0 - 2025-12-05
 
