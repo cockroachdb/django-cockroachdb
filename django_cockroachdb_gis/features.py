@@ -62,7 +62,13 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             'gis_tests.gis_migrations.test_operations.OperationTests.test_alter_field_with_spatial_index',
             # 3D opclass not present on CockroachDB:
             # https://github.com/cockroachdb/cockroach/issues/47420#issuecomment-969578772
+            'gis_tests.geoapp.test_indexes.SchemaIndexesTests.test_3d_field_opclass_not_overridden',
+            'gis_tests.geoapp.test_indexes.SchemaIndexesTests.test_specified_opclass_is_used',
             'gis_tests.gis_migrations.test_operations.OperationTests.test_add_3d_field_opclass',
+            # CockraochDB doesn't support PostgreSQL-style TABLESPACE syntax.
+            'gis_tests.geoapp.test_indexes.SchemaIndexesTests.test_tablespace',
+            # CockroachDB: inverted indexes don't support stored columns.
+            'gis_tests.geoapp.test_indexes.SchemaIndexesTests.test_covering_index',
             # GeometryType output value has incorrect casing:
             # https://github.com/cockroachdb/cockroach/issues/152593
             "gis_tests.geoapp.test_functions.GISFunctionsTests.test_geometry_type",
