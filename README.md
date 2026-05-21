@@ -118,6 +118,7 @@ using back to Cockroach Labs. To disable this, set
    - [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
      `greatest(): expected <arg> to be of type <type>, found type <other type>`
    - [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
+   - The `BitXor` aggregate [isn't supported](https://github.com/cockroachdb/cockroach/issues/170352).
 
 - GIS:
    - Some database functions aren't supported: `AsGML`, `AsKML`, `AsSVG`,
