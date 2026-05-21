@@ -118,6 +118,7 @@ using back to Cockroach Labs. To disable this, set
    - [greatest() doesn't support arguments of different types](https://github.com/cockroachdb/django-cockroachdb/issues/74):
      `greatest(): expected <arg> to be of type <type>, found type <other type>`
    - [`SmallAutoField` generates values that are too large for any corresponding foreign keys](https://github.com/cockroachdb/django-cockroachdb/issues/84).
+   - The `BitXor` aggregate [isn't supported](https://github.com/cockroachdb/cockroach/issues/170352).
 
 - GIS:
    - Some database functions aren't supported: `AsGML`, `AsKML`, `AsSVG`,
@@ -138,12 +139,3 @@ using back to Cockroach Labs. To disable this, set
      - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
        overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
-
-## Known issues and limitations in CockroachDB 24.3.x and earlier
-
-- CockroachDB executes `ALTER COLUMN` queries asynchronously which is at
-  odds with Django's assumption that the database is altered before the next
-  migration operation begins. CockroachDB will give an error like
-  `unimplemented: table <...> is currently undergoing a schema change` if a
-  later operation tries to modify the table before the asynchronous query
-  finishes.

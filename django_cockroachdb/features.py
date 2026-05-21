@@ -48,6 +48,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # https://github.com/cockroachdb/cockroach/issues/95068
     supports_comments = False
 
+    # CockroachDB doesn't support UNIQUE NULLS NOT DISTINCT:
+    # https://github.com/cockroachdb/cockroach/issues/115836
+    supports_nulls_distinct_unique_constraints = False
+
     @cached_property
     def introspected_field_types(self):
         return {
@@ -74,18 +78,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         # Not supported: https://github.com/cockroachdb/cockroach/issues/111091
         'virtual': None,
     }
-
-    @cached_property
-    def is_cockroachdb_24_3(self):
-        return self.connection.cockroachdb_version >= (24, 3)
-
-    @cached_property
-    def is_cockroachdb_25_1(self):
-        return self.connection.cockroachdb_version >= (25, 1)
-
-    @cached_property
-    def is_cockroachdb_25_2(self):
-        return self.connection.cockroachdb_version >= (25, 2)
 
     @cached_property
     def is_cockroachdb_25_4(self):
@@ -198,29 +190,18 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'aggregation.tests.AggregateTestCase.test_aggregation_default_expression',
             # ProgrammingError: VALUES types int and float cannot be matched
             'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
+            # bit_xor function not supported:
+            # https://github.com/cockroachdb/cockroach/issues/170352
+            'aggregation.tests.AggregateTestCase.test_aggregation_default_integer',
+            'aggregation.tests.AggregateTestCase.test_aggregation_default_unset',
+            'aggregation.tests.AggregateTestCase.test_aggregation_default_zero',
+            'aggregation.tests.AggregateTestCase.test_bit_xor',
+            'aggregation.tests.AggregateTestCase.test_bit_xor_on_only_false_values',
+            'aggregation.tests.AggregateTestCase.test_bit_xor_on_only_true_values',
+            # expected STORED COMPUTED COLUMN expression to have type
+            # decimal, but 'pink + pink' has type int
+            'migrations.test_operations.OperationTests.test_generated_field_changes_output_field',
         })
-        if not self.is_cockroachdb_24_3:
-            expected_failures.update({
-                # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
-                # not supported for columns that are part of an index.
-                # https://go.crdb.dev/issue/47636
-                'schema.tests.SchemaTests.test_alter_primary_key_the_same_name',
-                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_target_changes',
-                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_changes',  # noqa
-                'migrations.test_operations.OperationTests.test_rename_field_reloads_state_on_fk_target_changes',
-                # unknown signature: concat(varchar, int) (returning <string>)
-                'migrations.test_operations.OperationTests.test_add_generated_field',
-                # concat(): unknown signature: concat(string, int2) (desired <string>)
-                'db_functions.text.test_concat.ConcatTests.test_concat_non_str',
-                # unknown signature: concat(timestamptz, string)
-                "aggregation.tests.AggregateTestCase.test_string_agg_order_by",
-            })
-        if self.is_cockroachdb_25_1:
-            expected_failures.update({
-                # expected STORED COMPUTED COLUMN expression to have type
-                # decimal, but 'pink + pink' has type int
-                'migrations.test_operations.OperationTests.test_generated_field_changes_output_field',
-            })
         if self.uses_server_side_binding:
             expected_failures.update({
                 # could not determine data type of placeholder:
@@ -263,6 +244,12 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'queries.test_bulk_update.BulkUpdateTests.test_updated_rows_when_passing_duplicates',
                 'queries.test_q.QCheckTests.test_expression',
                 'queries.test_qs_combinators.QuerySetSetOperationTests.test_union_multiple_models_with_values_list_and_annotations',  # noqa
+                # psycopg.errors.IndeterminateDatatype: replace():
+                # replace(): replace(): concat(): could not determine data
+                # type of placeholder $3. This worked until v24.3 added
+                # support for non-string data to concat():
+                # https://github.com/cockroachdb/cockroach/pull/127098#issuecomment-2492652084
+                "model_fields.test_uuid.TestQuerying.test_filter_with_expr",
                 # error in argument for $2: could not parse ":" as type int2:
                 # strconv.ParseInt: parsing ":": invalid syntax
                 # https://github.com/cockroachdb/cockroach/issues/136295
@@ -278,34 +265,19 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'aggregation.tests.AggregateTestCase.test_aggregation_default_passed_another_aggregate',
                 # could not parse "@" as type timestamptz: parsing as type timestamp: empty or blank input
                 "aggregation.tests.AggregateTestCase.test_string_agg_order_by",
+                # psycopg.errors.IndeterminateDatatype: could not determine
+                # data type of placeholder $1
+                'expressions_case.tests.CaseExpressionTests.test_filter_with_expression_as_condition',
+                # concat(): error type checking resolved expression::
+                # could not determine data type of placeholder $1
+                'aggregation_regress.tests.AggregationTests.test_aggregate_group_by_unseen_columns_unmanaged',
+                'db_functions.text.test_concat.ConcatTests.test_many',
+                'db_functions.text.test_concat.ConcatTests.test_mixed_char_text',
+                'db_functions.text.test_replace.ReplaceTests.test_replace_expression',
+                'expressions.tests.BasicExpressionsTests.test_slicing_of_f_expression_with_annotated_expression',
+                'filtered_relation.tests.FilteredRelationTests.test_condition_with_func_and_lookup_outside_relation_name',  # noqa
+                'select_for_update.tests.SelectForUpdateTests.test_for_update_of_values_list',
             })
-            if self.is_cockroachdb_24_3:
-                expected_failures.update({
-                    # psycopg.errors.IndeterminateDatatype: replace():
-                    # replace(): replace(): concat(): could not determine data
-                    # type of placeholder $3. This worked until v24.3 added
-                    # support for non-string data to concat():
-                    # https://github.com/cockroachdb/cockroach/pull/127098#issuecomment-2492652084
-                    "model_fields.test_uuid.TestQuerying.test_filter_with_expr",
-                })
-            if self.is_cockroachdb_25_1:
-                expected_failures.update({
-                    # psycopg.errors.IndeterminateDatatype: could not determine
-                    # data type of placeholder $1
-                    'expressions_case.tests.CaseExpressionTests.test_filter_with_expression_as_condition',
-                })
-            if self.is_cockroachdb_25_2:
-                expected_failures.update({
-                    # concat(): error type checking resolved expression::
-                    # could not determine data type of placeholder $1
-                    'aggregation_regress.tests.AggregationTests.test_aggregate_group_by_unseen_columns_unmanaged',
-                    'db_functions.text.test_concat.ConcatTests.test_many',
-                    'db_functions.text.test_concat.ConcatTests.test_mixed_char_text',
-                    'db_functions.text.test_replace.ReplaceTests.test_replace_expression',
-                    'expressions.tests.BasicExpressionsTests.test_slicing_of_f_expression_with_annotated_expression',
-                    'filtered_relation.tests.FilteredRelationTests.test_condition_with_func_and_lookup_outside_relation_name',  # noqa
-                    'select_for_update.tests.SelectForUpdateTests.test_for_update_of_values_list',
-                })
         else:
             expected_failures.update({
                 # Unsupported query: unsupported binary operator: <int> / <int>:
@@ -349,16 +321,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'admin_views.test_multidb.ViewOnSiteTests.test_contenttype_in_separate_db',
             },
         })
-        if not self.is_cockroachdb_25_1:
-            skips.update({
-                # https://github.com/cockroachdb/cockroach/issues/47137
-                # These tests only fail sometimes, e.g.
-                # https://github.com/cockroachdb/cockroach/issues/65691
-                'ALTER COLUMN fails if previous asynchronous ALTER COLUMN has not finished.': {
-                    'schema.tests.SchemaTests.test_alter_field_db_collation',
-                    'schema.tests.SchemaTests.test_alter_field_type_and_db_collation',
-                },
-            })
         if self.is_cockroachdb_25_4 and not self.is_cockroachdb_26_1:
             skips.update({
                 # Error truncating hundreds of tables:

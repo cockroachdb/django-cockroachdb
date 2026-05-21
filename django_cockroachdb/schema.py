@@ -18,7 +18,10 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
 
     # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE" after
     # creating this foreign key. This isn't supported by CockroachDB.
-    sql_create_column_inline_fk = 'CONSTRAINT %(name)s REFERENCES %(to_table)s(%(to_column)s)%(deferrable)s'
+    sql_create_column_inline_fk = (
+        'CONSTRAINT %(name)s REFERENCES %(to_table)s(%(to_column)s)'
+        '%(on_delete_db)s%(deferrable)s'
+    )
 
     # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE" after this
     # statement. This isn't supported by CockroachDB.
@@ -53,15 +56,6 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
 
     def _alter_field(self, model, old_field, new_field, old_type, new_type,
                      old_db_params, new_db_params, strict=False):
-        # ALTER COLUMN TYPE is experimental.
-        # https://github.com/cockroachdb/cockroach/issues/49329
-        if (
-            not self.connection.features.is_cockroachdb_25_1 and (
-                old_type != new_type or
-                getattr(old_field, 'db_collation', None) != getattr(new_field, 'db_collation', None)
-            )
-        ):
-            self.execute('SET enable_experimental_alter_column_type_general = true')
         # Skip to the base class to avoid trying to add or drop
         # PostgreSQL-specific LIKE indexes.
         BaseDatabaseSchemaEditor._alter_field(

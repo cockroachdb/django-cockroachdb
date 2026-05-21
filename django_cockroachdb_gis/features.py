@@ -34,7 +34,7 @@ class DatabaseFeatures(CockroachFeatures, PostGISFeatures):
             'gis_tests.geoapp.tests.GeoLookupTest.test_gis_lookups_with_complex_expressions',
             'gis_tests.geoapp.tests.GeoLookupTest.test_relate_lookup',
             # NotSupportedError: this box2d comparison operator is experimental
-            'gis_tests.geoapp.tests.GeoLookupTest.test_contains_contained_lookups',
+            'gis_tests.geoapp.tests.GeoLookupTest.test_bbcontains',
             # unknown signature: st_distancespheroid(geometry, geometry, string)
             # https://github.com/cockroachdb/cockroach/issues/48922#issuecomment-693096502
             'gis_tests.distapp.tests.DistanceTest.test_distance_lookups_with_expression_rhs',
