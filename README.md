@@ -152,12 +152,3 @@ using back to Cockroach Labs. To disable this, set
   supported: `unsupported binary operator: <int> / <int> (desired <int>)`
 
 - The `BitXor` aggregate [isn't supported](https://github.com/cockroachdb/cockroach/issues/170352).
-
-## Known issues and limitations in CockroachDB 24.3.x and earlier
-
-- CockroachDB executes `ALTER COLUMN` queries asynchronously which is at
-  odds with Django's assumption that the database is altered before the next
-  migration operation begins. CockroachDB will give an error like
-  `unimplemented: table <...> is currently undergoing a schema change` if a
-  later operation tries to modify the table before the asynchronous query
-  finishes.
