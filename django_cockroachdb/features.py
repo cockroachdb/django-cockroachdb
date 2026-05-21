@@ -203,6 +203,13 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # expected STORED COMPUTED COLUMN expression to have type
             # decimal, but 'pink + pink' has type int
             'migrations.test_operations.OperationTests.test_generated_field_changes_output_field',
+            # aggregate with both DISTINCT and ORDER BY not supported:
+            # https://github.com/cockroachdb/cockroach/issues/43237
+            'aggregation.tests.AggregateTestCase.test_string_agg_distinct_with_order_by',
+            # DISTINCT ON doesn't work with expressions when NULLS
+            # FIRST/LAST is used, e.g. LOWER(name):
+            # https://github.com/cockroachdb/cockroach/issues/107516
+            'distinct_on_fields.tests.DistinctOnTests.test_distinct_on_duplicated_selected_transforms',
         })
         if not self.is_cockroachdb_26_3:
             expected_failures.update({
