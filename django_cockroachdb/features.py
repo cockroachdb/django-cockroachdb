@@ -80,14 +80,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     }
 
     @cached_property
-    def is_cockroachdb_25_1(self):
-        return self.connection.cockroachdb_version >= (25, 1)
-
-    @cached_property
-    def is_cockroachdb_25_2(self):
-        return self.connection.cockroachdb_version >= (25, 2)
-
-    @cached_property
     def is_cockroachdb_25_4(self):
         return self.connection.cockroachdb_version >= (25, 4)
 
@@ -206,13 +198,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'aggregation.tests.AggregateTestCase.test_bit_xor',
             'aggregation.tests.AggregateTestCase.test_bit_xor_on_only_false_values',
             'aggregation.tests.AggregateTestCase.test_bit_xor_on_only_true_values',
+            # expected STORED COMPUTED COLUMN expression to have type
+            # decimal, but 'pink + pink' has type int
+            'migrations.test_operations.OperationTests.test_generated_field_changes_output_field',
         })
-        if self.is_cockroachdb_25_1:
-            expected_failures.update({
-                # expected STORED COMPUTED COLUMN expression to have type
-                # decimal, but 'pink + pink' has type int
-                'migrations.test_operations.OperationTests.test_generated_field_changes_output_field',
-            })
         if self.uses_server_side_binding:
             expected_failures.update({
                 # could not determine data type of placeholder:
@@ -276,25 +265,19 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'aggregation.tests.AggregateTestCase.test_aggregation_default_passed_another_aggregate',
                 # could not parse "@" as type timestamptz: parsing as type timestamp: empty or blank input
                 "aggregation.tests.AggregateTestCase.test_string_agg_order_by",
+                # psycopg.errors.IndeterminateDatatype: could not determine
+                # data type of placeholder $1
+                'expressions_case.tests.CaseExpressionTests.test_filter_with_expression_as_condition',
+                # concat(): error type checking resolved expression::
+                # could not determine data type of placeholder $1
+                'aggregation_regress.tests.AggregationTests.test_aggregate_group_by_unseen_columns_unmanaged',
+                'db_functions.text.test_concat.ConcatTests.test_many',
+                'db_functions.text.test_concat.ConcatTests.test_mixed_char_text',
+                'db_functions.text.test_replace.ReplaceTests.test_replace_expression',
+                'expressions.tests.BasicExpressionsTests.test_slicing_of_f_expression_with_annotated_expression',
+                'filtered_relation.tests.FilteredRelationTests.test_condition_with_func_and_lookup_outside_relation_name',  # noqa
+                'select_for_update.tests.SelectForUpdateTests.test_for_update_of_values_list',
             })
-            if self.is_cockroachdb_25_1:
-                expected_failures.update({
-                    # psycopg.errors.IndeterminateDatatype: could not determine
-                    # data type of placeholder $1
-                    'expressions_case.tests.CaseExpressionTests.test_filter_with_expression_as_condition',
-                })
-            if self.is_cockroachdb_25_2:
-                expected_failures.update({
-                    # concat(): error type checking resolved expression::
-                    # could not determine data type of placeholder $1
-                    'aggregation_regress.tests.AggregationTests.test_aggregate_group_by_unseen_columns_unmanaged',
-                    'db_functions.text.test_concat.ConcatTests.test_many',
-                    'db_functions.text.test_concat.ConcatTests.test_mixed_char_text',
-                    'db_functions.text.test_replace.ReplaceTests.test_replace_expression',
-                    'expressions.tests.BasicExpressionsTests.test_slicing_of_f_expression_with_annotated_expression',
-                    'filtered_relation.tests.FilteredRelationTests.test_condition_with_func_and_lookup_outside_relation_name',  # noqa
-                    'select_for_update.tests.SelectForUpdateTests.test_for_update_of_values_list',
-                })
         else:
             expected_failures.update({
                 # Unsupported query: unsupported binary operator: <int> / <int>:
@@ -338,16 +321,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
                 'admin_views.test_multidb.ViewOnSiteTests.test_contenttype_in_separate_db',
             },
         })
-        if not self.is_cockroachdb_25_1:
-            skips.update({
-                # https://github.com/cockroachdb/cockroach/issues/47137
-                # These tests only fail sometimes, e.g.
-                # https://github.com/cockroachdb/cockroach/issues/65691
-                'ALTER COLUMN fails if previous asynchronous ALTER COLUMN has not finished.': {
-                    'schema.tests.SchemaTests.test_alter_field_db_collation',
-                    'schema.tests.SchemaTests.test_alter_field_type_and_db_collation',
-                },
-            })
         if self.is_cockroachdb_25_4 and not self.is_cockroachdb_26_1:
             skips.update({
                 # Error truncating hundreds of tables:
