@@ -1,3 +1,5 @@
+import operator
+
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
@@ -55,7 +57,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     supports_comments = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/172590
-    supports_any_value = False
+    supports_any_value = property(operator.attrgetter('is_cockroachdb_26_4'))
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/115836
     supports_nulls_distinct_unique_constraints = False
@@ -112,6 +114,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         return self.connection.cockroachdb_version >= (26, 3)
 
     @cached_property
+    def is_cockroachdb_26_4(self):
+        return self.connection.cockroachdb_version >= (26, 4)
+
+    @cached_property
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
@@ -157,21 +163,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # tablespace SQL because CockroachDB automatically indexes foreign
             # keys.
             'model_options.test_tablespaces.TablespacesTests.test_tablespace_for_many_to_many_field',
-            # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
-            # not supported for columns that are part of an index.
-            # https://go.crdb.dev/issue/47636
-            'migrations.test_executor.ExecutorTests.test_alter_id_type_with_fk',
-            'migrations.test_operations.OperationTests.test_alter_field_pk_fk',
-            'migrations.test_operations.OperationTests.test_alter_field_pk_fk_char_to_int',
-            'migrations.test_operations.OperationTests.test_alter_field_pk_fk_db_collation',
-            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_fk_with_to_field_related_name_target_type_change',  # noqa
-            'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_type_change',  # noqa
-            'schema.tests.SchemaTests.test_alter_auto_field_to_char_field',
-            'schema.tests.SchemaTests.test_alter_autofield_pk_to_smallautofield_pk',
-            'schema.tests.SchemaTests.test_alter_primary_key_db_collation',
-            'schema.tests.SchemaTests.test_char_field_pk_to_auto_field',
-            'schema.tests.SchemaTests.test_char_field_with_db_index_to_fk',
-            'schema.tests.SchemaTests.test_text_field_with_db_index_to_fk',
+
             # CockroachDB doesn't support dropping the primary key.
             'schema.tests.SchemaTests.test_alter_int_pk_to_int_unique',
             # unimplemented: primary key dropped without subsequent addition of
@@ -192,7 +184,18 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'many_to_one.tests.ManyToOneTests.test_get_prefetch_querysets_reverse_invalid_querysets_length',
             'migrations.test_operations.OperationTests.test_smallfield_autofield_foreignfield_growth',
             'migrations.test_operations.OperationTests.test_smallfield_bigautofield_foreignfield_growth',
+            'schema.tests.SchemaTests.test_alter_autofield_pk_to_smallautofield_pk',
             'schema.tests.SchemaTests.test_alter_smallint_pk_to_smallautofield_pk',
+            # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
+            # not supported for columns that are part of the primary key:
+            # https://github.com/cockroachdb/cockroach/issues/172614
+            'schema.tests.SchemaTests.test_alter_auto_field_to_char_field',
+            'schema.tests.SchemaTests.test_alter_primary_key_db_collation',
+            'schema.tests.SchemaTests.test_char_field_pk_to_auto_field',
+            'migrations.test_executor.ExecutorTests.test_alter_id_type_with_fk',
+            'migrations.test_operations.OperationTests.test_alter_field_pk_fk',
+            'migrations.test_operations.OperationTests.test_alter_field_pk_fk_char_to_int',
+            'migrations.test_operations.OperationTests.test_alter_field_pk_fk_db_collation',
             # unexpected unique index in pg_constraint query:
             # https://github.com/cockroachdb/cockroach/issues/61098
             'introspection.tests.IntrospectionTests.test_get_constraints_unique_indexes_orders',
@@ -215,6 +218,16 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # https://github.com/cockroachdb/cockroach/issues/107516
             'distinct_on_fields.tests.DistinctOnTests.test_distinct_on_duplicated_selected_transforms',
         })
+        if not self.is_cockroachdb_26_4:
+            expected_failures.update({
+                # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
+                # not supported for columns that are part of an index.
+                # https://go.crdb.dev/issue/47636
+                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_fk_with_to_field_related_name_target_type_change',  # noqa
+                'migrations.test_operations.OperationTests.test_alter_field_reloads_state_on_fk_with_to_field_target_type_change',  # noqa
+                'schema.tests.SchemaTests.test_char_field_with_db_index_to_fk',
+                'schema.tests.SchemaTests.test_text_field_with_db_index_to_fk',
+            })
         if not self.is_cockroachdb_26_3:
             expected_failures.update({
                 # bit_xor aggregate not supported:
