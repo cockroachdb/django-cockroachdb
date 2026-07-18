@@ -92,7 +92,7 @@ By default, CockroachDB sends the version of django-cockroachdb that you're
 using back to Cockroach Labs. To disable this, set
 `DISABLE_COCKROACHDB_TELEMETRY = True` in your Django settings.
 
-## Known issues and limitations in CockroachDB 26.3.x and earlier
+## Known issues and limitations in CockroachDB 26.4.x and earlier
 
 - CockroachDB [can't disable constraint checking](https://github.com/cockroachdb/cockroach/issues/19444),
   which means certain things in Django like forward references in fixtures
@@ -100,15 +100,14 @@ using back to Cockroach Labs. To disable this, set
 
 - Migrations have some limitations. CockroachDB doesn't support:
 
-   - [changing column type if it's part of an index](https://go.crdb.dev/issue/47636)
+   - [changing column type if it's part of a primary key](https://github.com/cockroachdb/cockroach/issues/172614)
    - dropping or changing a table's primary key
 
 - The `Field.db_comment` and `Meta.db_table_comment` options aren't supported
   due to [poor performance](https://github.com/cockroachdb/cockroach/issues/95068).
 
-- Unsupported database functions:
-   - [`AnyValue`](https://github.com/cockroachdb/cockroach/issues/172590)
-   - [`UUIDV7`](https://github.com/cockroachdb/cockroach/issues/97557)
+- The [`UUIDV7`](https://github.com/cockroachdb/cockroach/issues/97557)
+  database function is unsupported.
 
 - `UniqueConstraint.nulls_distinct` [isn't supported](https://github.com/cockroachdb/cockroach/issues/115836).
 
@@ -139,6 +138,13 @@ using back to Cockroach Labs. To disable this, set
      - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
        overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
+
+## Known issues and limitations in CockroachDB 26.3.x and earlier
+
+- The [`AnyValue`](https://github.com/cockroachdb/cockroach/issues/172590)
+  database function is unsupported.
+
+- CockroachDB doesn't support [changing column type if it's part of an index](https://go.crdb.dev/issue/47636).
 
 ## Known issues and limitations in CockroachDB 26.2.x and earlier
 
