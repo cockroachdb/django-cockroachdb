@@ -8,8 +8,8 @@ from django.db.models import ForeignKey
 
 class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
     # The PostgreSQL backend uses "SET CONSTRAINTS ... IMMEDIATE" before
-    # "ALTER TABLE..." to run any any deferred checks to allow dropping the
-    # foreign key in the same transaction. This doesn't apply to cockroachdb.
+    # "ALTER TABLE..." to run any deferred checks to allow dropping the foreign
+    # key in the same transaction. This doesn't apply to CockroachDB.
     sql_delete_fk = "ALTER TABLE %(table)s DROP CONSTRAINT %(name)s"
 
     # "ALTER TABLE ... DROP CONSTRAINT ..." not supported for dropping UNIQUE
@@ -44,11 +44,11 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
         super().remove_index(model, index, concurrently)
 
     def _index_columns(self, table, columns, col_suffixes, opclasses):
-        # cockroachdb doesn't support PostgreSQL opclasses.
+        # CockroachDB doesn't support PostgreSQL opclasses.
         return BaseDatabaseSchemaEditor._index_columns(self, table, columns, col_suffixes, opclasses)
 
     def _create_like_index_sql(self, model, field):
-        # cockroachdb doesn't support LIKE indexes.
+        # CockroachDB doesn't support LIKE indexes.
         return None
 
     def _alter_field(self, model, old_field, new_field, old_type, new_type,
@@ -118,5 +118,5 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
             )
 
     def _field_should_be_indexed(self, model, field):
-        # Foreign keys are automatically indexed by cockroachdb.
+        # Foreign keys are automatically indexed by CockroachDB.
         return not isinstance(field, ForeignKey) and super()._field_should_be_indexed(model, field)

@@ -29,11 +29,11 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # due to use of DEFAULT unique_rowid().
     supports_sequence_reset = False
 
-    # Forward references in fixtures won't work until cockroachdb can
+    # Forward references in fixtures won't work until CockroachDB can
     # disable constraints: https://github.com/cockroachdb/cockroach/issues/19444
     supports_forward_references = False
 
-    # Unlike PostgreSQL, cockroachdb doesn't support any EXPLAIN formats
+    # Unlike PostgreSQL, CockroachDB doesn't support any EXPLAIN formats
     # ('JSON', 'TEXT', 'XML', and 'YAML').
     supported_explain_formats = set()
 

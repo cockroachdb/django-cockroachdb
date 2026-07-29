@@ -36,7 +36,7 @@ def collate(self, compiler, connection, **extra_context):
 
 
 def float_cast(self, compiler, connection, **extra_context):
-    # Most cockroachdb math functions require float arguments instead of
+    # Most CockroachDB math functions require float arguments instead of
     # decimal or integer.
     clone = self.copy()
     clone.set_source_expressions([

@@ -81,7 +81,7 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
         determine if rows with invalid references were entered while constraint
         checks were off.
         """
-        # cockroachdb doesn't support disabling constraint checking
+        # CockroachDB doesn't support disabling constraint checking
         # (https://github.com/cockroachdb/cockroach/issues/19444) so this
         # method is a no-op.
         pass
@@ -91,7 +91,7 @@ class DatabaseWrapper(PostgresDatabaseWrapper):
 
     @contextmanager
     def _nodb_cursor(self):
-        # Overidden to avoid inapplicable "Django was unable to create a
+        # Overridden to avoid inapplicable "Django was unable to create a
         # connection to the 'postgres' database and will use the first
         # PostgreSQL database instead." warning.
         with super(PostgresDatabaseWrapper, self)._nodb_cursor() as cursor:
