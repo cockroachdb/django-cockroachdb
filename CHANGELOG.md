@@ -4,6 +4,8 @@
 
 - Confirmed support for CockroachDB 26.4.x (no code changes required).
 
+- Added support for `Field.db_comment` and `Meta.db_table_comment`.
+
 ## 6.1.1 - 2026-10-21
 
 - Indexes are now created on all `ForeignKey`\s. Before CockroachDB v20.2, the

@@ -103,9 +103,6 @@ using back to Cockroach Labs. To disable this, set
    - [changing column type if it's part of a primary key](https://github.com/cockroachdb/cockroach/issues/172614)
    - dropping or changing a table's primary key
 
-- The `Field.db_comment` and `Meta.db_table_comment` options aren't supported
-  due to [poor performance](https://github.com/cockroachdb/cockroach/issues/95068).
-
 - The [`UUIDV7`](https://github.com/cockroachdb/cockroach/issues/97557)
   database function is unsupported.
 
