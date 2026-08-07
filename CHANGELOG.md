@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.2.2 - Unreleased
+## 5.2.2 - 2026-08-07
 
 - Confirmed support for CockroachDB 26.1.x and 26.2.x (no code changes
   required).
