@@ -1,3 +1,5 @@
+import re
+
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db.backends.postgresql.schema import (
     DatabaseSchemaEditor as PostgresDatabaseSchemaEditor,
@@ -92,6 +94,17 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
                 })
 
     def _alter_column_type_sql(self, model, old_field, new_field, new_type, old_collation, new_collation):
+        self.sql_alter_column_type = (
+            "ALTER COLUMN %(column)s TYPE %(type)s%(collation)s"
+        )
+        # Cast when data type changed.
+        if using_sql := self._using_sql(new_field, old_field):
+            # The USING expression must include the collation.
+            if collate_sql := self._collate_sql(
+                new_collation, old_collation, model._meta.db_table
+            ):
+                using_sql += f" {collate_sql}"
+            self.sql_alter_column_type += using_sql
         new_internal_type = new_field.get_internal_type()
         old_internal_type = old_field.get_internal_type()
         # Make ALTER TYPE with AutoField make sense.
@@ -119,6 +132,37 @@ class DatabaseSchemaEditor(PostgresDatabaseSchemaEditor):
                 self, model, old_field, new_field, new_type,
                 old_collation, new_collation,
             )
+
+    # AutoField and IntegerField variants (and foreign keys to any of them) are
+    # all stored as the same 64-bit integer type, so a change between them
+    # doesn't require a cast. Adding a USING clause anyway makes CockroachDB
+    # treat the change as one that requires rewriting on-disk data, which fails
+    # for columns that are part of an index.
+    integer_db_types = {'integer', 'bigint', 'smallint'}
+
+    def _using_sql(self, new_field, old_field):
+        old_db_type = self._field_data_type(old_field)
+        new_db_type = self._field_data_type(new_field)
+        if (
+            old_db_type in self.integer_db_types
+            and new_db_type in self.integer_db_types
+        ):
+            return ""
+        # A change that only affects a type's parameters (e.g. varchar(5) to
+        # varchar(11)) doesn't require a cast either, and forcing one causes
+        # the same on-disk data rewrite problem as above.
+        if self._strip_type_params(old_db_type) == self._strip_type_params(new_db_type):
+            return ""
+        return super()._using_sql(new_field, old_field)
+
+    def _strip_type_params(self, db_type):
+        # _field_data_type() can return a callable (e.g. for CharField and
+        # DecimalField) rather than a resolved type string, in which case
+        # there are no parameters to strip.
+        if not isinstance(db_type, str):
+            return db_type
+        # Remove the suffix from the datatype, e.g. 'varchar(#)' -> 'varchar'.
+        return re.sub(r'\(.*\)', '', db_type)
 
     def _field_should_be_indexed(self, model, field):
         # Foreign keys are automatically indexed by CockroachDB.

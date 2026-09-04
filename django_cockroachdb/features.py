@@ -17,6 +17,12 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # Not supported: https://github.com/cockroachdb/cockroach/issues/48307
     supports_deferrable_unique_constraints = False
 
+    # CockroachDB doesn't allow combining an ALTER COLUMN TYPE that requires
+    # rewriting on-disk data (i.e. one that needs a USING cast) with other
+    # ALTER TABLE actions in the same statement:
+    # https://go.crdb.dev/issue/49351
+    supports_combined_alters = False
+
     # There are limitations on having DDL statements in a transaction:
     # https://www.cockroachlabs.com/docs/stable/known-limitations.html#schema-changes-within-transactions
     can_rollback_ddl = False
@@ -198,10 +204,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             # new primary key in same transaction
             'schema.tests.SchemaTests.test_add_auto_field',
             'schema.tests.SchemaTests.test_autofield_to_o2o',
-            # USING cast required: https://github.com/cockroachdb/cockroach/issues/82416#issuecomment-2029803229
-            'schema.tests.SchemaTests.test_alter_text_field_to_date_field',
-            'schema.tests.SchemaTests.test_alter_text_field_to_datetime_field',
-            'schema.tests.SchemaTests.test_alter_text_field_to_time_field',
             # incompatible COALESCE expressions: unsupported binary operator:
             # <int> * <int> (desired <decimal>):
             # https://github.com/cockroachdb/cockroach/issues/73587
