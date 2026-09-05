@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
-    minimum_database_version = (24, 1)
+    minimum_database_version = (24, 3)
 
     # Cloning databases doesn't speed up tests.
     # https://github.com/cockroachdb/django-cockroachdb/issues/206
