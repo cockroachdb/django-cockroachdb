@@ -71,9 +71,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'SmallAutoField': 'SmallIntegerField',
         }
 
-    # CockroachDB doesn't create indexes on foreign keys.
-    indexes_foreign_keys = False
-
     # Not supported: https://github.com/cockroachdb/cockroach/issues/59567
     supports_non_deterministic_collations = False
 
@@ -153,10 +150,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'backends.tests.FkConstraintsTests.test_check_constraints_sql_keywords',
             'backends.tests.FkConstraintsTests.test_disable_constraint_checks_context_manager',
             'backends.tests.FkConstraintsTests.test_disable_constraint_checks_manually',
-            # SchemaEditor._model_indexes_sql() doesn't output some expected
-            # tablespace SQL because CockroachDB automatically indexes foreign
-            # keys.
-            'model_options.test_tablespaces.TablespacesTests.test_tablespace_for_many_to_many_field',
             # ALTER COLUMN TYPE requiring rewrite of on-disk data is currently
             # not supported for columns that are part of an index.
             # https://go.crdb.dev/issue/47636
