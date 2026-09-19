@@ -208,6 +208,10 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'aggregation.tests.AggregateTestCase.test_aggregation_default_expression',
             # ProgrammingError: VALUES types int and float cannot be matched
             'field_defaults.tests.DefaultTests.test_bulk_create_mixed_db_defaults_function',
+            # DISTINCT ON doesn't work with expressions when NULLS FIRST/LAST
+            # is used, e.g. LOWER(name):
+            # https://github.com/cockroachdb/cockroach/issues/107516
+            'distinct_on_fields.tests.DistinctOnTests.test_distinct_on_duplicated_selected_transforms',
         })
         if not self.is_cockroachdb_26_3:
             expected_failures.update({
