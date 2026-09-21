@@ -58,11 +58,11 @@ jobs:
           - crdb-version: v26.3.0-rc.1
             use_server_side_binding: server_side_binding
           # Uncomment to enable testing of CockroachDB nightly.
-          #- crdb-version: LATEST
-          #- crdb-version: LATEST
-          #  use_psycopg2: psycopg2
-          #- crdb-version: LATEST
-          #  use_server_side_binding: server_side_binding
+          - crdb-version: LATEST
+          - crdb-version: LATEST
+            use_psycopg2: psycopg2
+          - crdb-version: LATEST
+            use_server_side_binding: server_side_binding
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
