@@ -1,6 +1,6 @@
 # Changelog
 
-## 6.1.1 - Unreleased
+## 6.1.1 - 2026-10-21
 
 - Indexes are now created on all `ForeignKey`\s. Before CockroachDB v20.2, the
   database automatically created such indexes and this backend never adapted
