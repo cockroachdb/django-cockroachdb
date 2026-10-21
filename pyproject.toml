@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-cockroachdb"
+dynamic = ["version"]
+requires-python = ">=3.12"
+dependencies = [
+    "django >= 6.1, < 6.2",
+]
+maintainers = [
+    {name = "Cockroach Labs", email = "python@cockroachlabs.com"},
+]
+description = "Django backend for CockroachDB"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 6.1",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+[project.urls]
+Homepage = "https://github.com/cockroachdb/django-cockroachdb"
+Source = "https://github.com/cockroachdb/django-cockroachdb"
+Tracker = "https://github.com/cockroachdb/django-cockroachdb/issues"
+
+[tool.isort]
+combine_as_imports = true
+default_section = "THIRDPARTY"
+include_trailing_comma = true
+line_length = 79
+multi_line_output = 5
+
+[tool.setuptools.dynamic]
+version = {attr = "django_cockroachdb.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["django_cockroachdb*"]
