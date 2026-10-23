@@ -1,7 +1,8 @@
+from functools import cached_property
+
 from django.contrib.gis.db.backends.postgis.features import (
     DatabaseFeatures as PostGISFeatures,
 )
-from django.utils.functional import cached_property
 
 from django_cockroachdb.features import DatabaseFeatures as CockroachFeatures
 
