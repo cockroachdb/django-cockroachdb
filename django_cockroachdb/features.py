@@ -1,7 +1,8 @@
+from functools import cached_property
+
 from django.db.backends.postgresql.features import (
     DatabaseFeatures as PostgresDatabaseFeatures,
 )
-from django.utils.functional import cached_property
 
 
 class DatabaseFeatures(PostgresDatabaseFeatures):
