@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.1.2 - Unreleased
+
+- Confirmed support for CockroachDB 26.4.x (no code changes required).
+
 ## 6.1.1 - 2026-10-21
 
 - Indexes are now created on all `ForeignKey`\s. Before CockroachDB v20.2, the
