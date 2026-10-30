@@ -1,10 +1,10 @@
 import os
 import re
 from contextlib import contextmanager
+from functools import cached_property
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.functional import cached_property
 
 try:
     try:
