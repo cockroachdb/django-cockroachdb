@@ -52,9 +52,6 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
     # PostgreSQL behaves the opposite.
     nulls_order_largest = False
 
-    # pg_catalog.obj_description is very slow:
-    # https://github.com/cockroachdb/cockroach/issues/95068
-    supports_comments = False
 
     # Not supported: https://github.com/cockroachdb/cockroach/issues/172590
     supports_any_value = property(operator.attrgetter('is_cockroachdb_26_4'))
