@@ -169,7 +169,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
             'schema.tests.SchemaTests.test_primary_key',
             # SmallAutoField doesn't work:
-            # https://github.com/cockroachdb/cockroach-django/issues/84
+            # https://github.com/cockroachdb/django-cockroachdb/issues/84
             'bulk_create.tests.BulkCreateTests.test_bulk_insert_nullable_fields',
             'many_to_one.tests.ManyToOneTests.test_add_remove_set_by_pk_raises',
             'many_to_one.tests.ManyToOneTests.test_fk_to_smallautofield',
@@ -343,7 +343,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
             'Fails with TransactionRetryWithProtoRefreshError: ... RETRY_WRITE_TOO_OLD ...': {
                 'delete_regress.tests.DeleteLockingTest.test_concurrent_delete',
             },
-            'Skip to prevents some error output in the logs.': {
+            'Skip to prevent some error output in the logs.': {
                 # Since QuerySet.select_for_update() was enabled, this test is
                 # already skipped by the 'Database took too long to lock the row'
                 # logic in the test. Skipping it entirely prevents some error
@@ -386,7 +386,7 @@ class DatabaseFeatures(PostgresDatabaseFeatures):
         if self.is_cockroachdb_26_3:
             # https://github.com/cockroachdb/cockroach/issues/172800
             skips.update({
-                'Test hangs, failng with "batch timestamp must be after replica GC threshold"': {
+                'Test hangs, failing with "batch timestamp must be after replica GC threshold"': {
                     'migrations.test_loader.LoaderTests.test_loading_order_does_not_create_circular_dependency',
                 },
             })

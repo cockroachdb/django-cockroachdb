@@ -135,8 +135,8 @@ using back to Cockroach Labs. To disable this, set
      - [contained (@)](https://github.com/cockroachdb/cockroach/issues/56124)
      - [exact/same_as (~=)](https://github.com/cockroachdb/cockroach/issues/57096)
      - [left (<<) and right (>>)](https://github.com/cockroachdb/cockroach/issues/57092)
-     - [overlaps_left (&<), overlaps_right (&>), overlaps_above (&<|),
-       overlaps_below (&>|)](https://github.com/cockroachdb/cockroach/issues/57098)
+     - [overlaps_left (&<), overlaps_right (&>), overlaps_above (|&>),
+       overlaps_below (&<|)](https://github.com/cockroachdb/cockroach/issues/57098)
      - [strictly_above (|>>), strictly_below (<<|)](https://github.com/cockroachdb/cockroach/issues/57095)
 
 ## Known issues and limitations in CockroachDB 26.3.x and earlier
